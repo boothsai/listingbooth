@@ -1,0 +1,2038 @@
+ 
+ 
+ 
+  
+Data Distribution Facility  
+Data Feed Technical Documentation 
+ 
+Version 2.23 
+ 
+i 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Contents  
+ 
+Version History  .................................................................................................................................................................. 1 
+1. Overview  .................................................................................................................................................................. 2 
+2. RETS Support  ......................................................................................................................................................... 4 
+3. Authentication  ........................................................................................................................................................ 5 
+4. Login Transaction  ................................................................................................................................................. 5 
+5. Metadata Transaction  ......................................................................................................................................... 7 
+6. Search ....................................................................................................................................................................... 8 
+7. Property Photos Handling  ................................................................................................................................ 12 
+8. Search Transaction  ............................................................................................................................................ 14 
+9. GetObject Transaction  ...................................................................................................................................... 18 
+10. Logout Transaction  ............................................................................................................................................ 21 
+11. Sample Data Feed  .............................................................................................................................................. 22 
+12. Developer Resources  ........................................................................................................................................ 22 
+13. Website requirements ....................................................................................................................................... 22 
+Appendix – Payload Legend  ....................................................................................................................................... 26 
+Appendix A – Office Payload  ...................................................................................................................................... 27 
+Appendix B – OfficeDetails Payload  ........................................................................................................................ 27 
+Appendix C – Agent Payload  ...................................................................................................................................... 28 
+Appendix D – AgentDetails Payload  ........................................................................................................................ 28 
+Appendix E – Property Payload (Standard-XML)  ............................................................................................... 29 
+Appendix F – PropertyDetails Payload (Standard-XML)  .................................................................................. 29 
+Appendix G – Address Payload  ................................................................................................................................. 36 
+Appendix H – Phone Payload  ..................................................................................................................................... 37 
+Appendix I – Website Payload  ................................................................................................................................... 37 
+Appendix J – PropertyDetails Payload (Compact)  ............................................................................................. 38 
+Appendix K – Digest Authentication  ....................................................................................................................... 49 
+Appendix L - Reply Codes  ........................................................................................................................................... 51 
+Appendix M – Complete List of Metadata Lookups Available  ........................................................................ 52 
+ 
+ 
+ 
+1 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Version History 
+Version  Published Date  Description  
+1.0 July 3rd, 2012 DDF® Release 
+1.1 September 6th, 2012  Added support for STANDARD-XML-ENCODED format 
+ Added METADATA-LOOKUP and METADATA-LOOKUP_TYPE 
+(Available in STANDARD-XML only) 
+1.2 January 14, 2013  Added new version of GetObject (includes boundary between 
+images and content headers) 
+ Modified DDF® documentation URL 
+2.0 March 12, 2012  Added support for COMPACT and COMPACT-DECODED 
+format Property searches, based on the RESO Data 
+Dictionary 
+ Added COMPACT version of METADATA-LOOKUP and 
+METADATA-LOOKUP_TYPE 
+ Expanded METADATA-TABLE results to include elements that 
+can be used in SELECT statements for COMPACT format 
+Property searches 
+2.1 January 22, 2014  Removed DisplayAsYears element from the Listing payload 
+ Removed StoriesType element from the Listing payload 
+ 
+2.2 March 24, 2014  Added Property Photos Handling Section 
+ Added Recommended Time to Pull Data Section 
+2.3 June 16, 2014  Removed ListAgentEmail element from the Listing payload 
+ Removed CoListOfficeEmail element from the Listing payload 
+2.4 December 8th, 2014  Updated cardinality of Address element in PropertyDetails to 
+be a 0..1 instead of 1, since this element is not always 
+included in payload.  No change in behavior, just 
+documentation. 
+2.5 January 2nd, 2015  Added new cardinality type:  0..1 (*) , and explanation of 
+cardinality as first Appendix 
+2.6 February 2, 2015  Added Lease and LeaseFrequency to Compact Property 
+payload. 
+2.7 February 23, 2015  Incorporated Analytics Web service documentation.  
+Deprecated Analytics Java scripts. 
+ Added Appendix P – Sample Environment credentials 
+2.8 April 24, 2015  Consolidated section 11 and Appendix P.   
+2.9 October 19, 2015  Added ‘Board’ element to the PropertyDetails  (Standard-
+XML ) payload Table. 
+ Added street-related elements to the Address payload. 
+ Added new example in GetObject examples table. 
+2.10 December 16, 2015  The object-id-list element in the GetObject Transaction uses 
+a comma as the character separator.  
+ Content-ID is only returned in multipart responses by the 
+GetObject Transaction 
+2.11 January 20, 2016  Added new payload fields: AssociationFee, 
+AssociationFeeFrequency, ListingContractDate, 
+PhotoLastUpdated 
+2.12 May 2, 2017  Updated data types in documentation (no functional 
+changes) for FirePlaceTotal (from String to Integer) and 
+several date fields (from String to DateTime) 
+ 
+2 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 2.13 Aug 14, 2017  Added MoreInformationLink field to PropertyDetails Payload 
+(Compact) on Appendix J  
+2.14 Nov 6, 2017  Deleted references to the DDF ® Dashboard URL 
+2.15 Jan 16, 2018  Reworded Section 11 - Sample Data Feed 
+2.16 Nov 07, 2019  Updated Standard XML to include Photo URLs  
+2.17 Feb 11, 2020  Additional updates to Property photo URLs 
+2.18 March 11, 2020  Updated Agent and Office payloads to expose image URLs 
+2.19 March 17, 2020  Updates to MoreInformationLink and addition of Social Media 
+URL 
+2.20 April 6, 2020  Updated Property Payload  to include Live Stream Open 
+House elements 
+2.21 December 22, 2020  Added Powered by REALTOR® logo requirements 
+2.22 January 31, 2023  Https enforced to support minimum TLS v1.2 
+2.23 September 19, 2023  Added missing reply code 20208 in Appendix L 
+1. Overview 
+Data Distribution Facility Overview 
+CREA has created a Data Distribution Facility (DDF®) to enable CREA’s members to easily 
+disseminate MLS® listing content to multiple websites, and to ensure that MLS® listing content 
+that is displayed on these websites is accurate, up to date, and uses CREA’s trademarks 
+correctly. 
+The DDF® is permission based and consists of three modules: a National Shared Pool Module; a 
+Member Website Feed Module; and a Third Party Module.  
+ 
+1. National Shared Pool Module ‐ Participants can contribute their listings to a national data 
+pool and receive a feed from that pool to display all other participants’ listings on their 
+websites. Participants can filter the data feed they receive based on objective criteria. 
+Participants can also choose to contribute their listings to a data feed made available for 
+display on participating franchisors’ websites. 
+ 
+2. Member Website Feed Module–Participants can use this module to receive a data feed of 
+their listings to display on their own website in order to track the success of their website 
+as a marketing tool. 
+ 
+3. Third Party Module – Participants can choose to send listing content to a number of Third 
+Party websites. 
+ 
+4. Any Technology Providers who are pulling data feeds on behalf of those members utilizing 
+a National Shared Pool (NSP) or Member Website Feed (MWF) must complete, sign and 
+return a hard copy of the Data Access Agreement to CREA prior to pulling data from 
+DDF®. CREA requires each individual that the Technology Provider is represented to be 
+identified within the Data Access Agreement.  
+Please contact CREA ( support@crea.ca ) to obtain a copy of the Data Access Agreement or 
+if you have any questions.  
+ 
+3 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Recommended Time to Pull Data 
+Data collection, synchronization and ultimately distribution through the DDF® are possible 
+through the collaboration of multiple centralized processes running in the early hours of each 
+day at CREA. To ensure you get the most up-to-date data possible and to prevent possible 
+inconsistencies, it is recommended clients start pulling data through the DDF® data feeds after 
+10am. 
+  
+ 
+4 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Data Feed Overview 
+CREA’s Data Distribution Facility Data Feed supports 5 transactions:  Login, Metadata, Search, 
+GetObject and Logout.  CREA supports transactions using Representation State Transfer (REST) 
+architecture to facilitate the transfer of data between the CREA server and the websites receiving 
+the data.  All transactions may be requested by clients using either HTTPS GET or HTTPS POST 
+methods. 
+ 
+ 
+Note: Minimum TLS version supported will be TLS v1.2. All incoming requests are expected to 
+be HTTPS to support TLS v1.2.  
+2. RETS Support 
+CREA’s Data Distribution Facility Data Feed adheres as closely as possible to the Real Estate 
+Transaction Standard (RETS) version 1.7.2 standard.  However, there are a few key differences 
+between the service offered by CREA and a fully compliant, certified RETS server. 
+ 
+ Compact and Compact-Decoded format is only available for Property searches.  Compact 
+formatted responses use the RESO Data Dictionary, which as of Version 1.0 only provides 
+a Property dictionary.  Once an Agent and Office dictionary are finalized, support will be 
+added to DDF. 
+ Query support is restricted, as CREA’s service does not allow ad-hoc querying of records.  
+If filtering of results is required by clients, this needs to be configured by the owner of the 
+feed. For assistance contact support@crea.ca.  
+ Select is only supported for Property queries in Compact or Compact-Decoded format.   
+ A server limit on the number of details returned in a single Search request is strictly 
+enforced.  Any Search request with a Limit greater than the server maximum with be 
+rejected 
+ 
+5 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 3. Authentication 
+CREA requires that all access is authenticated using digest authentication (RFC 2617, HTTP 
+Authentication).  
+A client must issue a Login request prior to proceeding with any other request. The Login 
+transaction verifies all login information provided by the user and begins a session. Subsequent 
+session control may be mediated by HTTP cookies or any other method, though clients are 
+required to support at least session control via HTTP cookies. 
+Users of the CREA service are assigned authentication credentials when registering their data 
+feed. These credentials are used to identify the registered user and grants access to all property, 
+agent and office data available to the user. 
+All requests for Metadata, Search, GetObject and Logout require clients to submit both the 
+Digest Authentication authorization header and the session cookie.  
+4. Login Transaction 
+Description 
+A client must issue a Login request prior to proceeding with any other request. The Login 
+transaction verifies all login information provided by the user and begins a session. Subsequent 
+session control may be mediated by HTTP cookies or any other method, though clients are 
+required to support at least session control via HTTP cookies.  
+The server’s response to the login transaction contains the information necessary for a client to 
+issue other requests. It includes URLs that may be used for other supported requests, and may 
+also contain identity and parameter information if required by the functions supported by the 
+server. 
+End Point 
+https://data.crea.ca/Login.svc/Login  
+Request Arguments 
+There are no request arguments for the Login transaction. 
+  
+ 
+6 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Login Response Body Format  
+<?xml version="1.0" encoding="UTF-8"?> 
+<RETS ReplyText ="Operation Successful " ReplyCode ="0"> 
+<RETS-RESPONSE > 
+Broker= (Destination Owner ID)   
+MemberName= (Destination Owner Name)    
+MetadataVersion= (Current metadata version number) 
+MinMetadataVersion= (Earliest version of metadata supported by server) 
+MetadataTimestamp= (Timestamp of current version of metadata)  
+MinMetadataTimestamp= ( Timestamp of earliest version of metadata supported by 
+server)  
+User=(Destination Owner ID ,,, Destination Owner ID)   
+GetObject= (URL to use for GetObject requests)   
+Login=(URL to use for Login requests)  
+Logout= (URL to use for Logout requests)  
+Search= (URL to use for Search requests)  
+GetMetadata= (URL to use for GetMetadata requests)  
+</RETS-RESPONSE > 
+</RETS> 
+NOTE:  RETS spec requires clients to include any cookies set by the server:  
+https://www.reso.org/specifications/   
+A successful Login response header includes a Set-Cookie with X-SESSIONID  value.  This X-
+SessionID value needs to be submitted with every request after logging in.  
+  
+ 
+7 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 5. Metadata Transaction 
+Description 
+This transaction is used to retrieve metadata. Metadata enables a client that receives data from 
+a compliant server to better format the data for display, and to store it efficiently for future 
+retrieval. 
+End Point 
+https://data.crea.ca/Metadata.svc/GetMetadata  
+Request Arguments 
+Argument  Type Description  Default  Required  Supported Values  
+Type String Selects the type of 
+metadata to be 
+returned  
+RETS 
+1.7.2 METADATA-SYSTEM 
+METADATA-RESOURCE 
+METADATA-CLASS 
+METADATA-LOOKUP 
+METADATA-LOOKUP_TYPE 
+Format String Selects the supported 
+data return format for 
+the query response STANDARD
+-XML  
+STANDARD-XML 
+COMPACT 
+ID String List of the names of 
+the 
+parent elements for 
+the desired element, 
+separated by colons 
+ 
+Resource:Lookup 
+Eg; 
+Property:MeasureUnit   0 – request is for all Type 
+metadata contained within 
+that level 
+*. - request is for all Type 
+metadata contained within 
+that level and within the 
+requested Type (i.e. all 
+metadata) 
+Resource:Class  
+Culture String Selects the language 
+of the results en-CA  en-CA 
+fr-CA 
+Note: The metadata ID for METADATA-SYSTEM and METADATA-RESOURCE must be 0 or 
+*. 
+Note: METADATA-LOOKUP and METADATA-LOOKUP_TYPE requests only support 
+STANDARD-XML format 
+Metadata Examples 
+Action Syntax  
+Retrieve all Resource metadata, all levels Type=METADATA-RESOURCE&Format=COMPACT&ID=* 
+Retrieve all Class metadata, class level only Type=METADATA-CLASS&Format=COMPACT&ID=0 
+Retrieve Class metadata for a specific 
+resource Type=METADATA-CLASS&Format=COMPACT&ID=Property  
+Retrieve Table metadata for a specific 
+resource and class Type=METADATA-
+TABLE&Format=COMPACT&ID=Property:Property 
+Retrieve Lookup metadata for a specific 
+resource  Type=METADATA-LOOKUP&Format=STANDARD-
+XML&ID=Property 
+ 
+8 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Retrieve Lookup metadata for a specific 
+resource and lookup type Type=METADATA-LOOKUP_TYPE&Format=STANDARD-
+XML&ID=Property:Crop 
+Server Response Header Fields 
+Request 
+Argument Type Description  Default  Required  Supported Values  
+Content-
+Type String Media type of the 
+underlying data  
+RETS 1.7.2 text/xml 
+6. Search 
+CREA’s data distribution server allows DDF® clients to request and receive a parallel set of CREA 
+data that will be displayed on their websites.  The parallel data set needs to be refreshed 
+regularly as CREA adds, updates and deletes its’ records. 
+ 
+The set of records available to DDF® clients are rules-based and determined by  
+ the type of destination making the request,  
+ the owner of the destination, and 
+ the approval settings of boards/associations, brokerage owners and/or salespersons 
+(where applicable). 
+ 
+CREA’s data distribution server implementation does not support ad-hoc queries against its data.  
+Filtering of search results, such as restricting results to only recreational properties or a specific 
+price range, is currently not possible as part of the search transaction.  Filtering of results is 
+configured when registering or editing a data feed. 
+ 
+Search transactions are performed against 3 possible resources:  Office, Agent and Property.  
+The process for searching against each resource type is the same: 
+ 
+1. Retrieve all active records updated since a specified date/time 
+2. Retrieve a master list of all active records (IDs and LastUpdated) 
+3. Compare master list to client data store by matching IDs.  Identify any records that are 
+missing or have different LastUpdated values. 
+4. Retrieve set of records by ID 
+Step 1.  Retrieve all active records updated since a specified date/time 
+ 
+It is not necessary or recommended for clients to retrieve complete property details for all active 
+records on every request.  Clients should instead request only records that have been updated 
+since the last request was made.  Searches with a LastUpdated query parameter included will 
+return complete record details for all records that have been updated since that date/time. 
+ 
+Limit, Offset, and Count parameters are supported when processing LastUpdated queries, 
+allowing clients to page through results in batches.  If Count is requested as part of a search, 
+results will include a Pagination element which includes the TotalRecords, Limit, Offset, 
+RecordsReturned, and TotalPages. 
+Query Syntax:  (LastUpdated= RETSDateTime)  
+ 
+ 
+9 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Sample Result (Standard-XML): 
+ 
+ 
+ 
+Sample Result (Compact): 
+ 
+ 
+
+ 
+10 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Step 2.  Retrieve a master list of all active records  
+ 
+This search provides clients with a master list of the complete set of records clients should have 
+in their data store.  This list contains 2 values for each record:  the record ID and the 
+LastUpdated timestamp. By comparing the master list with the client’s data store, it is possible 
+to identify any records that need to be updated, deleted or inserted.  This search will always 
+return a complete list of records.  Paging through this list using Limit and Offset is not supported 
+in Standard-XML, but is supported for Compact format queries. 
+Query Syntax:  (ID=*) 
+ 
+Note:  When request Compact format data, the master list can also be retrieved by selecting just 
+the ListingKey and ModificationTimestamp:  SELECT=(ListingKey,ModificationTimestamp).  This 
+will return all records, regardless of Query supplied 
+ 
+Sample Result (Standard-XML): 
+ 
+Sample Result (Compact): 
+ 
+
+ 
+11 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Step 3.  Compare master list to client data store 
+Any properties, offices or agents in a client data store that are not part of the master list must 
+be deleted from the client data store.  For example, the master list will include a property as 
+long as it is active on the market and approved for distribution.  Once removed from the market 
+(sold, cancelled, etc.), it will no longer be included in the master list and must be deleted from 
+the client data store. 
+The master list can also be used to ensure data integrity.  Steps 1 and 2 alone should be enough 
+to allow clients to maintain accurate data sets for all resources.  However, any discrepancies 
+between LastUpdated values in master list and the client data store (e.g. a property missing or 
+out of date in the client data) can be corrected in Step 4.   
+Step 4.  Retrieve set of records by ID 
+This search method supports querying against either a single ID or a comma separated list of 
+IDs. The complete list of requested records, if available, is returned.  Paging through this list 
+using Limit and Offset is not supported. 
+Query Syntax:  (ID=1*9Digit  (,1*9Digit )) 
+Sample Result (Standard-XML): 
+ 
+Sample Result (Standard-XML): 
+ 
+  
+
+ 
+12 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 7. Property Photos Handling 
+ 
+Search transactions performed against the Property resource do return property photos for 
+Standard XML. Clients must retrieve property photos separately using the GetObject transaction 
+(described later in this document) in conjunction with the corresponding data returned by the 
+Search transaction.  
+ 
+Once it has been decided that full details for a Property need to be requested, as per explanation 
+steps in the Search section above, clients should do any of the following if applicable: 
+ 
+Adding Property Photos – Initial download 
+ 
+If a new Property is being added to the client data store, all related property photos should be 
+added as well. This is done using the Get Object Transaction.  
+ 
+When requesting all photos for a property, they will all be bundled up in a single multipart MIME 
+type object.  Clients will need to parse the object and extract from it the individual photos which 
+are separated by a boundary (--creaboundary) and a content header. 
+ 
+Refer to the GetObject section later in the document for syntax examples on how to request ALL 
+photos for a property and for more details on the multipart image object. 
+ 
+Updating Property Photos 
+ 
+If a Property is being updated in the client data store, clients need to find out if any of the 
+corresponding property photos has been updated as well: 
+ 
+ On Standard-XML Search requests, clients need to compare the PhotoLastUpdated value 
+of each property photo against the corresponding value in their data store.  If an update is 
+detected, clients should request and replace that specific property photo.  Refer to the 
+GetObject section later in the document for syntax examples on how to request ONE 
+specific property photo. 
+ 
+ Compact Search requests do not return individual property photo attributes, so the client 
+needs to compare the PhotosChangeTimestamp value in the Property against the 
+corresponding value in the client’s data store.  If a change is detected, then ALL property 
+photos should be deleted from the client’s data store and a request for ALL property 
+photos should be made using the GetObject transaction.  Refer to the GetObject section 
+later in the document for syntax examples on how to request ALL photos for a property. 
+  
+ 
+13 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Adding New Property Photos 
+ 
+If a Property is being updated in the client data store, clients need to find out if any new 
+property photos have been added as well: 
+ 
+ On Standard-XML Search requests, clients need to compare the SequenceID value of each 
+property photo against the corresponding values in their data store.  If an addition is 
+detected, clients should request the new property photo.  Refer to the GetObject section 
+later in the document for syntax examples on how to request ONE specific property photo. 
+ 
+ Compact Search requests do not return individual property photo attributes, so the client 
+needs to compare the PhotosChangeTimestamp value in the Property against the 
+corresponding value in the client’s data store.  If a change is detected, then ALL property 
+photos must be deleted from the client’s data store and a request for ALL property photos 
+must be made using the GetObject transaction.  Refer to the GetObject section later in the 
+document for syntax examples on how to request ALL photos for a property. 
+Removing Property Photos 
+ 
+If a Property is being updated in the client data store, clients need to find out if any property 
+photos have been removed as well: 
+ 
+ On Standard-XML Search requests, clients should compare the SequenceID value of each 
+property photo against the corresponding values in their data store.  If a deletion is 
+detected, clients should remove the corresponding photo from the client’s data store. 
+ 
+ Compact Search requests do not return individual property photo attributes, so the client 
+needs to compare the PhotosChangeTimestamp value in the Property against the 
+corresponding value in the client’s data store.  If a change is detected, then ALL property 
+photos must be deleted from the client’s data store and a request for ALL property photos 
+must be made using the GetObject transaction.  Refer to the GetObject section later in the 
+document for syntax examples on how to request ALL photos for a property. 
+ 
+Default Property Photo 
+ 
+Properties are assigned a default photo which is identified by the SequenceID = 0. Clients who 
+have some kind of constraints may wish to work with the default property photo only.  Refer to 
+the GetObject section later in the document for syntax examples on how to request the default 
+property photo for a Property. 
+  
+ 
+14 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 8. Search Transaction 
+Description 
+This transaction is used to search available offices, agents and properties. 
+End Point 
+https://data.crea.ca/Search.svc/Search  
+Request Arguments 
+Argument  Type Description  Default  Required  Supported Values  
+Format String Selects the 
+supported data 
+return format for 
+the query response STANDARD
+-XML  
+STANDARD-XML 
+STANDARD-XML-Encoded 
+COMPACT 
+COMPACT-Decoded 
+SearchTyp
+e String Selects the 
+Resource type to be 
+returned  
+RETS 1.7.2  Office  
+Agent 
+Property 
+Class String Represents the class 
+of the data within 
+the SearchType  
+RETS 1.7.2  Office  
+Agent 
+Property 
+QueryType String An enumeration 
+giving the language 
+in which the query 
+is presented  
+RETS 1.7.2  DMQL2 
+Query String The query to be 
+executed by the 
+server  
+RETS 1.7.2  (ID=*) or (ID=0+) 
+(ID=1*9Digit  (,1*9Digit )) 
+(LastUpdated= RETSDateTime
+) 
+Select String Sets the fields that 
+are returned by the 
+query.  (COMPACT 
+format only) All 
+elements  See list of elements in 
+Appendix J – Property 
+Details Payload (Compact)  
+Count Integer Controls whether 
+the server response 
+includes a record 
+count 1  0 – results only 
+1 – record count and results 
+2 – record count only 
+Limit String Request the server 
+to apply a limit on 
+the number of 
+records returned in 
+the search.  “None”  “None”  
+1*9Digit (greater than 0,  
+maximum of 100) 
+Offset Integer Request the server 
+start at other than 
+the first record in 
+the set of matching 
+records  1  1*9Digit (greater than 0) 
+Culture String Results localization en-CA  en-CA 
+fr-CA 
+ 
+ 
+15 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Query Parameters Supported 
+Query 
+Parameter Type Resource  Required  Description  
+LastUpdated RETSDateTime Office  
+Agent 
+Property  Limits response to only those resources 
+that have been updated since the supplied 
+date/time. 
+Example:  2011-05-08T22:00:17Z 
+ID 1*9Digit  
+(,1*9Digit ) 
+- or - 
+String 
+ Office  
+Agent 
+Property CREA Single or comma separated list of IDs to 
+include in the response. 
+- or - 
+Asterisk (*) or (0+), which signifies all 
+available records will be returned 
+Note:  If specific records are requested using the ID parameter, LastUpdated is ignored and 
+matching records will be returned regardless of when they were last updated. 
+Select Parameters Supported 
+This server implementation does not support customizing response content using Select 
+arguments. 
+Search Response Body Format  
+<?xml version="1.0" encoding="UTF-8"?> 
+<RETS ReplyText ="Operation Successful " ReplyCode ="0"> 
+<RETS-RESPONSE > 
+(<Pagination >) 
+ [ Office Payload ] 
+ [ OfficeDetails Payload ] 
+ [ Agent Payload ] 
+ [ AgentDetails Payload ] 
+ [ Property Payload ] 
+ [ PropertyDetails Payload ] 
+</RETS-RESPONSE > 
+</RETS> 
+Pagination 
+When the server receives a request asking for record count to be provided, a Pagination element 
+is returned as part of the response. 
+Attribute  Description  
+TotalRecords The total number of records matching the request criteria. 
+Limit The number of rows that are returned in a single page. This is equal to the 
+Limit parameter if specified, or if not specified, the default value. 
+Offset Starting record in paged results 
+TotalPages The total number of pages matching the request criteria. 
+RecordsReturned The number of records included in the current results. 
+ 
+16 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Difference between Compact and Standard-XML 
+Compact  formatted payloads contain tabular data, wrapped in an XML shell, as described by the 
+RETS 1.7.2 standard ( http://www.reso.org/specifications ).  A <COLUMNS> element provides the 
+table header, and each record is represented in a single, flat <DATA> element.  Several 
+commonly available RETS tools and libraries are designed to work with Compact formatted 
+results, since the structure is identical from one RETS server to another.  In order to make 
+DDF® as compatible as possible with commonly used RETS tools, CREA’s Data Distribution 
+Facility provides Compact data as described in the RESO Data Dictionary 1.0 
+(http://www.reso.org/data-dictionary ).  Aside from analytics scripts (which are deprecated but 
+still included for backwards compatibility), all elements in the payload originate from this 
+dictionary.  Compact support for Agent and Office searches will be made available once the 
+RESO Data Dictionary standard for these resources becomes available.   There are several 
+known limitations to the RESO Data Dictionary 1.0, including a limit to only 2 agents and 20 
+rooms per property, as well as several data elements that are available through Standard-XML 
+which is do not fit within the current RESO Data Dictionary. 
+ 
+Standard-XML  is the default format for searches against CREA’s Data Distribution Facility.  
+Payloads contain structured XML which matches as closely as possible the data provided by the 
+boards and associations, as displayed on Realtor.ca and ICX.ca.  Unless using RETS tools that 
+support only Compact, Standard-XML format should be used by data feed clients whenever 
+possible.   
+Difference between STANDARD-XML and STANDARD-XML-Encoded 
+STANDARD-XML format returns field data in an expanded form, while STANDARD-XML-Encoded 
+format returns data in coded form, with a matching Lookup available in the Metadata.  The 
+corresponding LookupType table contains at four values: MetadataEntryID, Value, LongValue 
+and ShortValue.  
+ 
+For example, a property may have a LandscapeFeatures value of “Vegetable garden” as part of 
+its data.  If a request is made for property details in STANDARD-XML format, the response will 
+give just the text value “Vegetable garden”.  If the same request is made asking for STANDARD-
+XML-Encoded format, the response will include both the text value and the appropriate code 
+value and the name of the Lookup table containing the value/LongValue pairs. 
+The STANDARD-XML format is a lighter weight payload and makes storage/display easier on DDF 
+destination systems.  However, STANDARD-XML-Encoded format allows more normalized 
+storage of data in destination systems, allowing for more powerful searches to be created. 
+ 
+STANDARD -XML <LandscapeFeatures>Landscaped, Vegetable garden</LandscapeFeatures>  
+ 
+STANDARD -XML-
+Encoded  <LandscapeFeatures ID="1,3" LookupName="LandscapeFeatures">Landscaped, 
+Vegetable garden</LandscapeFeatures> 
+The other key difference between in STANDARD-XML format and STANDARD-XML-Encoded 
+format is that the encoded version will contain measurement values broken down into a numeric 
+value and a unit type, while the default decoded version returns these values as a fully formed 
+string, ready for display.  The IDs returned in the Unit attribute can be matched up with the 
+values returned by the MeasureUnit lookup metadata call. 
+ 
+ 
+17 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ STANDARD -XML <SizeFrontage>125 sqft</SizeFrontage>  
+STANDARD -XML-
+Encoded  <SizeFrontage Unit="1">125</SizeFrontage>  
+ 
+Payloads 
+Office 
+See Appendix A – Office Payload. 
+OfficeDetails  
+See Appendix B – OfficeDetails Payload. 
+Agent 
+See Appendix C – Agent Payload. 
+AgentDetails 
+See Appendix D – AgentDetails Payload. 
+Property (Standard-XML) 
+See Appendix E – Property Payload. 
+PropertyDetails (Standard-XML) 
+See Appendix F – PropertyDetails Payload.  
+PropertyDetails (Compact) 
+See Appendix J – Property Details Payload (Compact)   
+ 
+18 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 9. GetObject Transaction 
+Description 
+The GetObject transaction is used to retrieve structured information related to known system 
+entities. It can be used to retrieve multimedia files and other key-related information. Objects 
+requested and returned from this transaction are requested and returned as MIME media types. 
+Multiple images are separated by a boundary (--creaboundary) and content-headers (Content-
+Type, Content-ID, Object-ID, Content-Description). The last image is followed by a closing 
+boundary (--creaboundary--). 
+End Point 
+https://data.crea.ca/Object.svc/GetObject 
+Client Request Header Fields 
+Request 
+Argument  Type Description  Default  Required  Supported Values  
+Accept String Acceptable media 
+types  
+RETS 1.7.2 Image/jpeg 
+ 
+Request Arguments 
+Request 
+Argument  Type Description  Default  Required  Supported Values  
+Resource String A resource 
+defined in the 
+metadata 
+dictionary  
+RETS 1.7.2 Office  
+Agent 
+Property 
+Type String The object type 
+as defined in the 
+metadata Photo RETS 1.7.2 Photo 
+ThumbnailPhoto 
+LargePhoto 
+ 
+See  Type Argument Notes 
+section below 
+ID String A string 
+identifying the 
+object or objects 
+being requested  
+RETS 1.7.2 See ID Argument 
+Explanation section below  
+Culture String Results 
+localization 
+Office Resource 
+only en-CA  en-CA 
+fr-CA 
+ 
+Type Argument Notes 
+1. Supported Type for Office is ThumbnailPhoto only. 
+2. Supported Types for Agent are ThumbnailPhoto and LargePhoto only. 
+3. Supported Types for Property are Photo, ThumbnailPhoto and LargePhoto. 
+ 
+19 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+  
+ID Argument Explanation 
+CREA supports only a limited subset of ID arguments described in RETS 1.7.2 Specification: 
+http://retsdoc.onconfluence.com/display/rets172/5.3+Required+Request+Arguments  
+ID  ::= resource-set 
+resource-set   ::= resource-entity [ : object-id-list ] 
+resource-entity  ::= 1*ALPHANUM 
+object-id-list ::= *| object-id * (, object-id) 
+object-id   ::= * | 1*5DIGIT  
+ 
+ 
+NOTE: Property is the only resource that supports object-id arguments.  For Agent and Office 
+resources, only a single image is available, so resource-entity is the only field that will be used.  
+ 
+Server Response Header Fields 
+Request 
+Argument  Type Description  Default  Required  Supported Values  
+Content-Type String Media type of the 
+object(s) being 
+returned  
+RETS 1.7.2 Image/jpeg 
+Multipart/parallel; boundary=  
+Content-ID String An ID for the 
+object, matching 
+the ID requested.  RETS 1.7.2 
+Only 
+Returned in 
+a multipart 
+response  
+Object-ID  The object number 
+being returned  RETS 1.7.2 
+ Integer 
+* (only if error processing 
+multipart/parallel response) 
+MIME-Version String Mime version of 
+response object  RETS 1.7.2 1.0 
+ 
+Response Arguments 
+Objects requested and returned from this transaction are requested and returned as MIME media 
+types. The message body for successful retrievals contains only the objects in the specified MIME 
+media type. Error responses follow the normal response format. 
+  
+ 
+20 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ GetObject Examples 
+Action Syntax  
+Get Agent High resolution photo for agent 12345 Resource=Agent&Type=LargePhoto&ID=12345 
+Get Office Logo for office 12345 Resource=Office&Type=ThumbnailPhoto&ID=12
+345 
+Get all Medium resolution Photos for Property with ID 
+12345 Resource=Property&Type=Photo&ID=12345 
+-- or -- 
+Resource=Property&Type=Photo&ID=12345:* 
+Get High resolution Photo #3 for Property with ID 
+12345 Resource=Property&Type=LargePhoto&ID=1234
+5:3 
+Return default Medium resolution Photo for Property 
+with ID 12345 Resource=Property&Type=Photo&ID=12345:0 
+Return Medium resolution Photos 2,4 and 7 for 
+Property with ID 12345 Resource=Property&Type=Photo&ID=12345:2,4,
+7 
+ 
+Multiple Images (Multipart) Feed Example 
+--creaboundary 
+Content-Type: image/jpeg 
+Content-ID:12345 
+Object-ID:1 
+Content-Description: null 
+ 
+<image 1 data> 
+--creaboundary 
+Content-Type: image/jpeg 
+Content-ID:12345 
+Object-ID:2 
+Content-Description: null 
+ 
+<image 2 data> 
+--creaboundary— 
+  
+ 
+21 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 10. Logout Transaction 
+Description 
+The Logout transaction terminates a session.  Clients should send a Logout transaction at the 
+end of every session.  While impossible to enforce Logout at the server due to the stateless 
+nature of the requests, compliance will be monitored by CREA and clients that regularly do not 
+end sessions with a Logout will be notified and ultimately suspended.  Any subsequent Login 
+attempts may be rejected if a client has not performed a proper Logout to terminate their last 
+session. 
+End Point 
+https://data.crea.ca/Logout.svc/Logout 
+Request Arguments 
+There are no request arguments for the Login transaction. 
+Logout Response Body Format  
+<?xml version="1.0" encoding="UTF-8"?> 
+<RETS ReplyText ="Operation Successful " ReplyCode ="0" /> 
+  
+ 
+22 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 11. Sample Data Feed 
+ 
+CREA has created a Sample Data Feed to help DDF ® clients test their systems and prepare 
+them for receiving live data. The data provided by the Sample Data Feed reflects volume and 
+variety of live data. 
+ 
+There is no need to register before accessing the sample RETS server, since access is provided 
+through a shared, public set of credentials.  Clients should be comfortable with the process of 
+pulling and storing data from the sample service before registering for a live feed.  
+Connection Information  
+Username CXLHfDVrziCfvwgCuL8nUahC 
+Password  mFqMsCSPdnb5WO1gpEEtDCHH 
+End Points 
+Login https://data.crea.ca/Login.svc/Login   
+Metadata https://data.crea.ca/Metadata.svc/GetMetadata   
+Search https://data.crea.ca/Search.svc/Search   
+GetObject https://data.crea.ca/Object.svc/GetObject   
+Logout https://data.crea.ca/Logout.svc/Logout   
+ 
+12. Developer Resources 
+ 
+Sample code, frequently asked questions, XML schema definitions and other developer resources 
+are available at https://support.crea.ca  
+If you have any questions or comments about the Data Distribution Facility Data Feed or this 
+document, please contact The Canadian Real Estate Association at support@crea.ca   
+ 
+13. Website requirements 
+Powered by: REALTOR.ca logos 
+Required for all Real Estate Advertising Website, Partner Sites, and Member Websites. 
+A new display requirement was added to the DDF® Rules that requires all DDF® Listing Content 
+to display the “Powered by REALTOR.ca” badge. The badge should be linked back to the original 
+listing on REALTOR.ca. 
+ 
+23 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ If REALTORS® are not using a DDF® Technology Provider and are managing their website, they 
+will be responsible for ensuring the badge is on every listing. We will be contacting these 
+members in the near future with all the details. 
+ 
+Use the following code snippets to embed "Powered by: REALTOR.ca" logos and links into your 
+site 
+English 
+ 
+<a href="https://www.realtor.ca/en" alt="Powered by: REALTOR.ca" target="_blank"> <img 
+width="125" src="https://www.realtor.ca/images/en-ca/powered_by_realtor.svg"/></a> 
+French  
+ 
+<a href="https://www.realtor.ca/fr" alt="Alimenté par: REALTOR.ca" target="_blank"> <img 
+width="125" src="https://www.realtor.ca/images/fr-ca/powered_by_realtor.svg"/></a>  
+Displaying data  
+The complete rules for displaying data on websites can be found in the current version of the 
+CREA Data Distribution Policy and Rules.  Currently section 6 covers display rules:  
+ 
+https://support.crea.ca/DDF#/discussion/32/ddf-policy-and-rules  
+ 
+Analytics  
+ 
+Besides distributing data to member websites, brokerage owner sites, franchisors and Third 
+Party websites through DDF®, CREA also provides data to several of its own websites 
+(Realtor.ca, ICX.ca) and mobile applications (iPhone, iPad, Android, etc.). 
+ 
+ 
+With a single listing potentially being viewed on dozens of different websites and applications, 
+agents and brokerage owners need a way to track where their listing data is being viewed.  To 
+accomplish this, CREA has developed a data warehousing solution that allows for the collection 
+of all listing activity, broken down by several facets, including site/application, listing agent, 
+firm, brokerage owner and franchisor. 
+ 
+
+ 
+24 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ 
+ 
+ 
+Analytics Web Service 
+ 
+The analytics web service is used to capture listing statistics from various sources.  Whenever a 
+listing event occurs (e.g. a listing is viewed), the website or application should make a request 
+to the Analytics Web Service to record the event.  No response handling is required, so these 
+requests may be made asynchronously. 
+ 
+ 
+End Point 
+ 
+https://analytics.crea.ca/LogEvents.svc/LogEvents  
+ 
+Request Arguments 
+ 
+Argument  Type Description  Required  Supported Values  
+ListingID Integer ID of the Listing Yes   
+DestinationID Integer ID of the Destination Yes Destination ID of the DDF® data feed 
+where the event occurs.    
+EventType String Event tracked by 
+analytics Yes See Event Types section below. 
+ 
+UUID String Unique Identifier of 
+the user/device. This 
+ID should be the 
+same for all requests 
+from a single 
+user/device. Yes GUID or device identifier with the 
+Destination ID appended.  
+ 
+Note:  UUID’s are tracked in 5 minute 
+windows.  If the same UUID creates 
+the identical event within 5 minutes 
+the event is ignored. 
+ 
+
+ 
+25 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ IP IP 
+Address  If available, IP 
+address of the client 
+or device No Note:  this parameter is used to 
+resolve geographic data. If it is not 
+supplied this information will not be 
+resolved. 
+ 
+ReferralURL URL This URL is validated 
+during the analytics 
+processing. No  
+LanguageId Integer Language being used 
+by the user No 1 = English 
+2 = French 
+ 
+Event Types  
+ 
+Event Description  
+view Event to be triggered when a listing is viewed on a website. 
+ 
+click This event applies to Third Party websites only. 
+ 
+ It should be triggered when the MoreInformationLink (included in the 
+PropertyDetails payload) is clicked.   
+email_realtor This event applies to Third Party websites only 
+ 
+It should be triggered when an email inquiring about a particular listing is 
+sent to the REALTOR®. 
+ 
+Example 
+  
+Template  https://analytics.crea.ca/LogEvents.svc/LogEvents?ListingID={ListingID}&DestinationID={DestinationID
+}&EventType={EventType}&UUID={UUID}&IP={IP}&ReferralURL={ReferralURL}   
+Example  https://analytics.crea.ca/LogEvents.svc/LogEvents?ListingID=12830763&DestinationID=355&EventType
+=view&UUID=6b106320-b422-11e2-9e96-0800200c9a66-
+355&IP=192.168.1.1&ReferralURL=http://samplesite.com   
+ 
+26 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Appendix – Payload Legend 
+This appendix describes the columns used in the payload tables in Appendix A-J 
+ 
+Cardinality  is used to identify how many times an element can be expected within the Standard-XML payload. 
+ 
+1 Exactly one instance of this element.  
+0..1 Zero or one instance of this element.  
+0..* Zero or more instances of this element.  
+1..* One or more instances of this element will be included  
+ 
+ 
+Type is used to identify the type of data to be expected in an element within the Standard-XML payload. 
+ 
+Boolean   True/False  
+Collection   A collection of similar elements  
+Complex   Comprised of primitive data types and/or other complex elements.  
+DateTime  A date and time  
+Integer  A whole number  
+Lookup A value taken from the associated lookup. In Encoded format, the 
+both the lookup ID and text value is available.  
+Lookup 
+(CSV) A comma separated list of values taken from the associated lookup. 
+In Encoded format, the both the lookup ID and text values are 
+available. 
+Script A JavaScript script to be used for gathering analytics data from client 
+websites (deprecated, still included for backwards compatibility) 
+String Free text representation of the value  
+String 
+(CSV) A comma separated set of free text values 
+URL  Website address  
+ 
+Type is used to identify the metadata lookup table associated with the element.  Any values available in the element can be 
+found in the identified Lookup table. 
+ 
+27 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Appendix A – Office Payload 
+Parent Cardinality  Name Type Description  Lookup  
+Office 1 ID Integer Unique ID assigned to the office   
+Office 1 LastUpdated  DateTime  The date the office information was last updated   
+Appendix B – OfficeDetails Payload  
+Parent Cardinality  Name Type Description  Lookup  
+OfficeDetails  1 Name String The name of the Office   
+OfficeDetails  1 ID Integer Unique ID assigned to the Office   
+OfficeDetails  1 LastUpdated  DateTime  Date the information was last updated   
+OfficeDetails  0..1 Logo Complex  Details of an Office’s photo   
+Logo 0..1 ThumbnailURL  String Includes Url of the Thumbnail image   
+Logo 0..1 LogoLastUpdated  DateTime  The date the logo was last updated   
+OfficeDetails  1 OrganizationType  Lookup The type of organization  OrganizationType  
+OfficeDetails  0..1 Designation  Lookup The designation of the organization  OrganizationDesignations  
+OfficeDetails  1 Address  Complex  Address of the office.  See Appendix G – Address Payload   
+OfficeDetails  0..1 Phones  Collection  Collection of Phone.  See Appendix H – Phone Payload   
+OfficeDetails  0..1 Websites  Collection  Collection of Website.  See Appendix I – Website Payload   
+OfficeDetails  0..1 Franchisor  Lookup The name of the franchisor  Franchisor  
+ 
+  
+ 
+28 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Appendix C – Agent Payload 
+Parent Cardinality  Name Type Description  Lookup  
+Agent 1 ID Integer (Attribute) Unique ID assigned to the Agent   
+Agent 1 LastUpdated  DateTime  (Attribute) The date agent information was last updated   
+Appendix D – AgentDetails Payload 
+Parent Cardinality  Name Type Description  Lookup  
+AgentDetails  1 Name String The name of the Agent   
+AgentDetails  1 ID Integer (Attribute)  Unique ID assigned to the Agent   
+AgentDetails  1 LastUpdated  String (Attribute)  The date the agent was last updated   
+AgentDetails  0..1 Position  String The position of the Agent   
+AgentDetails  0..1 Websites  Collection  Collection of Website.  See Appendix I – Website Payload   
+AgentDetails  0..1 Phones  Collection  Collection of Phone.  See Appendix H – Phone Payload   
+AgentDetails  1 Office Complex  The organization that the Agent works for.  See Appendix B – 
+OfficeDetails Payload  
+AgentDetails  0..1 EducationCrede
+ntials String 
+(CSV) The credentials of the Agent   
+AgentDetails  0..1 Photo Complex  Details of the Agent Photo   
+Photo 0..1 LastUpdated  DateTime  The date the photo was last updated   
+Photo 0..1 ThumbnailURL  String Includes Url of the Thumbnail image   
+Photo 0..1 LargePhotoURL  String Includes Url of the High resolution image   
+AgentDetails  1 Address  Complex  Address of the office.  See Appendix G – Address Payload   
+AgentDetails  0..1 Specialties  Collection  The specialty of the Agent   
+Specialties  1..* Specialty  Lookup The specialty of the Agent  Specialties  
+AgentDetails  0..1 Designations  Collection  Collection of Designation   
+Designation
+s 1..* Designation  Lookup The designation of the Agent  IndividualDesignations  
+AgentDetails  0..1 Languages  Collection  Collection of Language   
+Languages  1..* Language  Lookup Language spoken of the Agent  Languages  
+AgentDetails  0..1 TradingAreas  Collection  Collection of TradingArea   
+TradingArea
+s 1..* TradingArea  String Trading area of the agent   
+ 
+29 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+  
+Appendix E – Property Payload (Standard-XML) 
+Parent Cardinality  Name Type Description  Lookup  
+Property  1 ID Integer Unique ID assigned to the Property   
+Property  1 LastUpdated  DateTime  The date the property was last updated   
+Appendix F – PropertyDetails Payload (Standard-XML) 
+Parent Cardinality  Name Type Description  Lookup  
+PropertyDetails  1 ID Integer (Attribute) Unique ID assigned to the 
+property  
+PropertyDetails  1 ListingID  String The MLS Number of the property.   
+PropertyDetails  1 LastUpdated  DateTime  (Attribute) The date the property was last 
+updated  
+PropertyDetails  0..1 Business  Complex  Business details of property   
+PropertyDetails  0..1 Board Integer ID of the Board/Association responsible for 
+the listing Boards 
+Business  0..1 BusinessType  Lookup (CSV)  Type of Business  BusinessType  
+Business  0..1 BusinessSubType  Lookup (CSV)  Business Sub Type  BusinessSubType  
+Business  0..1 EstablishedDate  String Date the Business was established   
+Business  1 Franchise  Boolean  Indicates whether business is a franchise or 
+not  
+Business  0..1 Name String Business Name   
+Business  0..1 OperatingSince  String Date indicating how long the business has 
+been opened  
+PropertyDetails  1 Building  Complex  Building details of the property   
+Building  0..1 BathroomTotal  Integer Number of bathrooms   
+Building  0..1 BedroomsAboveGround  Integer Number of bedrooms above ground   
+Building  0..1 BedroomsBelowGround  Integer Number of bedrooms below ground   
+Building  0..1 BedroomsTotal  Integer Number of bedrooms   (below + above 
+ground)  
+Building  0..1 Age String The age of the building   
+Building  0..1 Amenities  Lookup (CSV)  The building amenities  Amenities  
+ 
+30 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Building  0..1 Amperage  Lookup (CSV)  The building amperage  Amperage  
+Building  0..1 Anchor String The building anchor   
+Building  0..1 Appliances  Lookup (CSV)  The appliances included with the building  Appliances  
+Building  0..1 ArchitecturalStyle  Lookup (CSV)  Architectural style of the building  ArchitecturalStyle
+  
+Building  0..1 BasementDevelopment  Lookup (CSV)  Development of the basement  BasementDevelopme
+nt 
+Building  0..1 BasementFeatures  Lookup (CSV)  Features of the basement  BasementFeatures  
+Building  0..1 BasementType  Lookup (CSV)  The type of basement  BasementType  
+Building  0..1 BomaRating  String BOMA energy performance rating   
+Building  0..1 CeilingHeight  String Ceiling height of the building  MeasureUnit * 
+Building  0..1 CeilingType  Lookup (CSV)  Ceiling type of the building  CeilingType  
+Building  0..1 ClearCeilingHeight  Lookup (CSV)  Clear ceiling height of the building  ClearCeilingHeight  
+Building  0..1 ConstructedDate  String The year the building was built   
+Building  0..1 ConstructionMaterial  Lookup (CSV)  List of construction materials used in the 
+building ConstructionMaterial  
+Building  0..1 ConstructionStatus  Lookup The status of the building  ConstructionStatus  
+Building  0..1 ConstructionStyleAttachment  Lookup The attachment style of the building  ConstructionStyleAtta
+chment 
+Building  0..1 ConstructionStyleOther  Lookup Construction style other  ConstructionStyleOth
+er 
+Building  0..1 ConstructionStyleSplitLevel  Lookup Construction style split level  ConstructionStyleSpli
+tLevel 
+Building  0..1 CoolingType  Lookup (CSV)  Type of Cooling in the building  CoolingType  
+Building  0..1 EnerguideRating  String Energuide energy performance rating   
+Building  0..1 ExteriorFinish  Lookup (CSV)  The exterior finish of the building  ExteriorFinish  
+Building  0..1 FireProtection  Lookup (CSV)  Fire protection and security features of 
+building FireProtection  
+Building  0..1 FireplaceFuel  Lookup (CSV)  List of fireplace fuels for the fireplaces in 
+building FireplaceFuel  
+Building  0..1 FireplacePresent  String Indicates whether there is a fireplace in 
+building  
+Building  0..1 FireplaceTotal  Integer Total number of fireplaces present in 
+building  
+Building  0..1 FireplaceType  Lookup (CSV)  The types of fireplace in the building  FireplaceType  
+Building  0..1 Fixture Lookup (CSV)  Building fixture  Fixture 
+Building  0..1 FlooringType  Lookup (CSV)  The type of flooring in the building  FlooringType  
+ 
+31 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Building  0..1 FoundationType  Lookup (CSV)  The type of foundation of the building  FoundationType  
+Building  0..1 HalfBathTotal  String The number of half Bathrooms   
+Building  0..1 HeatingFuel  Lookup (CSV)  Fuel used for heating the building  HeatingFuel  
+Building  0..1 HeatingType  Lookup (CSV)  The heating type of the building  HeatingType  
+Building  0..1 LeedsCategory  String LEEDS green building certification category   
+Building  0..1 LeedsRating  String LEEDS green building certification rating   
+Building  0..1 RenovatedDate  String The date the building was renovated   
+Building  0..1 RoofMaterial  Lookup (CSV)  The type of roofing material of the building  RoofMaterial  
+Building  0..1 RoofStyle  Lookup (CSV)  The roof style of the building  RoofStyle  
+Building  0..1 Rooms  Collection  Collection of Room   
+Rooms  1..* Room Complex  Details of a single room   
+Room 0..1 Type Lookup Type of room  RoomType  
+Room 0..1 Width String Width of the room  MeasureUnit * 
+Room 0..1 Level Lookup The level of the room  RoomLevel  
+Room 0..1 Length String The length of the room  MeasureUnit * 
+Room 0..1 Description  String General description of the room   
+Room 0..1 Dimension  String The dimensions of the room   
+Building  0..1 StoriesTotal  Integer The number of stories  of the building   
+Building  0..1 SizeExterior  String Building interior size  MeasureUnit * 
+Building  0..1 SizeInterior  String Building exterior size  MeasureUnit * 
+Building  0..1 SizeInteriorFinished  String The size of finished interior  MeasureUnit * 
+Building  0..1 StoreFront  Lookup (CSV)  The building storefront  StoreFront  
+Building  0..1 TotalFinishedArea  String Total finished area  MeasureUnit * 
+Building  0..1 Type Lookup (CSV)  Type of Building  BuildingType  
+Building  0..1 Uffi String UFFI (Urea Formaldehyde Foam Insulation) 
+status  
+Building  0..1 UnitType  String Type of unit   
+Building  0..1 UtilityPower  Lookup (CSV)  The types of power in the building  UtilityPower  
+Building  0..1 UtilityWater  Lookup (CSV)  Building water type  UtilityWater  
+Building  0..1 VacancyRate  String The rate of vacancy   
+PropertyDetails  0..1 Land Complex  Details about the land of the property   
+Land 0..1 SizeTotal  String The total size of the property  MeasureUnit * 
+ 
+32 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Land 0..1 SizeTotalText  String The total size of the property as text   
+Land 0..1 SizeFrontage  String The amount of frontage of the property  MeasureUnit * 
+Land 0..1 AccessType  Lookup (CSV)  The type of access to the property  AccessType  
+Land 0..1 Acreage  Boolean  Whether the property has acreage or not   
+Land 0..1 Amenities  Lookup (CSV)  The land amenities  AmenitiesNearby  
+Land 0..1 ClearedTotal  String The amount of cleared land  MeasureUnit * 
+Land 0..1 CurrentUse  Lookup (CSV)  What the land is currently used for  CurrentUse  
+Land 0..1 Divisible  String Whether the land is divisible or not 
+(True/False)  
+Land 0..1 FenceTotal  String The amount of fencing  MeasureUnit * 
+Land 0..1 FenceType  Lookup (CSV) The type of  fence  FenceType  
+Land 0..1 FrontsOn  Lookup The front  type  FrontsOn  
+Land 0..1 LandDisposition  Lookup (CSV)  List of disposition features of the land  LandDispositionType  
+Land 0..1 LandscapeFeatures  Lookup (CSV)  List of landscape features of the land  LandscapeFeatures  
+Land 0..1 PastureTotal  String The amount of pasture available  MeasureUnit * 
+Land 0..1 Sewer Lookup (CSV)  List of sewer types on the land  Sewer 
+Land 0..1 SizeDepth  String The depth of the land  MeasureUnit * 
+Land 0..1 SizeIrregular  String The size of irregular land   
+Land 0..1 SoilEvaluation  Lookup The soil evaluation  SoilEvaluationType  
+Land 0..1 SoilType  Lookup (CSV)  The type of soil  SoilType  
+Land 0..1 SurfaceWater  Lookup (CSV)  List of surface water types on the land  SurfaceWater  
+Land 0..1 TiledTotal  String The size of tiled land  MeasureUnit * 
+Land 0..1 TopographyType  Lookup (CSV)  Land topography type  TopographyType  
+PropertyDetails  1..* AgentDetails  Complex  Agent details.  See Appendix D – 
+AgentDetails Payload  
+PropertyDetails  0..1 Address  Complex  Address of property.  See Appendix G – 
+Address Payload  
+PropertyDetails  0..1 AlternateURL  Complex  Set of links to information about the 
+property  
+AlternateURL  0..1 BrochureLink  URL Link to brochure web site or document   
+AlternateURL  0..1 MapLink  URL Link to a mapping site displaying the 
+property location  
+AlternateURL  0..1 PhotoLink  URL Link to a site containing additional photos   
+AlternateURL  0..1 SoundLink  URL Link to a site containing sound clips   
+ 
+33 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ AlternateURL  0..1 VideoLink  URL Link to a site containing video for the 
+property  
+PropertyDetails  0..1 AmmenitiesNearBy  Lookup (CSV)  List of amenities nearby to the property  AmenitiesNearBy  
+PropertyDetails  0..1 CommunicationType  Lookup (CSV)  The communication type available  CommunicationType  
+PropertyDetails  0..1 CommunityFeatures  Lookup (CSV)  The community features  CommunityFeatures  
+PropertyDetails  0..1 Crop Lookup (CSV)  The types of crops available  Crop 
+PropertyDetails  0..1 DocumentType  Lookup (CSV)  Documents available  DocumentType  
+PropertyDetails  0..1 EquipmentType  Lookup (CSV)  List of equipment available  EquipmentType  
+PropertyDetails  0..1 Easement  Lookup (CSV)  The property easement types  Easement  
+PropertyDetails  0..1 FarmType  Lookup (CSV)  The type of  farm  FarmType  
+PropertyDetails  0..1 Features  Lookup (CSV)  The property features available  Features  
+PropertyDetails  0..1 IrrigationType  Lookup (CSV)  The type of irrigation of the property  IrrigationType  
+PropertyDetails  0..1 Lease String Lease value   
+PropertyDetails  0..1 LeasePerTime  Lookup Lease time e.g. quarterly  PaymentUnit  
+PropertyDetails  0..1 LeasePerUnit  Lookup Lease unit e.g. square feet  MeasureUnit  
+PropertyDetails  0..1 LeaseTermRemaining  String Duration of the lease remaining.   
+PropertyDetails  0..1 LeaseTermRemainingFreq  Lookup The frequency of the remaining lease e.g. 
+daily PaymentUnit  
+PropertyDetails  0..1 LeaseType  Lookup Type of lease  LeaseType  
+PropertyDetails  0..1 ListingContractDate  String The effective date of the agreement 
+between the seller and the seller’s broker  
+PropertyDetails  0..1 LiveStockType  Lookup (CSV)  The types  of livestock available  LiveStockType  
+PropertyDetails  0..1 LoadingType  Lookup (CSV)  Property loading type available  LoadingType  
+PropertyDetails  0..1 LocationDescription  String A description of the location   
+PropertyDetails  0..1 Machinery  Lookup (CSV)  Machinery available  Machinery  
+PropertyDetails  0..1 MaintenanceFee  String Condo/Maintenances fees   
+PropertyDetails  0..1 MaintenanceFeePaymentUnit  String Condo/Maintenances fee payment unit 
+(Frequency)  
+PropertyDetails  0..1 MaintenanceFeeType  Lookup (CSV)  Condo/Maintenances fee type  MaintenanceFeeType  
+PropertyDetails  0..1 ManagementCompany  String The name of management company   
+PropertyDetails  0..1 MunicipalID  String The id of municipality   
+PropertyDetails  0..1 OpenHouse  Collection  Collection of open house Events   
+OpenHouse  1..* Event Complex  Details of a single open house event   
+Event 1 StartDateTime  DateTime  The open house start date and time   
+ 
+34 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Event 1 EndDateTime  DateTime  The open house End date and time   
+Event 1 Comments  String Comments about the open house   
+PropertyDetails  0..1 LiveStream  Collection  Collection of Live Streame Open House 
+events  
+LiveStream 1..* Event Complex  Details of a Live Stream Open House  event  
+Event 1 StartDateTime  DateTime  The Live Str eam Start date and time  
+Event 1 EndDateTime  DateTime  The Live Stream End date and time   
+Event 1 URL String URL to the Live Stream   
+PropertyDetails  0..1 OwnershipType  Lookup The type of ownership ex: Condo/Strata, 
+freehold etc. OwnershipType  
+PropertyDetails  0..1 ParkingSpaces  Collection  Collection of Parking.  Available if parking 
+type details are available  
+ParkingSpaces  1..* Parking  Complex  Details of the parking type   
+Parking  1 Name Lookup Type of parking available  ParkingType  
+Parking  1 Spaces String Number of spaces for the associated 
+parking type  
+PropertyDetails  0..1 ParkingSpaceTotal  String The total number of parking spaces   
+PropertyDetails  0..1 Photo Collection  Collection of PropertyPhoto   
+Photo 1..* PropertyPhoto  Complex  Details of a single property photo   
+PropertyPhoto  1 SequenceID  Integer ID of the property photo.  Required for 
+GetObject calls  
+PropertyPhoto  0..1 Description  String Description of the photo   
+PropertyPhoto  1 LastUpdated  DateTime  The timestamp, not including time zone, of 
+when the photo was last updated  
+PropertyPhoto  1 PhotoLastUpdated  DateTime  The timestamp, including time zone, of 
+when the photo was last updated. Example: 
+Tue, 20 Oct 2015 09:23:13 GMT  
+PropertyPhoto  0..1 ThumbnailURL  String Includes Url of the Thumbnail image   
+PropertyPhoto  0..1 PhotoURL  String Includes Url of the Medium resolution image   
+PropertyPhoto  0..1 LargePhotoURL  String Includes Url of the High resolution image   
+PropertyDetails  0..1 Plan String Plan of the property   
+PropertyDetails  0..1 PoolType  Lookup (CSV)  The type of pool on the property  PoolType  
+PropertyDetails  0..1 PoolFeatures  Lookup (CSV)  The features of the pool  PoolFeatures  
+PropertyDetails  0..1 Price String Price of the Property   
+PropertyDetails  0..1 PricePerTime  Lookup Price of property per time  PaymentUnit  
+PropertyDetails  0..1 PricePerUnit  String Price of property per unit  MeasureUnit  
+ 
+35 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ PropertyDetails  0..1 PropertyType  Lookup Type of real estate property  PropertyType  
+PropertyDetails  0..1 PublicRemarks  String Description of the property   
+PropertyDetails  0..1 RentalEquipmentType  Lookup (CSV)  The type of rental equipment  RentalEquipmentType  
+PropertyDetails  0..1 RightType  Lookup (CSV)  List of property rights  RightType  
+PropertyDetails  0..1 RoadType  Lookup (CSV)  Type of road  RoadType  
+PropertyDetails  0..1 StorageType  Lookup (CSV)  Storage Type Included  StorageType  
+PropertyDetails  0..1 Structure  Lookup (CSV)  List of structures on the property  StructureType  
+PropertyDetails  0..1 SignType  Lookup (CSV)  Type of signage  SignType  
+PropertyDetails  0..1 TransactionType  Lookup Type of transaction (e.g. sale, lease)  TransactionType  
+PropertyDetails  0..1 TotalBuildings  String Total number of buildings included in the 
+property  
+PropertyDetails  0..1 UtilitiesAvailable  Collection  Collection of Utility   
+UtilitiesAvailable  1..* Utility Complex  Details of a single utility   
+Utility 1 Type Lookup Type of utility available  UtilityType  
+Utility 1 Description  String Description of utility available   
+PropertyDetails  0..1 ViewType  Lookup (CSV)  Types of views available  ViewType  
+PropertyDetails  0..1 WaterFrontType  Lookup Waterfront type of the property  WaterFrontType  
+PropertyDetails  0..1 WaterFrontName  String Name of the waterfront the property is on   
+PropertyDetails  0..1 AdditionalInformationIndicator  String Additional information indicator text   
+PropertyDetails  0..1 ZoningDescription  String Description of the zoning   
+PropertyDetails  0..1 ZoningType  Lookup Property Zoning type  ZoningType  
+PropertyDetails  1 MoreInformationLink  URL Link to the property details page on 
+Realtor.ca  
+PropertyDetails  1 SocialMediaWebsite  URL Link to property specified by Agent/Realtor 
+Member  
+PropertyDetails  1 AnalyticsClick  Script Used for statistical tracking of 
+MoreInformationLink. (deprecated, included 
+for backwards compatibility)   
+PropertyDetails  1 AnalyticsView  Script Used for statistical tracking of property 
+details views on DDF® client sites.   
+(deprecated, included for backwards 
+compatibility)  
+* For explanation of fields with a MeasureUnit lookup, see Section 7 – Search Transaction - Difference between STANDARD-XML 
+and STANDARD-XML-Encoded 
+ 
+36 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Appendix G – Address Payload 
+Parent Cardinality  Name Type Description  Lookup  
+Address  0..1 StreetAddress  String This field returns a formatted street address.  It may 
+contain a vertical bar ( |) line delimiter if address contains 
+multiple lines. 
+ 
+It includes   the following address fields if available: 
+ 
+AdditionalStreetInfo,  
+UnitNumber,  
+StreetNumber, 
+StreetDirectionPrefix, 
+StreetName, 
+StreetSuffix, 
+StreetDirectionSuffix, 
+BoxNumber, 
+ 
+If  the above fields do not yield a valid street Address,  
+the following fields will be included instead (if available) 
+ 
+AdditionalStreetInfo,  
+UnitNumber, 
+AddressLine1,  
+AddressLine2  
+Address  0..1 AddressLine1  String The first address line of the address   
+Address  0..1 AddressLine2  String The second address line of the address   
+Address  0..1 StreetNumber  String The building number in the address   
+Address  0..1 StreetDirectionPrefix  String Directional indicator that precedes the street name   
+Address  0..1 StreetName  String Official name of the street in the address   
+Address  0..1 StreetSuffix  String The street type  
+Address  0..1 StreetDirectionSuffix  String Directional indicator that follows a street name   
+Address  0..1 UnitNumber  String Apartment, suite or office number portion of a postal 
+address  
+Address  0..1 BoxNumber  String Post office box if applicable   
+Address  0..1 City String City of the address   
+Address  0..1 Province  String Province of the address   
+Address  0..1 PostalCode  String Postal code of the address   
+ 
+37 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Address  0..1 Country  String Country of the address   
+Address  0..1 AdditionalStreetInfo  String Additional information about the street   
+Address  0..1 CommunityName  String Community name of the address   
+Address  0..1 Neighbourhood  String Neighbourhood name of the address   
+Address  0..1 Subdivision  String Subdivision name of the address   
+Address  0..1 Latitude  String Latitude coordinates   
+Address  0..1 Longitude  String Longitude  coordinates   
+Appendix H – Phone Payload 
+Parent Cardinality  Name Type Description  Lookup  
+Phones  1..* Phone String The phone number   
+Phone 1 ContactType  String (Attribute) The type of contact, e.g. Business   
+Phone 1 PhoneType  String (Attribute) The Type of phone line (Toll free, Fax, etc.)   
+Appendix I – Website Payload 
+Parent Cardinality  Name Type Description  Lookup  
+Websites  1..* Website  String The website of the organization   
+Website  1 ContactType  String (Attribute) The type of contact (Business, Office, etc.)   
+Website  1 WebsiteType  String (Attribute) The type of the website   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+38 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Appendix J – PropertyDetails Payload (Compact) 
+Payload based on RESO Data Dictionary 1.0: https://www.reso.org/data-dictionary  
+Standard Name  Data Type  Encoded  Lookup Name  RESO Field Description  
+ArchitecturalStyle  String Y ArchitecturalStyle  A list describing the style of the structure.  For example, Victorian, 
+Ranch, Craftsman, etc. 
+AssociationFee  Decimal    A fee paid by the homeowner to the Home Owners Association 
+which is used for the upkeep of the common area, neighborhood or 
+other association related benefits. Synonym: Condo fee 
+AssociationFeeFrequency  String   The frequency the association fee is paid.  For example, Weekly, 
+Monthly, Annually, Bi-Monthly, One Time, etc. 
+AttachedGarageYN  Boolean    A flag indicating that the garage attached to the dwelling.  
+BathroomsHalf  Integer   A room containing 2 of the 4 elements constituting a bath, which 
+are; Toilet, Sink, Bathtub or Shower Head.  A Half Bath will typically 
+contain a Sink and Toilet. 
+BathroomsTotal  String   String allowing for whatever total of bathrooms existed in legacy 
+systems. Examples may be "three full and one half", 1.2, One and a 
+half, 1.5 
+BedroomsTotal  Integer    The total number of bedrooms in the dwelling.  
+BuildingAreaTotal  Decimal     Total area of the structure. Includes both finished and unfinished 
+areas. 
+BuildingAreaUnits  String Y MeasureUnit  A pick list of the unit of measurement for the area.  i.e. Square 
+Feet, Square Meters, Acres, etc. 
+CarportSpaces  Integer    The number of carport spaces included in the sale.  
+CarportYN  Boolean     A flag indicating that the listing has a garage. This flag may be T/F, 
+Y/N or other true, false or unknown indicator. As with all flags, the 
+field may be null. 
+City String    The city in listing address.  
+ 
+39 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ CoListAgentCellPhone  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListAgentDesignation  String Y IndividualDesignations  Designations and certifications acknowledging experience and 
+expertise in various real estate sectors are awarded by NAR and 
+each affiliated group upon completion of required courses. 
+CoListAgentDirectPhone       North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListAgentFax  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListAgentFullName  String    The full name of the co -listing agent. (First Middle Last)  
+CoListAgentKey  String    A system unique identifier. Specifically, in aggregation systems, the 
+Key is the system unique identifier from the system that the record 
+was just retrieved. This may be identical to the related xxxID 
+identifier, but the key is guaranteed unique for this record set.  
+CoListAgentOfficePhone  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListAgentOfficePhoneExt  String    The extension of the given phone number (if applicable).  
+CoListAgentPager  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListAgentTollFreePhone  String    North American 10 digit phone numbers should be in the format of 
+ 
+40 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ ###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListAgentURL  String    The website URI of the co -listing agent.  
+CoListOfficeFax  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListOfficeKey  String   A system unique identifier. Specifically, in aggregation systems, the 
+Key is the system unique identifier from the system that the record 
+was just retrieved. This may be identical to the related xxxID 
+identifier, but the key is guaranteed unique for this record set. 
+CoListOfficeName  String    The legal name of the brokerage co -representing the seller.  
+CoListOfficePhone  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+CoListOfficePhoneExt  String    The extension of the given phone number (if applicable).  
+CoListOfficeURL  String    The website URI for the co -listing office.  
+CommunityFeatures  String Y CommunityFeatures  A list of features related to, or available within, the community.  
+ConstructionMaterials  String Y ConstructionMaterial  A list of the materials that were used in the construction of the 
+property. 
+Cooling  String Y CoolingType  A list describing the cooling or air conditioning features of the 
+property. 
+CoolingYN  Boolean     The property has cooling or Air Conditioning.  
+Country  String    The country abbreviation in a postal address.  
+ 
+41 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ CoveredSpaces  Integer    The total number of garage and carport spaces.  
+Fencing  String Y FenceType  A list of types of fencing found at the property being sold.  
+FireplaceFeatures  String Y FireplaceType  A list of features or description of the fireplace(s) included in the 
+sale/lease. 
+FireplaceFuel  String Y FireplaceFuel  A list describing the types of fuel that may be used in the property's 
+fireplace(s). 
+FireplacesTotal  Integer    The total number of fireplaces included in the property.  
+Flooring  String Y FlooringType  A list of the type(s) of flooring found within the property.  
+FrontageLength  Decimal     Textual description of the length of the frontages selected in the 
+Frontage Type field. 
+FrontageType  String Y FrontsOn  Pick list of types of frontage.  i.e. Oceanfront, Lakefront, Golf 
+course…etc…. 
+GarageSpaces  Integer    The number of spaces in the garage(s).  
+GarageYN  Boolean     A flag indicating that the listing has a garage. This flag may be T/F, 
+Y/N or other true, false or unknown indicator. As with all flags, the 
+field may be null. 
+GreenBuildingCertification  String    The name of the certification awarded to a new or pre -existing 
+residential or commercial structure. For example: LEED, Energy 
+Star, ICC-700. 
+GreenCertificationRating  String    Many certifications have a rating system that provides an indication 
+of the structure's level of energy efficiency.  This is commonly 
+expressed in a numeric value but can also be a name, such as Gold 
+or Silver. 
+Heating  String Y Heating Type  A list describing the heating features of the property.  
+HeatingFuel  String Y HeatingFuel  A list describing the heating fuel of the property.  
+ 
+42 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Lease String  Lease Lease value.  
+LeaseFrequency  String Y LeaseFrequency  The frequency of lease payments.  
+LeaseTerm  String  LeaseTerm  The lease term payment type.  
+Levels String    The number of levels in the property being sold.  For example, One 
+Level, Two Levels, Split Level, Three or More Levels, Multi Level, 
+Loft. A discreet horizontal plane of interior living space (excluding 
+basements). 
+ListAOR  String Y Boards The responsible Board or Association of REALTORS for this listing.  
+ListAgentCellPhone  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+ListAgentDesignation  String Y IndividualDesignations  Designations and certifications acknowledging experience and 
+expertise in various real estate sectors are awarded by NAR and 
+each affiliated group upon completion of required courses. 
+ListAgentFax  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+ListAgentFullName  String    The full name of the listing agent. (First Middle Last)  
+ListAgentKey  String    A system unique identifier. Specifically, in aggregation systems, the 
+ListAgentKey is the system unique identifier from the system that 
+the record was retrieved. This may be identical to the related xxxID. 
+ListAgentOfficePhone  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+ListAgentOfficePhoneExt  String    The extension of the given phone number (if applicable).  
+ 
+43 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ ListAgentPager  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+ListAgentURL  String    The website URI of the listing agent.  
+ListingID  String    The well -known identifier for the listing. The value may be identical 
+to that of the Listing Key, but the Listing ID is intended to be the 
+value used by a human to retrieve the information about a specific 
+listing. In a multiple originating system or a merged system, this 
+value may not be unique and may require the use of the provider 
+system to create a synthetic unique value. 
+ListingContractDate  String   The effective date of the agreement between the seller and the 
+seller's broker. This is the date entered by the agent reflecting when 
+the change occurred contractually, not a timestamp of when the 
+change was made in the MLS. 
+ListingKey  String    A unique identifier for this record from the immediate source. This 
+may be a number, or string that can include URI or other forms.  
+This is the system you are connecting to and not necessarily the 
+original source of the record. 
+ListOfficeFax  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+should be preceded by a plus symbol. 
+ListOfficeKey  String    A system unique identifier. Specifically, in aggregation systems, the 
+Key is the system unique identifier from the system that the record 
+was just retrieved. This may be identical to the related xxxID 
+identifier, but the key is guaranteed unique for this record set.  
+ListOfficeName  String    The legal name of the brokerage representing the seller.  
+ListOfficePhone  String    North American 10 digit phone numbers should be in the format of 
+###-###-#### (separated by hyphens).  Other conventions 
+should use the common local standard.  International numbers 
+ 
+44 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ should be preceded by a plus symbol.  
+ListOfficePhoneExt  Decimal     The extension of the given phone number (if applicable).  
+ListOfficeURL  String    The website URI for the listing office.  
+ListPrice  String    The current price of the property as determined by the seller and 
+the seller's broker.  For auctions this is the minimum or reserve 
+price. 
+LotFeatures  String Y LandscapeFeatures  A list of features or description of the lot included in the sale/lease.  
+LotSizeArea  Decimal     The total area of the lot.  See Lot Size Units for the units of 
+measurement (Square Feet, Square Meters, Acres, etc.). 
+LotSizeUnits  String Y MeasureUnit  A pick list of the unit of measurement for the area.  i.e. Square 
+Feet, Square Meters, Acres, etc. 
+ModificationTimestamp  DateTime     The transactional timestamp automatically recorded by the MLS 
+system representing the date/time the listing was last modified. 
+MoreInformationLink  URL   Link to a site providing more information about that property.  
+NumberOfUnitsTotal  Integer    Total number of units included in the income property, occupied or 
+unoccupied. 
+OpenParkingSpaces  Integer    The number of open or uncovered parking spaces included in the 
+sale. 
+OpenParkingYN  Boolean     A flag indicating that any parking spaces associated with the 
+property are not covered by a roof. 
+OriginatingSystemKey  String    Unique identifier from the originating system which is commonly a 
+key to that system.  In the case where data is passed through more 
+than one system, this is the originating system key. 
+OriginatingSystemName  String    The name of the originating record provider.  Most commonly the 
+name of the MLS. The place where the listing is originally input by 
+the member.  The legal name of the company.  To be used for 
+ 
+45 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ display.  
+ParkingTotal  Integer    The total number of parking spaces included in the sale.  
+PhotosChangeTimestamp  DateTime     System generated timestamp of when the last update or change to 
+the photos for this listing was made. 
+PhotosCount  Integer    The total number of pictures or photos included with the listing.  
+ResourceRecordID     This is the Listing ID  
+Order    Order is the Sequence ID of the images  
+MediaURL     This is the path to the photo URL  
+MediaModificationTimestam
+p    This the timestamp in ISO8601  
+PoolFeatures  String Y PoolFeatures  A list of features or description of the pool included in the 
+sale/lease. 
+PoolYN  Boolean     The property has a pool. 
+PostalCode  String    The postal code portion of a street or mailing address.  
+PropertyType  String Y PropertyType  A list of types of properties such as Residential, Lease, Income or 
+Land. 
+PublicRemarks  String    Text remarks that may be displayed to the public. In an MLS, it is 
+the field where information is entered for the public. This 
+information is intended to be visible on-line. This is typically 
+information that describes the selling points of the building and/or 
+land for sale. Local conditions and rules will determine what such 
+content can contain. Generally, the following information is 
+excluded: any information pertaining to entry to the property, the 
+seller and/or tenant, listing member contact information. In other 
+systems, these remarks will be determined by local business rules. 
+Roof String Y RoofStyle  A list describing the type or style of roof.  For example Spanish Tile, 
+ 
+46 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Composite, Shake, etc.  
+RoomDimensions *  String    * This field is a repeating element.  If this field is repeated, add 1, 
+2, 3, etc., to the end of the field. The dimensions of the room 
+minimally represented as length and width (i.e. 12 x 10).  For 
+irregular rooms a measurement of all sides of the polygon 
+representing the inner walls of the room.  i.e. 10 x 12 x 8 x 2. 
+RoomLength *  Decimal     * This field is a repeating element.  If this field is repeated, add 1, 
+2, 3, etc., to the end of the field.  Measurement specifying the 
+horizontal dimension of something that is fixed in place. The source 
+attribute defines the source of the measurement, while the units 
+attribute defines the unit of measurement: feet, meters or other 
+units of measure. The general use of this is restricted to regular 
+rectangular objects. 
+RoomLengthWidthUnits *  String Y MeasureUnit  * This field is a repeating element.  If this field is repeated, add 1, 
+2, 3, etc., to the end of the field. A pick list of the unit of 
+measurement for the area.  i.e. Square Feet, Square Meters, Acres, 
+etc. 
+RoomLevel *  String Y RoomLevel  * This field is a repeating element.  If this field is repeated, add 1, 
+2, 3, etc., to the end of the field. The level or floor on which the 
+room is located.  This should correspond to the selections in the 
+Levels field. 
+RoomType *  String Y RoomType  * This field is a repeating element.  If this field is repeated, add 1, 
+2, 3, etc., to the end of the field.  i.e. RoomType1, RoomType2, etc.  
+The Type is a list of possible room types.  i.e. Bedroom, Bathroom, 
+Living Room, Workshop, etc. 
+RoomWidth *  Decimal     * This field is a repeating element.  If this field is repeated, add 1, 
+2, 3, etc., to the end of the field. Measurement specifying the 
+smaller horizontal dimension of something that is fixed in place. The 
+source attribute defines the source of the measurement, while the 
+units attribute defines the unit of measurement: feet, meters or 
+other units of measure. The general use of this is restricted to 
+regular rectangular objects. 
+ 
+47 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Sewer String Y Sewer A list describing the sewer or septic features of the property.  
+StateOrProvince  String    Text field containing the accepted postal abbreviation for the state 
+or province. 
+Stories  String    The number of floors in the property being sold.  
+StreetAdditionalInfo  String    Information other than a prefix or suffix for the street portion of a 
+postal address. 
+StreetDirPrefix  String    The direction indicator that precedes the listed property's street 
+name. 
+StreetDirSuffix  String    The direction indicator that follows a listed property's street 
+address. 
+StreetName  String    The street name portion of a listed property's street address.  
+StreetNumber  String    The street number portion of a listed property's street address.  
+StreetSuffix  String    The suffix portion of a listed property's street address.  
+SubdivisionName  String    A neighborhood, community, complex or builder tract.  
+UnitNumber  String    Text field containing the number or portion of a larger building or 
+complex. Unit Number should appear following the street suffix or, if 
+it exists, the street suffix direction, in the street address. Examples 
+are: "APT G", "55", etc. 
+UnparsedAddress  String    The UnparsedAddress is a text representation of the address with 
+the full civic location as a single entity. It may optionally include any 
+of City, StateOrProvince, PostalCode and Country. 
+View String Y ViewType  A view as seen from the listed property.  
+ViewYN  Boolean     The property has a view.  
+WaterBodyName  String    The name, if known, of the body of water on which the property is 
+located. (E.g., lake name, river name, ocean name, sea name, canal 
+ 
+48 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ name). 
+WaterfrontYN  Boolean     The property is on the waterfront.  
+YearBuilt  Integer    The year that an occupancy permit is first granted for the house or 
+other local measure of initial habitability of the build. The type 
+definition permits an empty value with an attribute noting that it is 
+an unknown date or that the building is new construction. While 
+constraints have not been applied, convention at the time of 
+adoption has this as a four (4) digit year value. 
+Zoning  String Y ZoningType  A division of the city or county into areas of different permissible 
+land uses. 
+AnalyticsView  String    Used for statistical tracking of MoreInformationLink.  (deprecated, 
+included for backwards compatibility)  
+AnalyticsClick  String    Used for statistical tracking of property details views on DDF® client 
+sites.  (deprecated, included for backwards compatibility)  
+ 
+49 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Appendix K – Digest Authentication 
+Digest authentication is a mechanism in which a client application authenticates itself to a server 
+by sending the server a message digest along with its HTTP request message. The digest is 
+computed by employing a one-way hash algorithm to a concatenation of the HTTP request 
+message and the client's password.  
+This typical transaction consists of the following steps: 
+1. A client makes an initial request that requires authentication but does not provide a 
+username and password.  
+2. The server responds with a 401 Unauthorized response code, providing the authentication 
+realm and a nonce (randomly-generated, single-use value). 
+ 
+HTTP/1.1 401 Unauthorized  
+WWW-Authenticate: Digest realm="CREA.Distribution", 
+nonce="NjM0NjkxNDY3NDU3NzYuNDo3YWNiNjk3NjIzNmY2MW
+U2ZmY2ZGRlZWRlMWFiYmVhNw==", qop="auth"  
+ 
+3. The client makes another request , including an Authorization header 
+ 
+Authorization: Digest 
+username="11UUctLDhfS8hkqpuhkgfhrB",realm="CREA.Distrib
+ution",nonce="NjM0NjkxNDY3NDU3NzYuNDo3YWNiNjk3NjIzN
+mY2MWU2ZmY2ZGRlZWRlMWFiYmVhNw==",uri="/Distribution
+/Login.svc/Login",cnonce="5ee95aeee8c10a3e780da1455e33a
+2f3",nc=00000001,response="a5621bb7658b8936808db14d5a
+c02862",qop="auth"  
+ 
+4. If the server accepts the authentication, the request is processed, and a session ID cookie 
+is returned as part of the response 
+ 
+HTTP/1.1 200 OK  
+Set-Cookie: X -SESSIONID=c838d36c -506e-4595-9697-
+3f7a6ae6e08d; expires=Fri, 04-May-2012 14:36:34 GMT; 
+path=/ 
+ 
+5. If the username is invalid and/or the password is incorrect, the server responds with a 
+401 Unauthorized response code, including a new nonce. 
+HTTP/1.1 401 Unauthorized  
+WWW-Authenticate: Digest realm="CREA.Distribution", 
+nonce="NjM0NjkxNDY3NDU3NzYuNDo3YWNiNjk3NjIzNmY2MW
+U2ZmY2ZGRlZWRlMWFiYmVhNw==", qop="auth"  
+ 
+  
+ 
+50 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Digest Authentication Response Calculations 
+https://en.wikipedia.org/wiki/Digest_access_authentication  
+The "response" value is calculated in three steps, as follows. Where values are combined, they 
+are delimited by colon symbols. 
+1. The MD5 hash of the combined username, authentication realm and password is 
+calculated. The result is referred to as HA1. 
+2. The MD5 hash of the combined method and digest URI is calculated, e.g. of "GET" and 
+"/dir/index.html". The result is referred to as HA2. 
+3. The MD5 hash of the combined HA1 result, server nonce (nonce), request counter (nc), 
+client nonce (cnonce), quality of protection code (qop) and HA2 result is calculated. The 
+result is the "response" value provided by the client. 
+Since the server has the same information as the client, the response can be checked by 
+performing the same calculation. In the example given above the result is formed as follows, 
+where MD5() represents a function used to calculate an MD5 hash, backslashes represent a 
+continuation and the quotes shown are not used in the calculation. 
+Completing the example given in RFC 2617 gives the following results for each step. 
+    HA1 = MD5( "Mufasa:testrealm@host.com:Circle Of Life" ) 
+            = 939e7578ed9e3c518a452acee763bce9 
+   HA2 = MD5( "GET:/dir/index.html" ) 
+           = 39aff3a2bab6126f332b942af96d3366 
+   Response  = MD5( "939e7578ed9e3c518a452acee763bce9:\ 
+                                     dcd98b7102dd2f0e8b11d0f600bfb0c093:\ 
+                                     00000001:0a4f113b:auth:\ 
+                                     39aff3a2bab6126f332b942af96d3366" ) 
+                    = 6629fae49393a05397450978507c4ef1 
+At this point the client may make another request, reusing the server nonce value (the server 
+only issues a new nonce for each "401" response) but providing a new client nonce (cnonce). For 
+subsequent requests, the hexadecimal request counter (nc) must be greater than the last value 
+it used – otherwise an attacker could simply "replay" an old request with the same credentials. It 
+is up to the server to ensure that the counter increases for each of the nonce values that it has 
+issued, rejecting any bad requests appropriately. Obviously changing the method, URI and/or 
+counter value will result in a different response value. 
+The server should remember nonce values that it has recently generated. It may also remember 
+when each nonce value was issued, expiring them after a certain amount of time. If an expired 
+value is used, the server should respond with the "401" status code and add stale=TRUE to the 
+authentication header, indicating that the client should re-send with the new nonce provided, 
+without prompting the user for another username and password. 
+The server does not need to keep any expired nonce values – it can simply assume that any 
+unrecognised values have expired. It is also possible for the server to only allow each nonce 
+value to be returned once, although this forces the client to repeat every request. Note that 
+expiring a server nonce immediately will not work, as the client would never get a chance to  
+use it. 
+ 
+51 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Appendix L - Reply Codes 
+Transaction  Reply 
+Code Meaning  
+Login 
+Metadata 
+Search 
+GetObject 
+Logout 0  Operation successful  
+Login 20022  Additional login not permitted  
+There is already a user logged in with this user name, and this server does 
+not permit multiple logins.  
+Login 20036  Miscellaneous server login error  
+The quoted-string of the body-start-line contains text that SHOULD be 
+displayed to the user  
+Search 20201  No Records Found  
+No matching records were found.  
+Search 20203  Miscellaneous Search Error  
+The quoted-string of the body-start-line contains text that MAY be 
+displayed to the user.  
+Search 20206  Invalid Query Syntax  
+The query could not be understood due to a syntax error.  
+Search 20208 Maximum Records Exceeded 
+The specified server limit exceeds the maximum allowed. 
+GetObject 20400  Invalid Resource  
+The request could not be understood due to an unknown resource.  
+GetObject 20401  Invalid Type  
+The request could not be understood due to an unknown object type for the 
+resource.  
+GetObject 20402  Invalid Identifier  
+The identifier does not match the KeyField of any data in the resource.  
+GetObject 20403  No Object Found  
+No matching object was found to satisfy the request.  
+GetObject 20413  Miscellaneous error  
+The server encountered an internal error.  
+Metadata 20500  Invalid Resource  
+The request could not be understood due to an unknown resource.  
+Metadata 20501  Invalid Type  
+The request could not be understood due to an unknown metadata type.  
+Metadata 20502  Invalid Identifier  
+The identifier is not known inside the specified resource.  
+Metadata 20503  No Metadata Found  
+No matching metadata of the type requested was found.  
+Metadata 20509 Metadata Unavailable  
+The requested metadata is currently unavailable. 
+Metadata 20513  Miscellaneous error  
+The server encountered an internal error.  
+Metadata 
+Search 
+GetObject 
+Logout 20701  Not logged in  
+The server did not detect an active login for the session in which the Logout 
+transaction was submitted.  
+ 
+52 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Logout 20702  Miscellaneous error.  
+The transaction could not be completed. The ReplyText gives additional 
+information.  
+Appendix M – Complete List of Metadata Lookups Available 
+Resource  Metadata -Lookup  
+Property AccessType 
+Property Amenities 
+Property AmenitiesNearby 
+Property Amperage 
+Property Appliances 
+Property ArchitecturalStyle 
+Property BasementDevelopment 
+Property BasementFeatures 
+Property BasementType 
+Property Boards 
+Property BuildingType 
+Property BusinessSubType 
+Property BusinessType 
+Property CeilingType 
+Property ClearCeilingHeight 
+Property CommunicationType 
+Property CommunityFeatures 
+Property ConstructionMaterial 
+Property ConstructionStatus 
+Property ConstructionStyleAttachment  
+Property ConstructionStyleOther 
+Property ConstructionStyleSplitLevel Property CoolingType 
+Property Crop 
+Property CurrentUse 
+Property DocumentType 
+Property Easement 
+Property EquipmentType 
+Property ExteriorFinish 
+Property FarmType 
+Property Features 
+Property FenceType 
+Property FireProtection 
+Property FireplaceFuel 
+Property FireplaceType 
+Property Fixture 
+Property FlooringType  
+Property FoundationType 
+Property FrontsOn 
+Property Heating Type 
+Property HeatingFuel 
+Property IrrigationType 
+Property LandDispositionType 
+Property LandscapeFeatures 
+Property LeaseType 
+ 
+53 
+© 2023 The Canadian Real Estate Association 
+DDF®/  (CREA12-22-1281 / 20230919) 
+ Property LiveStockType 
+Property LoadingType 
+Property Machinery 
+Property MaintenanceFeeType 
+Property MeasureUnit 
+Property OwnershipType 
+Property ParkingType 
+Property PaymentUnit 
+Property PoolFeatures 
+Property PoolType 
+Property PropertyType 
+Property RentalEquipmentType 
+Property RightType 
+Property RoadType 
+Property RoofMaterial 
+Property RoofStyle 
+Property RoomLevel 
+Property RoomType 
+Property Sewer 
+Property SignType 
+Property SoilEvaluationType 
+Property SoilType Property StorageType 
+Property StoreFront 
+Property StoreFront 
+Property StructureType 
+Property SurfaceWater 
+Property TopographyType 
+Property TransactionType 
+Property UffiCodes 
+Property UtilityPower 
+Property UtilityType 
+Property UtilityWater 
+Property ViewType 
+Property WaterFrontType 
+Property ZoningType 
+Agent Boards 
+Agent IndividualDesignations 
+Agent Languages 
+Agent Specialties 
+Office Franchisor 
+Office OrganizationType 
+Office OrganizationDesignations 
+ 
+ 
+ 
