@@ -25,7 +25,6 @@
     "twilio": "^5.13.1"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.17.3",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
     "@types/react": "^19",
