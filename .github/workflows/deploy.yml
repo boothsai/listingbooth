@@ -25,10 +25,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build and Deploy Next.js with OpenNext
+      - name: Build Next.js with OpenNext
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -36,3 +34,10 @@ jobs:
           BOOTHS_GATEWAY: ${{ secrets.BOOTHS_GATEWAY }}
           BOOTHS_TENANT_ID: ${{ secrets.BOOTHS_TENANT_ID }}
         run: npx @opennextjs/cloudflare build
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
