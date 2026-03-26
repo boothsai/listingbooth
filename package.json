@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx @opennextjs/cloudflare build && mkdir -p .vercel/output/static && cp -r .open-next/assets/* .vercel/output/static/ && cp .open-next/worker.js .vercel/output/static/_worker.js",
+    "build:local": "next build",
     "start": "next start",
     "lint": "eslint"
   },
