@@ -136,7 +136,7 @@ export default function NavHeader() {
       boxShadow: '0 1px 0 rgba(0,0,0,0.04)',
     }}>
       {/* Logo */}
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', gap: '10px' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-transparent.png" alt="ListingBooth" style={{ height: '62px', width: 'auto' }} />
@@ -147,7 +147,7 @@ export default function NavHeader() {
       </div>
 
       {/* Nav links */}
-      <nav style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+      <nav style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '48px' }}>
         {['Sell', 'New Homes', 'Map', 'Market Trends', 'Tools', 'Platform'].map(item => (
           <Link key={item} href={
             item === 'Sell' ? '/sell' : 
@@ -157,7 +157,7 @@ export default function NavHeader() {
             `/${item.toLowerCase().replace(' ', '-')}`
           }
             style={{ 
-              fontWeight: 900, fontSize: '22px', textDecoration: 'none',
+              fontWeight: 900, fontSize: '24px', textDecoration: 'none',
               color: pathname === (
                 item === 'Sell' ? '/sell' : 
                 item === 'New Homes' ? '/new-construction' : 
@@ -182,7 +182,7 @@ export default function NavHeader() {
       </nav>
 
       {/* CTA Row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
         {user ? (
           <>
             <Link href="/favorites" style={{ fontSize: '14px', fontWeight: 800, color: '#111', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.7, transition: 'opacity 0.2s' }}

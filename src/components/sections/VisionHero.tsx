@@ -48,7 +48,7 @@ export default function GodModeHero() {
           textTransform: 'uppercase', marginBottom: '32px', alignItems: 'center', gap: '8px'
         }}>
           <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#da291c', boxShadow: '0 0 10px #da291c' }} />
-          God-Mode Vision AI Active
+          AI Vision Active
         </div>
 
         <h1 style={{ 
