@@ -147,7 +147,7 @@ export default function NavHeader() {
       </div>
 
       {/* Nav links */}
-      <nav style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '48px' }}>
+      <nav style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '32px' }}>
         {['Sell', 'New Homes', 'Map', 'Market Trends', 'Tools', 'Platform'].map(item => (
           <Link key={item} href={
             item === 'Sell' ? '/sell' : 
@@ -157,7 +157,7 @@ export default function NavHeader() {
             `/${item.toLowerCase().replace(' ', '-')}`
           }
             style={{ 
-              fontWeight: 900, fontSize: '24px', textDecoration: 'none',
+              fontWeight: 800, fontSize: '18px', textDecoration: 'none', whiteSpace: 'nowrap',
               color: pathname === (
                 item === 'Sell' ? '/sell' : 
                 item === 'New Homes' ? '/new-construction' : 

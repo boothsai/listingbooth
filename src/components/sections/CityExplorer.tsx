@@ -1,67 +1,84 @@
 'use client';
-
 import Link from 'next/link';
 
-const CITIES = [
-  { name: 'Toronto', subtitle: 'Ontario\'s Largest Market', listings: '12,000+', gradient: 'linear-gradient(135deg, #232526 0%, #414345 100%)' },
-  { name: 'Ottawa', subtitle: 'Canada\'s Capital', listings: '3,500+', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)' },
-  { name: 'Mississauga', subtitle: 'The 905 Powerhouse', listings: '2,800+', gradient: 'linear-gradient(135deg, #4b6cb7 0%, #182848 100%)' },
-  { name: 'Oakville', subtitle: 'Luxury Lakefront Living', listings: '1,200+', gradient: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)' },
-  { name: 'Vaughan', subtitle: 'North of Toronto', listings: '1,800+', gradient: 'linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%)' },
-  { name: 'Hamilton', subtitle: 'The Affordable Alternative', listings: '2,100+', gradient: 'linear-gradient(135deg, #373b44 0%, #4286f4 100%)' },
-  { name: 'London', subtitle: 'Southwestern Ontario', listings: '1,600+', gradient: 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)' },
-  { name: 'Barrie', subtitle: 'Cottage Country Gateway', listings: '900+', gradient: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)' },
+const MARKETS = [
+  { name: 'Toronto', subtitle: '#1 Market', colSpan: 2, img: 'https://images.unsplash.com/photo-1517090504586-fde19ea6066f?auto=format&fit=crop&q=80&w=800' },
+  { name: 'Ottawa', subtitle: 'The Capital', colSpan: 2, img: 'https://images.unsplash.com/photo-1582650505165-2234026da6f0?auto=format&fit=crop&q=80&w=800' },
+  { name: 'Kanata', subtitle: 'Silicon Valley North', colSpan: 1, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800' },
+  { name: 'Orleans', subtitle: 'East End Living', colSpan: 1, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800' },
+  { name: 'Nepean', subtitle: 'Family Communities', colSpan: 1, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800' },
+  { name: 'Barrhaven', subtitle: 'South Growth', colSpan: 1, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=800' },
+  { name: 'Mississauga', subtitle: 'The 905 Powerhouse', colSpan: 2, img: 'https://images.unsplash.com/photo-1583847268964-b28e50b58b34?auto=format&fit=crop&q=80&w=800' },
+  { name: 'Oakville', subtitle: 'Luxury Lakefront', colSpan: 2, img: 'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?auto=format&fit=crop&q=80&w=800' },
 ];
 
 export default function CityExplorer() {
   return (
-    <section style={{ padding: '80px 24px', backgroundColor: '#111' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <p style={{ margin: '0 0 8px', fontSize: '12px', fontWeight: 800, color: '#da291c', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            EXPLORE ONTARIO
-          </p>
-          <h2 style={{ margin: '0 0 12px', fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 900, color: 'white', letterSpacing: '-2px', lineHeight: 1.1 }}>
-            Search by City
+    <section style={{ padding: '120px 5%', backgroundColor: '#0a0a0a', position: 'relative' }}>
+      
+      {/* Background glow */}
+      <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '500px', background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)', zIndex: 0 }} />
+
+      <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+        
+        <div style={{ textAlign: 'center', marginBottom: '80px', maxWidth: '800px', margin: '0 auto 80px' }}>
+          <h2 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, margin: '0 0 24px', letterSpacing: '-0.04em', lineHeight: 1.05, color: 'white' }}>
+            Explore Ontario Markets
           </h2>
-          <p style={{ margin: '0 auto', fontSize: '17px', color: '#888', maxWidth: '500px', lineHeight: 1.6 }}>
-            Discover homes across Ontario&apos;s most popular markets — all powered by real-time MLS® data.
+          <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.6)', margin: 0, lineHeight: 1.6, fontWeight: 500 }}>
+            Take a hyper-local dive into specific neighborhoods powered by real-time DDF data.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-          {CITIES.map((c, i) => (
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(4, 1fr)', 
+          gap: '24px',
+          gridAutoRows: '280px'
+        }}>
+          {MARKETS.map((c) => (
             <Link key={c.name} href={`/buy?city=${encodeURIComponent(c.name)}`}
               style={{
                 textDecoration: 'none', color: 'inherit',
-                gridColumn: i < 2 ? 'span 2' : 'span 1',
+                gridColumn: `span ${c.colSpan}`,
+                borderRadius: '24px',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'block',
+                border: '1px solid rgba(255,255,255,0.1)',
+                boxShadow: '0 24px 48px rgba(0,0,0,0.5)'
               }}
             >
+              {/* Background Image */}
+              <div 
+                style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                  background: `url(${c.img}) center/cover`,
+                  transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                  zIndex: 0
+                }} 
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              />
+              
+              {/* Dark Gradient Overlay */}
               <div style={{
-                borderRadius: '20px', overflow: 'hidden',
-                background: c.gradient,
-                padding: '32px',
-                minHeight: i < 2 ? '200px' : '160px',
-                display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-                cursor: 'pointer', transition: 'all 0.3s',
-                position: 'relative',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.3)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-              >
-                <span style={{
-                  position: 'absolute', top: '16px', right: '16px',
-                  fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.5)',
-                  padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '100px',
-                }}>
-                  {c.listings} listings
-                </span>
-                <h3 style={{ margin: '0 0 4px', fontSize: i < 2 ? '28px' : '22px', fontWeight: 900, color: 'white', letterSpacing: '-0.5px' }}>
+                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 60%)',
+                pointerEvents: 'none', zIndex: 1
+              }} />
+
+              {/* Text Content */}
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0, right: 0,
+                padding: '32px', zIndex: 2, pointerEvents: 'none'
+              }}>
+                <h3 style={{ margin: '0 0 8px', fontSize: c.colSpan === 2 ? '36px' : '28px', fontWeight: 900, color: 'white', letterSpacing: '-1px', lineHeight: 1.1 }}>
                   {c.name}
                 </h3>
-                <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>
+                <div style={{ display: 'inline-flex', padding: '6px 12px', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: '100px', fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>
                   {c.subtitle}
-                </p>
+                </div>
               </div>
             </Link>
           ))}
