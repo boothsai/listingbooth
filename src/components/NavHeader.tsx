@@ -146,12 +146,9 @@ export default function NavHeader() {
     <header style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 48px', height: '110px',
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      backdropFilter: 'blur(24px)',
-      WebkitBackdropFilter: 'blur(24px)',
-      borderBottom: '1px solid rgba(0,0,0,0.07)',
-      boxShadow: '0 1px 0 rgba(0,0,0,0.04)',
+      padding: '0 5%', height: '100px',
+      backgroundColor: '#fafafa',
+      borderBottom: '1px solid rgba(0,0,0,0.05)',
     }}>
       {/* Logo */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
@@ -165,13 +162,14 @@ export default function NavHeader() {
       </div>
 
       {/* Desktop Nav links */}
-      <nav style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '32px' }}>
+      <nav style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '40px' }}>
         {NAV_ITEMS.map(item => (
           <Link key={item.label} href={item.href}
             style={{ 
-              fontWeight: 800, fontSize: '18px', textDecoration: 'none', whiteSpace: 'nowrap',
+              fontFamily: 'var(--font-inter), sans-serif',
+              fontWeight: 700, fontSize: '18px', textDecoration: 'none', whiteSpace: 'nowrap',
               color: pathname === item.href ? '#da291c' : '#111',
-              transition: 'all 0.2s', letterSpacing: '-0.02em', textTransform: 'uppercase' 
+              transition: 'all 0.2s', letterSpacing: '-0.01em'
             }}
             onMouseEnter={e => e.currentTarget.style.color = '#da291c'}
             onMouseLeave={e => e.currentTarget.style.color = pathname === item.href ? '#da291c' : '#111'}
@@ -209,11 +207,9 @@ export default function NavHeader() {
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             backgroundColor: '#111', color: 'white',
             fontFamily: 'var(--font-inter), sans-serif',
-            fontSize: '14px', fontWeight: 800,
-            padding: '12px 24px', borderRadius: '8px',
+            fontSize: '16px', fontWeight: 800,
+            padding: '14px 28px', borderRadius: '100px',
             textDecoration: 'none',
-            letterSpacing: '0.02em',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
             transition: 'all 0.2s',
           }}
             onMouseEnter={e => {
@@ -224,10 +220,10 @@ export default function NavHeader() {
             onMouseLeave={e => {
               e.currentTarget.style.backgroundColor = '#111';
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+              e.currentTarget.style.boxShadow = 'none';
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             Login
           </Link>
         )}
