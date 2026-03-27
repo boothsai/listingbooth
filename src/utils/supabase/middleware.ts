@@ -34,14 +34,22 @@ export async function updateSession(request: NextRequest) {
   // ONLY /agent/* and /admin/* routes require authentication.
   // Everything else is PUBLIC by default — this is a consumer-facing portal.
   const pathname = request.nextUrl.pathname;
-  const isAuthRoute = pathname.startsWith('/auth') || pathname === '/agent/login';
+  const isAuthRoute = pathname.startsWith('/auth') || pathname === '/agent/login' || pathname === '/login';
   const isAgentRoute = pathname.startsWith('/agent');
   const isAdminRoute = pathname.startsWith('/admin');
+  const isDashboardRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/favorites');
 
-  // Unauthenticated users hitting protected routes → send to /agent/login
+  // Unauthenticated users hitting agent routes → send to /agent/login
   if (!user && (isAgentRoute || isAdminRoute) && !isAuthRoute) {
     const url = request.nextUrl.clone();
     url.pathname = '/agent/login';
+    return NextResponse.redirect(url);
+  }
+
+  // Unauthenticated users hitting consumer portals → send to /login
+  if (!user && isDashboardRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
@@ -49,6 +57,13 @@ export async function updateSession(request: NextRequest) {
   if (user && request.nextUrl.pathname === '/agent/login') {
     const url = request.nextUrl.clone();
     url.pathname = '/agent';
+    return NextResponse.redirect(url);
+  }
+
+  // If the user is logged in and hits /login, bounce them into the Consumer Dashboard
+  if (user && request.nextUrl.pathname === '/login') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard';
     return NextResponse.redirect(url);
   }
 

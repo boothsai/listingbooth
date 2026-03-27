@@ -304,7 +304,7 @@ export default function PropertyComparePage() {
                   You{"'"}ve used your free property comparison. Create a free account to unlock unlimited comparisons and save your boards.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <Link href="/agent/login" style={{
+                  <Link href="/login" style={{
                     display: 'block', padding: '16px', borderRadius: '100px',
                     background: '#da291c', color: 'white', fontSize: '16px', fontWeight: 900,
                     textDecoration: 'none', textAlign: 'center'

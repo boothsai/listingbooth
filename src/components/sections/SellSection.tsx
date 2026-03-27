@@ -245,7 +245,7 @@ export default function SellSection() {
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-                    <Link href="/agent/login" style={{
+                    <Link href="/login" style={{
                       display: 'inline-block', padding: '18px 48px', borderRadius: '100px',
                       background: '#da291c', color: 'white', fontSize: '17px', fontWeight: 900,
                       textDecoration: 'none', boxShadow: '0 8px 24px rgba(218,41,28,0.3)',
@@ -323,7 +323,7 @@ export default function SellSection() {
                   background: 'rgba(0,0,0,0.3)', zIndex: 10
                 }}>
                   <p style={{ margin: '0 0 16px', fontSize: '20px', fontWeight: 900, textAlign: 'center' }}>Your Full Report Is Ready</p>
-                  <Link href="/agent/login" style={{
+                  <Link href="/login" style={{
                     padding: '16px 40px', borderRadius: '100px', background: '#da291c',
                     color: 'white', fontSize: '16px', fontWeight: 900, textDecoration: 'none',
                     boxShadow: '0 8px 24px rgba(218,41,28,0.4)'

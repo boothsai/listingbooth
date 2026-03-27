@@ -28,7 +28,7 @@ export default async function FavoritesPage() {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/agent/login');
+  if (!user) redirect('/login');
 
   // Fetch saved listing keys
   const { data: favorites } = await supabase

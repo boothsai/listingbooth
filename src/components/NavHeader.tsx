@@ -13,7 +13,7 @@ export default function NavHeader() {
   const supabase = createClient();
   const pathname = usePathname();
 
-  const isLoginPage = pathname === '/agent/login';
+  const isLoginPage = pathname === '/agent/login' || pathname === '/login';
 
   // Lock body scroll when mobile nav is open
   useEffect(() => {
@@ -259,13 +259,13 @@ export default function NavHeader() {
             <Link href="/agent" onClick={() => setMobileOpen(false)} style={{ color: '#da291c' }}>CRM Dashboard</Link>
           </>
         ) : (
-          <Link href="/agent/login" onClick={() => setMobileOpen(false)} style={{
+          <Link href="/login" onClick={() => setMobileOpen(false)} style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
             width: '100%', padding: '16px', marginTop: '8px',
-            background: '#da291c', color: 'white', borderRadius: '12px',
+            background: '#111', color: 'white', borderRadius: '12px',
             fontWeight: 800, fontSize: '16px', letterSpacing: '0.02em'
           }}>
-            Login
+            VIP Client Portal
           </Link>
         )}
       </div>
