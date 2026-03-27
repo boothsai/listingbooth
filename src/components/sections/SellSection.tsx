@@ -125,7 +125,7 @@ export default function SellSection() {
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#da291c', boxShadow: '0 0 8px #da291c' }} />
             AI-Powered CMA
           </div>
-          <h1 style={{ margin: '0 0 24px', fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
+          <h1 style={{ margin: '0 0 24px', fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 900, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.05 }}>
             What Is Your Home<br/>
             <span style={{ color: 'rgba(255,255,255,0.4)' }}>Actually Worth?</span>
           </h1>
@@ -232,7 +232,7 @@ export default function SellSection() {
               <div style={{ position: 'absolute', top: 0, right: 0, width: '50%', height: '100%', background: 'radial-gradient(circle, rgba(218,41,28,0.08) 0%, transparent 70%)', zIndex: 0 }} />
               <div style={{ position: 'relative', zIndex: 10 }}>
                 <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
-                <h2 style={{ margin: '0 0 12px', fontSize: '32px', fontWeight: 900, letterSpacing: '-1px' }}>
+                <h2 style={{ margin: '0 0 12px', fontSize: '32px', fontWeight: 900, color: 'white', letterSpacing: '-1px' }}>
                   Unlock Your Full CMA Report
                 </h2>
                 <p style={{ margin: '0 auto 32px', fontSize: '16px', color: 'rgba(255,255,255,0.5)', maxWidth: '500px', lineHeight: 1.6 }}>

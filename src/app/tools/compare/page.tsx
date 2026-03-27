@@ -133,7 +133,7 @@ export default function PropertyComparePage() {
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3b82f6', boxShadow: '0 0 8px #3b82f6' }} />
             Live MLS® Data
           </div>
-          <h1 style={{ margin: '0 0 16px', fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
+          <h1 style={{ margin: '0 0 16px', fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.05 }}>
             Property Comparison<br/>
             <span style={{ color: 'rgba(255,255,255,0.4)' }}>Engine.</span>
           </h1>
@@ -297,7 +297,7 @@ export default function PropertyComparePage() {
                 <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(218,41,28,0.1)', color: '#da291c', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: '28px' }}>
                   🔒
                 </div>
-                <h2 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 900, letterSpacing: '-1px' }}>
+                <h2 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 900, color: 'white', letterSpacing: '-1px' }}>
                   Your Free Comparison Is Up
                 </h2>
                 <p style={{ margin: '0 0 32px', fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.5 }}>

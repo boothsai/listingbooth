@@ -149,7 +149,7 @@ export default function MarketReportPage() {
             Live Market Intelligence
           </div>
           
-          <h1 style={{ margin: '0 0 24px', fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
+          <h1 style={{ margin: '0 0 24px', fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 900, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.05 }}>
             The Executive<br/>
             <span style={{ color: 'rgba(255,255,255,0.4)' }}>Market Report.</span>
           </h1>
@@ -326,7 +326,7 @@ export default function MarketReportPage() {
           }}>
             <div style={{ position: 'absolute', top: 0, right: 0, width: '50%', height: '100%', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)', zIndex: 0 }} />
             <div style={{ position: 'relative', zIndex: 10 }}>
-              <h2 style={{ margin: '0 0 16px', fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, letterSpacing: '-1px' }}>
+              <h2 style={{ margin: '0 0 16px', fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: 'white', letterSpacing: '-1px' }}>
                 Turn Data Into Action.
               </h2>
               <p style={{ margin: '0 auto 32px', fontSize: '18px', color: 'rgba(255,255,255,0.85)', maxWidth: '600px', lineHeight: 1.5 }}>
