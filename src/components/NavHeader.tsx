@@ -50,7 +50,7 @@ export default function NavHeader() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-transparent.png" alt="ListingBooth" style={{ height: '62px', width: 'auto' }} />
             <span style={{ fontFamily: 'var(--font-inter), sans-serif', fontSize: '28px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>
-              listing<span style={{ color: '#da291c' }}>booth</span>
+              Listing<span style={{ color: '#da291c' }}>Booth</span>
             </span>
             <span style={{ marginLeft: '12px', fontSize: '10px', fontWeight: 800, padding: '4px 8px', background: 'rgba(218,41,28,0.1)', color: '#da291c', borderRadius: '4px', letterSpacing: '0.1em' }}>AGENT PORTAL</span>
           </Link>
@@ -141,7 +141,7 @@ export default function NavHeader() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-transparent.png" alt="ListingBooth" style={{ height: '62px', width: 'auto' }} />
           <span style={{ fontFamily: 'var(--font-inter), sans-serif', fontSize: '28px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>
-            listing<span style={{ color: '#da291c' }}>booth</span>
+            Listing<span style={{ color: '#da291c' }}>Booth</span>
           </span>
         </Link>
       </div>
@@ -151,12 +151,12 @@ export default function NavHeader() {
         {['Buy', 'Sell', 'Map Search', 'Market Trends', 'Tools', 'Platform'].map(item => (
           <Link key={item} href={item === 'Sell' ? '/sell' : item === 'Market Trends' ? '/market-report' : `/${item.toLowerCase().replace(' ', '-')}`}
             style={{ 
-              fontWeight: 900, fontSize: '32px', textDecoration: 'none', color: '#111', 
-              opacity: pathname === `/${item.toLowerCase().replace(' ', '-')}` ? 1 : 0.6,
+              fontWeight: 900, fontSize: '32px', textDecoration: 'none',
+              color: pathname === `/${item.toLowerCase().replace(' ', '-')}` ? '#da291c' : '#111',
               transition: 'all 0.2s', letterSpacing: '-0.02em', textTransform: 'uppercase' 
             }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '1'}
-            onMouseLeave={e => e.currentTarget.style.opacity = pathname === `/${item.toLowerCase().replace(' ', '-')}` ? '1' : '0.6'}
+            onMouseEnter={e => e.currentTarget.style.color = '#da291c'}
+            onMouseLeave={e => e.currentTarget.style.color = pathname === `/${item.toLowerCase().replace(' ', '-')}` ? '#da291c' : '#111'}
           >
             {item}
           </Link>
