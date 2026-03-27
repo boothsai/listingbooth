@@ -36,6 +36,25 @@ export default function ToolsPage() {
           </p>
         </div>
       </div>
+      {/* Comparison Engine CTA */}
+      <div style={{ maxWidth: '1400px', margin: '0 auto 48px', padding: '0 5%' }}>
+        <a href="/tools/compare" style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '32px 40px', borderRadius: '24px',
+          background: 'linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(37,99,235,0.05) 100%)',
+          border: '1px solid rgba(37,99,235,0.2)', textDecoration: 'none', color: 'white',
+          transition: 'all 0.2s', flexWrap: 'wrap', gap: '16px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(37,99,235,0.2)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0 }}>⚡</div>
+            <div>
+              <p style={{ margin: '0 0 4px', fontSize: '20px', fontWeight: 900, letterSpacing: '-0.5px' }}>Property Comparison Engine</p>
+              <p style={{ margin: 0, fontSize: '14px', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Pull any listing from the MLS® and compare them side-by-side. Price, AI Score, $/sqft — everything.</p>
+            </div>
+          </div>
+          <span style={{ fontSize: '15px', fontWeight: 800, color: '#3b82f6', flexShrink: 0 }}>Launch Tool →</span>
+        </a>
+      </div>
 
       <ToolsSection />
     </main>
