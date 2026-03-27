@@ -50,7 +50,7 @@ export default function NavHeader() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-transparent.png" alt="ListingBooth" style={{ height: '62px', width: 'auto' }} />
             <span style={{ fontFamily: 'var(--font-inter), sans-serif', fontSize: '28px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>
-              Listing<span style={{ color: '#da291c' }}>Booth</span>
+              Listing<span style={{ color: '#da291c' }}>Booth</span>.com
             </span>
             <span style={{ marginLeft: '12px', fontSize: '10px', fontWeight: 800, padding: '4px 8px', background: 'rgba(218,41,28,0.1)', color: '#da291c', borderRadius: '4px', letterSpacing: '0.1em' }}>AGENT PORTAL</span>
           </Link>
@@ -141,7 +141,7 @@ export default function NavHeader() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-transparent.png" alt="ListingBooth" style={{ height: '62px', width: 'auto' }} />
           <span style={{ fontFamily: 'var(--font-inter), sans-serif', fontSize: '28px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>
-            Listing<span style={{ color: '#da291c' }}>Booth</span>
+            Listing<span style={{ color: '#da291c' }}>Booth</span>.com
           </span>
         </Link>
       </div>
