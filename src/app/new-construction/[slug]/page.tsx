@@ -20,6 +20,13 @@ interface Project {
   photo_url?: string | null;
 }
 
+const FALLBACK_PROJECTS: Record<string, Project> = {
+  'the-greenwich': { slug: 'the-greenwich', name: 'The Greenwich', builder: 'Tribute Communities', city: 'Toronto', province: 'ON', price_from: 599900, property_type: 'Condos & Townhomes', status: 'Now Selling', description: 'A stunning collection of premium condos and townhomes in the heart of Toronto by Tribute Communities. Featuring modern architecture, luxury finishes, and access to transit, parks, and world-class amenities. Starting from the low $600s.', features: ['Rooftop terrace', 'Gym & wellness centre', 'Underground parking', 'Concierge service', 'Steps to TTC'], completion_year: 2027, total_units: 320, color: '#2563eb', photo_url: null },
+  'claridge-moon': { slug: 'claridge-moon', name: 'Claridge Moon', builder: 'Claridge Homes', city: 'Ottawa', province: 'ON', price_from: 349900, property_type: 'Condominiums', status: 'Pre-Construction', description: 'Ottawa\'s most anticipated condominium community by Claridge Homes. Located in the vibrant Centretown neighbourhood, Claridge Moon offers stunning river views, walkable urban living, and prices starting in the mid $300s.', features: ['River views', 'Fitness centre', 'Party room', 'Pet wash station', 'Bike storage'], completion_year: 2028, total_units: 240, color: '#7c3aed', photo_url: null },
+  'oro-at-edge-towers': { slug: 'oro-at-edge-towers', name: 'Oro at Edge Towers', builder: 'Solmar Development', city: 'Mississauga', province: 'ON', price_from: 499900, property_type: 'High-Rise Condos', status: 'Now Selling', description: 'Rise above the ordinary at Oro, the crowning tower of Edge Towers in Mississauga\'s City Centre. With breathtaking views, resort-style amenities, and direct connection to Square One, this is GTA living at its finest.', features: ['50+ storey tower', 'Infinity pool', 'Co-working lounge', 'Connected to Square One', 'LRT access'], completion_year: 2027, total_units: 450, color: '#059669', photo_url: null },
+  'upper-west-side': { slug: 'upper-west-side', name: 'Upper West Side', builder: 'Branthaven Homes', city: 'Oakville', province: 'ON', price_from: 899900, property_type: 'Detached & Towns', status: 'Coming Soon', description: 'An exclusive collection of detached homes and townhomes in prestigious Oakville by Branthaven Homes. Premium finishes, oversized lots, and a family-friendly neighbourhood close to top-rated schools and lakefront trails.', features: ['Heritage-inspired architecture', '2-car garages', 'Premium lot sizes', 'Near top schools', 'Trail access'], completion_year: 2026, total_units: 85, color: '#dc2626', photo_url: null },
+};
+
 export default function NewConstructionDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,9 +35,15 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
   useEffect(() => {
     params.then(p => {
       setSlug(p.slug);
+      // Set fallback immediately so the UI renders instantly
+      if (FALLBACK_PROJECTS[p.slug]) {
+        setProject(FALLBACK_PROJECTS[p.slug]);
+      }
       fetch(`/api/new-construction?slug=${p.slug}`)
         .then(r => r.json())
-        .then(d => setProject(d.project ?? null))
+        .then(d => {
+          if (d.project) setProject(d.project);
+        })
         .catch(() => {})
         .finally(() => setLoading(false));
     });
