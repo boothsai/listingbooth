@@ -27,7 +27,7 @@ export default function WhyListingBooth() {
         </div>
 
         {/* Bento Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px', gridAutoRows: 'minmax(340px, auto)' }}>
+        <div className="bento-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px', gridAutoRows: 'minmax(340px, auto)' }}>
           
           {/* Card 1: Natural Language AI (Spans 8) */}
           <div style={{ 
@@ -103,7 +103,7 @@ export default function WhyListingBooth() {
             {/* Ambient Lighting in the callout */}
             <div style={{ position: 'absolute', top: 0, right: '0', width: '50%', height: '100%', background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)', zIndex: 0 }} />
 
-            <div style={{ flex: '1', minWidth: '400px', position: 'relative', zIndex: 10 }}>
+            <div style={{ flex: '1', minWidth: '280px', position: 'relative', zIndex: 10 }}>
               <div style={{ display: 'inline-flex', padding: '6px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '100px', fontSize: '12px', fontWeight: 800, letterSpacing: '0.1em', marginBottom: '24px' }}>
                 HOW WE COMPARE
               </div>
@@ -112,7 +112,7 @@ export default function WhyListingBooth() {
               </h3>
             </div>
             
-            <div style={{ flex: '1', minWidth: '400px', position: 'relative', zIndex: 10 }}>
+            <div style={{ flex: '1', minWidth: '280px', position: 'relative', zIndex: 10 }}>
               <p style={{ fontSize: '20px', fontWeight: 500, margin: 0, lineHeight: 1.6, color: 'rgba(255,255,255,0.9)' }}>
                 Realtor.ca makes you scroll through thousands of listings blindly. <strong style={{ color: 'white', fontWeight: 900 }}>ListingBooth's Natural Language Engine</strong> lets you simply describe your exact dream home, and our Vision AI instantly cross-references the entire MLS to find it for you—all in real-time, all for free.
               </p>

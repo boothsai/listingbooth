@@ -21,8 +21,15 @@ interface Project {
 const STATUS_FILTERS = ['All', 'Now Selling', 'Pre-Construction', 'Coming Soon'];
 const CITY_FILTERS = ['All', 'Toronto', 'Ottawa', 'Mississauga', 'Oakville', 'Hamilton', 'Vaughan'];
 
+const FALLBACK: Project[] = [
+  { slug: 'the-greenwich', name: 'The Greenwich', builder: 'Tribute Communities', city: 'Toronto', price_from: 599900, property_type: 'Condos & Townhomes', status: 'Now Selling', color: '#2563eb', description: 'A stunning collection of premium condos and townhomes in the heart of Toronto by Tribute Communities.', total_units: 320, completion_year: 2027 },
+  { slug: 'claridge-moon', name: 'Claridge Moon', builder: 'Claridge Homes', city: 'Ottawa', price_from: 349900, property_type: 'Condominiums', status: 'Pre-Construction', color: '#7c3aed', description: 'Ottawa\'s most anticipated condominium community by Claridge Homes in vibrant Centretown.', total_units: 240, completion_year: 2028 },
+  { slug: 'oro-at-edge-towers', name: 'Oro at Edge Towers', builder: 'Solmar Development', city: 'Mississauga', price_from: 499900, property_type: 'High-Rise Condos', status: 'Now Selling', color: '#059669', description: 'Rise above the ordinary at Oro, the crowning tower of Edge Towers in Mississauga\'s City Centre.', total_units: 450, completion_year: 2027 },
+  { slug: 'upper-west-side', name: 'Upper West Side', builder: 'Branthaven Homes', city: 'Oakville', price_from: 899900, property_type: 'Detached & Towns', status: 'Coming Soon', color: '#dc2626', description: 'An exclusive collection of detached homes and townhomes in prestigious Oakville.', total_units: 85, completion_year: 2026 },
+];
+
 export default function NewConstructionListPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>(FALLBACK);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('All');
   const [cityFilter, setCityFilter] = useState('All');
@@ -30,7 +37,10 @@ export default function NewConstructionListPage() {
   useEffect(() => {
     fetch('/api/new-construction')
       .then(r => r.json())
-      .then(d => setProjects(d.projects ?? []))
+      .then(d => {
+        const fetched = d.projects ?? [];
+        if (fetched.length > 0) setProjects(fetched);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

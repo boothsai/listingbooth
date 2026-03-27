@@ -124,7 +124,25 @@ export default function NavHeader() {
   }
 
   /* ── MODE 2: THE CONSUMER FRONT-END (Light Mode Glassmorphism) ── */
+  const NAV_ITEMS = [
+    { label: 'Sell', href: '/sell' },
+    { label: 'New Homes', href: '/new-construction' },
+    { label: 'Map', href: '/map-search' },
+    { label: 'Market Trends', href: '/market-report' },
+    { label: 'Tools', href: '/tools' },
+    { label: 'Platform', href: '/platform' },
+  ];
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Lock body scroll when mobile nav is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
+
   return (
+    <>
     <header style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -146,43 +164,25 @@ export default function NavHeader() {
         </Link>
       </div>
 
-      {/* Nav links */}
+      {/* Desktop Nav links */}
       <nav style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '32px' }}>
-        {['Sell', 'New Homes', 'Map', 'Market Trends', 'Tools', 'Platform'].map(item => (
-          <Link key={item} href={
-            item === 'Sell' ? '/sell' : 
-            item === 'New Homes' ? '/new-construction' : 
-            item === 'Map' ? '/map-search' : 
-            item === 'Market Trends' ? '/market-report' : 
-            `/${item.toLowerCase().replace(' ', '-')}`
-          }
+        {NAV_ITEMS.map(item => (
+          <Link key={item.label} href={item.href}
             style={{ 
               fontWeight: 800, fontSize: '18px', textDecoration: 'none', whiteSpace: 'nowrap',
-              color: pathname === (
-                item === 'Sell' ? '/sell' : 
-                item === 'New Homes' ? '/new-construction' : 
-                item === 'Map' ? '/map-search' : 
-                item === 'Market Trends' ? '/market-report' : 
-                `/${item.toLowerCase().replace(' ', '-')}`
-              ) ? '#da291c' : '#111',
+              color: pathname === item.href ? '#da291c' : '#111',
               transition: 'all 0.2s', letterSpacing: '-0.02em', textTransform: 'uppercase' 
             }}
             onMouseEnter={e => e.currentTarget.style.color = '#da291c'}
-            onMouseLeave={e => e.currentTarget.style.color = pathname === (
-                item === 'Sell' ? '/sell' : 
-                item === 'New Homes' ? '/new-construction' : 
-                item === 'Map' ? '/map-search' : 
-                item === 'Market Trends' ? '/market-report' : 
-                `/${item.toLowerCase().replace(' ', '-')}`
-              ) ? '#da291c' : '#111'}
+            onMouseLeave={e => e.currentTarget.style.color = pathname === item.href ? '#da291c' : '#111'}
           >
-            {item}
+            {item.label}
           </Link>
         ))}
       </nav>
 
-      {/* CTA Row */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
+      {/* Desktop CTA Row */}
+      <div className="desktop-cta" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '16px' }}>
         {user ? (
           <>
             <Link href="/favorites" style={{ fontSize: '14px', fontWeight: 800, color: '#111', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.7, transition: 'opacity 0.2s' }}
@@ -232,6 +232,48 @@ export default function NavHeader() {
           </Link>
         )}
       </div>
+
+      {/* Hamburger Button (shown on mobile via CSS) */}
+      <button 
+        className={`hamburger-btn${mobileOpen ? ' open' : ''}`}
+        onClick={() => setMobileOpen(!mobileOpen)}
+        aria-label="Toggle navigation menu"
+      >
+        <span /><span /><span />
+      </button>
     </header>
+
+    {/* Mobile Nav Overlay */}
+    <div className={`mobile-nav-overlay${mobileOpen ? ' open' : ''}`} onClick={() => setMobileOpen(false)} />
+
+    {/* Mobile Nav Drawer */}
+    <div className={`mobile-nav-drawer${mobileOpen ? ' open' : ''}`}>
+      {NAV_ITEMS.map(item => (
+        <Link key={item.label} href={item.href} onClick={() => setMobileOpen(false)}
+          style={{ color: pathname === item.href ? '#da291c' : undefined }}
+        >
+          {item.label}
+        </Link>
+      ))}
+      <div style={{ borderTop: '1px solid rgba(0,0,0,0.08)', marginTop: '16px', paddingTop: '16px' }}>
+        {user ? (
+          <>
+            <Link href="/favorites" onClick={() => setMobileOpen(false)}>♥ Saved Homes</Link>
+            <Link href="/dashboard" onClick={() => setMobileOpen(false)}>📊 Dashboard</Link>
+            <Link href="/agent" onClick={() => setMobileOpen(false)} style={{ color: '#da291c' }}>CRM Dashboard</Link>
+          </>
+        ) : (
+          <Link href="/agent/login" onClick={() => setMobileOpen(false)} style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+            width: '100%', padding: '16px', marginTop: '8px',
+            background: '#da291c', color: 'white', borderRadius: '12px',
+            fontWeight: 800, fontSize: '16px', letterSpacing: '0.02em'
+          }}>
+            Login
+          </Link>
+        )}
+      </div>
+    </div>
+    </>
   );
 }
