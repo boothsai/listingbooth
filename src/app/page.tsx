@@ -1,6 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import FeaturedListings from '@/components/sections/FeaturedListings';
+import BuyerPersonaSelector from '@/components/sections/BuyerPersonaSelector';
+import NewConstructionSpotlight from '@/components/sections/NewConstructionSpotlight';
+import BuyerGuidesHub from '@/components/sections/BuyerGuidesHub';
+import CityExplorer from '@/components/sections/CityExplorer';
+import WhyListingBooth from '@/components/sections/WhyListingBooth';
 import MapSearchSection from '@/components/sections/MapSearchSection';
 
 export default function ConsumerHome() {
@@ -15,7 +21,7 @@ export default function ConsumerHome() {
         justifyContent: 'center',
         backgroundColor: '#fafafa',
         overflow: 'hidden',
-        padding: '80px 24px 40px' // Tightened to immediately reveal the house grid
+        padding: '80px 24px 40px'
       }}>
         
         {/* Background geometric flare (Brand compliant) */}
@@ -77,8 +83,8 @@ export default function ConsumerHome() {
           </div>
           
           <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center', gap: '24px' }}>
-            {['Toronto', 'Mississauga', 'Oakville', 'Vaughan'].map(city => (
-              <Link key={city} href="/buy" style={{ color: '#666', fontSize: '14px', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#da291c'} onMouseLeave={e => e.currentTarget.style.color = '#666'}>
+            {['Toronto', 'Ottawa', 'Mississauga', 'Oakville', 'Vaughan', 'Hamilton'].map(city => (
+              <Link key={city} href={`/buy?city=${city}`} style={{ color: '#666', fontSize: '14px', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#da291c'} onMouseLeave={e => e.currentTarget.style.color = '#666'}>
                 {city}
               </Link>
             ))}
@@ -87,26 +93,26 @@ export default function ConsumerHome() {
 
       </section>
 
-      {/* MOVE MAP SEARCH TO TOP UNDER HERO */}
+      {/* ── FEATURED LISTINGS CAROUSEL ── */}
+      <FeaturedListings />
+
+      {/* ── BUYER PERSONA SELECTOR ── */}
+      <BuyerPersonaSelector />
+
+      {/* ── INTERACTIVE MAP ── */}
       <MapSearchSection />
 
-      {/* ── QUICK STATS BAR ── */}
-      <section style={{ backgroundColor: '#111', padding: '60px 24px', borderTop: '4px solid #da291c' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '40px' }}>
-          {[
-            { metric: '25,000+', label: 'Active Listings' },
-            { metric: '4+ Years', label: 'Historical Sold Data' },
-            { metric: 'Real-Time', label: 'AI Home Valuations' },
-            { metric: '100%', label: 'Free Market Transparency' }
-          ].map(stat => (
-            <div key={stat.label} style={{ textAlign: 'center' }}>
-              <p style={{ margin: '0 0 8px', fontSize: '42px', fontWeight: 900, color: 'white', letterSpacing: '-1px' }}>{stat.metric}</p>
-              <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ── NEW CONSTRUCTION SPOTLIGHT ── */}
+      <NewConstructionSpotlight />
 
+      {/* ── BUYER GUIDES HUB ── */}
+      <BuyerGuidesHub />
+
+      {/* ── CITY EXPLORER ── */}
+      <CityExplorer />
+
+      {/* ── WHY LISTINGBOOTH TRUST SECTION ── */}
+      <WhyListingBooth />
     </>
   );
 }

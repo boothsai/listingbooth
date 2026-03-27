@@ -15,7 +15,10 @@
 
 # next.js
 /.next/
+/.open-next/
 /out/
+build_output.log
+build_error*.log
 
 # production
 /build

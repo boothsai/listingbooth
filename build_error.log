@@ -1,0 +1,45 @@
+
+┌─────────────────────────────┐
+│ OpenNext — Cloudflare build │
+└─────────────────────────────┘
+
+WARN OpenNext is not fully compatible with Windows.
+WARN For optimal performance, it is recommended to use Windows Subsystem for Linux (WSL).
+WARN While OpenNext may function on Windows, it could encounter unpredictable failures during runtime.
+file:///C:/ANTIGRAVITY/LISTINGBOOTH/node_modules/@opennextjs/cloudflare/dist/cli/build/utils/ensure-cf-config.js:62
+        throw new Error(errorMessage);
+              ^
+
+Error: The `open-next.config.ts` should have a default export like this:
+
+{
+  default: {
+    override: {
+      wrapper: "cloudflare-node",
+      converter: "edge",
+      proxyExternalRequest: "fetch",
+      incrementalCache: "dummy" | function,
+      tagCache: "dummy" | function,
+      queue: "dummy" | "direct" | function,
+    },
+  },
+  edgeExternals: ["node:crypto"],
+  middleware: {
+    external: true,
+    override: {
+      wrapper: "cloudflare-edge",
+      converter: "edge",
+      proxyExternalRequest: "fetch",
+      incrementalCache: "dummy" | function,
+      tagCache: "dummy" | function,
+      queue: "dummy" | "direct" | function,
+    },
+  },
+}
+
+
+    at ensureCloudflareConfig (file:///C:/ANTIGRAVITY/LISTINGBOOTH/node_modules/@opennextjs/cloudflare/dist/cli/build/utils/ensure-cf-config.js:62:15)
+    at compileConfig (file:///C:/ANTIGRAVITY/LISTINGBOOTH/node_modules/@opennextjs/cloudflare/dist/cli/commands/utils/utils.js:51:5)
+    at async buildCommand (file:///C:/ANTIGRAVITY/LISTINGBOOTH/node_modules/@opennextjs/cloudflare/dist/cli/commands/build.js:13:34)
+
+Node.js v20.18.2
