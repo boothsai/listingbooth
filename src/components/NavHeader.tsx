@@ -148,7 +148,7 @@ export default function NavHeader() {
 
       {/* Nav links */}
       <nav style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-        {['Buy', 'Sell', 'Map Search', 'Market Trends', 'Tools', 'Platform'].map(item => (
+        {['Buy', 'Sell', 'New Construction', 'Map Search', 'Market Trends', 'Tools', 'Platform'].map(item => (
           <Link key={item} href={item === 'Sell' ? '/sell' : item === 'Market Trends' ? '/market-report' : `/${item.toLowerCase().replace(' ', '-')}`}
             style={{ 
               fontWeight: 900, fontSize: '32px', textDecoration: 'none',
