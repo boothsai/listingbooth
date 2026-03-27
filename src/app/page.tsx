@@ -10,7 +10,7 @@ import WhyListingBooth from '@/components/sections/WhyListingBooth';
 export default function ConsumerHome() {
   return (
     <div style={{ background: '#fafafa' }}>
-      {/* ── GOD-MODE VISION AI HERO ── */}
+      {/* ── PROPRIETARY VISION AI HERO ── */}
       <VisionHero />
 
       {/* ── THE MOAT: VISION AI FEATURES ── */}

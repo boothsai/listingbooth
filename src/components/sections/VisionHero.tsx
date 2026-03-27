@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-export default function GodModeHero() {
+export default function VisionHero() {
   const [query, setQuery] = useState('');
   const [activePlaceholder, setActivePlaceholder] = useState(0);
 
