@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <NavHeader />
         <ErrorBoundary>
-          <main style={{ paddingTop: '110px' }}>
+          <main style={{ paddingTop: '80px' }}>
             {children}
           </main>
         </ErrorBoundary>

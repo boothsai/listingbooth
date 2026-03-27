@@ -146,7 +146,7 @@ export default function NavHeader() {
     <header style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 5%', height: '100px',
+      padding: '0 5%', height: '70px',
       backgroundColor: '#fafafa',
       borderBottom: '1px solid rgba(0,0,0,0.05)',
     }}>
@@ -154,8 +154,8 @@ export default function NavHeader() {
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', gap: '10px' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-transparent.png" alt="ListingBooth" style={{ height: '62px', width: 'auto' }} />
-          <span style={{ fontFamily: 'var(--font-inter), sans-serif', fontSize: '28px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>
+          <img src="/logo-transparent.png" alt="ListingBooth" style={{ height: '42px', width: 'auto' }} />
+          <span style={{ fontFamily: 'var(--font-inter), sans-serif', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>
             Listing<span style={{ color: '#da291c' }}>Booth</span>.com
           </span>
         </Link>
