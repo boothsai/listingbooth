@@ -148,15 +148,33 @@ export default function NavHeader() {
 
       {/* Nav links */}
       <nav style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-        {['Buy', 'Sell', 'New Construction', 'Map Search', 'Market Trends', 'Tools', 'Platform'].map(item => (
-          <Link key={item} href={item === 'Sell' ? '/sell' : item === 'Market Trends' ? '/market-report' : `/${item.toLowerCase().replace(' ', '-')}`}
+        {['Sell', 'New Homes', 'Map', 'Market Trends', 'Tools', 'Platform'].map(item => (
+          <Link key={item} href={
+            item === 'Sell' ? '/sell' : 
+            item === 'New Homes' ? '/new-construction' : 
+            item === 'Map' ? '/map-search' : 
+            item === 'Market Trends' ? '/market-report' : 
+            `/${item.toLowerCase().replace(' ', '-')}`
+          }
             style={{ 
-              fontWeight: 900, fontSize: '32px', textDecoration: 'none',
-              color: pathname === `/${item.toLowerCase().replace(' ', '-')}` ? '#da291c' : '#111',
+              fontWeight: 900, fontSize: '22px', textDecoration: 'none',
+              color: pathname === (
+                item === 'Sell' ? '/sell' : 
+                item === 'New Homes' ? '/new-construction' : 
+                item === 'Map' ? '/map-search' : 
+                item === 'Market Trends' ? '/market-report' : 
+                `/${item.toLowerCase().replace(' ', '-')}`
+              ) ? '#da291c' : '#111',
               transition: 'all 0.2s', letterSpacing: '-0.02em', textTransform: 'uppercase' 
             }}
             onMouseEnter={e => e.currentTarget.style.color = '#da291c'}
-            onMouseLeave={e => e.currentTarget.style.color = pathname === `/${item.toLowerCase().replace(' ', '-')}` ? '#da291c' : '#111'}
+            onMouseLeave={e => e.currentTarget.style.color = pathname === (
+                item === 'Sell' ? '/sell' : 
+                item === 'New Homes' ? '/new-construction' : 
+                item === 'Map' ? '/map-search' : 
+                item === 'Market Trends' ? '/market-report' : 
+                `/${item.toLowerCase().replace(' ', '-')}`
+              ) ? '#da291c' : '#111'}
           >
             {item}
           </Link>
