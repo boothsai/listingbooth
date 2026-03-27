@@ -2,38 +2,42 @@ import type { Metadata } from 'next';
 import ToolsSection from '@/components/sections/ToolsSection';
 
 export const metadata: Metadata = {
-  title: 'Financial Tools | Mortgage Calculator & True Cost | ListingBooth',
-  description: 'Calculate the true cost of homeownership including mortgage payments, property taxes, insurance, and closing costs. AI-powered financial infrastructure for Canadian real estate.',
+  title: 'Real Estate Tools | 10 Calculators for Buyers, Sellers & Investors | ListingBooth',
+  description: 'The most comprehensive suite of Canadian real estate calculators. Mortgage payments, land transfer tax, CMHC insurance, closing costs, investment ROI, stress test, and more.',
   openGraph: {
-    title: 'Financial Tools | ListingBooth',
-    description: 'Mortgage calculators, true cost analysis, and pre-approval workflows.',
+    title: 'Real Estate Power Tools | ListingBooth',
+    description: '10 institutional-grade calculators for every Canadian real estate decision.',
     url: 'https://listingbooth.com/tools',
     siteName: 'ListingBooth',
     type: 'website',
   },
-  twitter: { card: 'summary_large_image', title: 'Financial Tools | ListingBooth' },
+  twitter: { card: 'summary_large_image', title: 'Real Estate Power Tools | ListingBooth' },
   alternates: { canonical: 'https://listingbooth.com/tools' },
 };
+
 export default function ToolsPage() {
   return (
-    <main style={{ minHeight: '100vh', paddingTop: '110px', backgroundColor: '#fafafa' }}>
+    <main style={{ minHeight: '100vh', paddingTop: '110px', backgroundColor: '#0a0a0a' }}>
       
-      {/* Premium Standalone Wrapper Header */}
-      <div style={{ backgroundColor: '#111', padding: '60px 24px', textAlign: 'center', marginBottom: '-50px', position: 'relative', zIndex: 10 }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <h1 style={{ margin: '0 0 16px', fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, color: 'white', letterSpacing: '-1.5px', lineHeight: 1.1 }}>
-            Financial Infrastructure.
+      {/* Hero Header */}
+      <div style={{ padding: '80px 5% 60px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(218,41,28,0.05) 0%, transparent 70%)', filter: 'blur(60px)', zIndex: 0 }} />
+        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+          <div style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: '4px', background: 'rgba(218,41,28,0.1)', color: '#da291c', fontWeight: 800, fontSize: '12px', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '24px', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#da291c', boxShadow: '0 0 8px #da291c' }} />
+            Power Tools
+          </div>
+          <h1 style={{ margin: '0 0 24px', fontSize: 'clamp(40px, 5vw, 64px)', fontWeight: 900, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.05 }}>
+            Every Calculator<br/>
+            <span style={{ color: 'rgba(255,255,255,0.4)' }}>You{"'"}ll Ever Need.</span>
           </h1>
-          <p style={{ margin: 0, fontSize: '18px', color: '#888', lineHeight: 1.6 }}>
-            Calculate True Cost of Ownership, analyze mortgage vectors, and secure your pre-approval workflow.
+          <p style={{ margin: 0, fontSize: '20px', color: 'rgba(255,255,255,0.5)', maxWidth: '700px', lineHeight: 1.5, fontWeight: 500 }}>
+            10 institutional-grade tools for buyers, sellers, and investors — built with real Canadian tax rates, CMHC premium tables, and OSFI stress test rules.
           </p>
         </div>
       </div>
 
-      <div style={{ position: 'relative', zIndex: 20 }}>
-        <ToolsSection />
-      </div>
-
+      <ToolsSection />
     </main>
   );
 }
