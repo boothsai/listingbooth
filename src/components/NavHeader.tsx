@@ -173,6 +173,12 @@ export default function NavHeader() {
             >
               ♥ Saved
             </Link>
+            <Link href="/dashboard" style={{ fontSize: '14px', fontWeight: 800, color: '#111', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.7, transition: 'opacity 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '0.7'}
+            >
+              📊 Dashboard
+            </Link>
             <Link href="/agent" style={{ fontSize: '14px', fontWeight: 800, color: '#da291c', textDecoration: 'none', background: 'rgba(218,41,28,0.1)', padding: '10px 20px', borderRadius: '100px', transition: 'all 0.2s', letterSpacing: '0.05em' }}>
               CRM DASHBOARD
             </Link>
