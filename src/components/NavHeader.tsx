@@ -8,10 +8,18 @@ import { usePathname } from 'next/navigation';
 
 export default function NavHeader() {
   const [user, setUser] = useState<User | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  
   const supabase = createClient();
   const pathname = usePathname();
 
   const isLoginPage = pathname === '/agent/login';
+
+  // Lock body scroll when mobile nav is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -132,14 +140,6 @@ export default function NavHeader() {
     { label: 'Tools', href: '/tools' },
     { label: 'Platform', href: '/platform' },
   ];
-
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Lock body scroll when mobile nav is open
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [mobileOpen]);
 
   return (
     <>
