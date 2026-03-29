@@ -44,7 +44,9 @@ export default async function CitySiloPage({ params }: { params: Promise<{ city:
       color: '#111',
       description: `Premium new construction community by ${c.builders?.name || 'Unknown Builder'} located in ${c.city}.`,
       total_units: prices.length || 0,
-      photo_url: c.hero_image_url
+      photo_url: c.hero_image_url,
+      latitude: c.latitude,
+      longitude: c.longitude
     };
   });
 

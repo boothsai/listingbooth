@@ -298,6 +298,7 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
                         lead_type: isRealtor ? 'VIP Realtor — New Construction' : 'VIP Buyer — New Construction',
                         listing_key: project.slug,
                         address: `${project.name} by ${project.builder}`,
+                        expo_push_token: typeof window !== 'undefined' ? (window as any).__EXPO_PUSH_TOKEN__ || null : null,
                         price: project.price_from || 0,
                         message: `VIP unlock for ${project.name} in ${project.city}. Realtor: ${isRealtor ? 'Yes' : 'No'}.`,
                       }),

@@ -1,0 +1,254 @@
+[
+  {
+    "id": "b3dc7f29-d48b-4f3e-aea8-792e8c4f72d9",
+    "name": "8 Cumberland",
+    "hero_image_url": null,
+    "city": "Toronto",
+    "builders": {
+      "name": "Great Gulf"
+    }
+  },
+  {
+    "id": "63758848-ad9c-41e2-ad0d-7c68795d60fc",
+    "name": "Aqualuna at Bayside",
+    "hero_image_url": null,
+    "city": "Toronto",
+    "builders": {
+      "name": "Tridel"
+    }
+  },
+  {
+    "id": "a3a8b019-9923-40b7-aacc-2207a8182e6a",
+    "name": "Artworks Tower",
+    "hero_image_url": null,
+    "city": "Toronto",
+    "builders": {
+      "name": "Daniels Corporation"
+    }
+  },
+  {
+    "id": "83a326b2-20a9-4b60-81af-5f1531f3e8ae",
+    "name": "Brookline",
+    "hero_image_url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80",
+    "city": "Ottawa",
+    "builders": {
+      "name": "Minto Communities"
+    }
+  },
+  {
+    "id": "a6f1237f-9705-48cf-a97f-57ed4cb059e3",
+    "name": "EdenWylde",
+    "hero_image_url": null,
+    "city": "Stittsville",
+    "builders": {
+      "name": "Tribute Communities"
+    }
+  },
+  {
+    "id": "5116684b-33ad-4cb6-bb8d-a6f5c5d8d1cd",
+    "name": "Elfrida Estates",
+    "hero_image_url": null,
+    "city": "Hamilton",
+    "builders": {
+      "name": "CountryWide Homes"
+    }
+  },
+  {
+    "id": "88a1a9b7-3847-4bfe-9332-0a4a4889cb43",
+    "name": "Emerald Crossing",
+    "hero_image_url": null,
+    "city": "Brampton",
+    "builders": {
+      "name": "Greenpark Group"
+    }
+  },
+  {
+    "id": "33de756a-05d2-45d4-b32c-15610276220d",
+    "name": "Festival Condos",
+    "hero_image_url": null,
+    "city": "Toronto",
+    "builders": {
+      "name": "Menkes Developments"
+    }
+  },
+  {
+    "id": "15c0eeb7-3800-4a5e-ac7e-46f76957c63b",
+    "name": "Half Moon Bay",
+    "hero_image_url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80",
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "74dda8be-bb0c-4bfc-bf66-d612684d8582",
+    "name": "HALO Residences",
+    "hero_image_url": null,
+    "city": "Toronto",
+    "builders": {
+      "name": "Tridel"
+    }
+  },
+  {
+    "id": "32b951fb-56e6-49e2-b5c9-9d9fbb2cf191",
+    "name": "Harbour Plaza Residences",
+    "hero_image_url": null,
+    "city": "Toronto",
+    "builders": {
+      "name": "Menkes Developments"
+    }
+  },
+  {
+    "id": "f024725a-12fd-4dd3-bdde-c3befed19e2c",
+    "name": "Harmony",
+    "hero_image_url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80",
+    "city": "Ottawa",
+    "builders": {
+      "name": "Minto Communities"
+    }
+  },
+  {
+    "id": "9128038f-c855-4d04-a22d-133814302a87",
+    "name": "Kanata, Ontario",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "82a3542d-20e6-4f33-b41a-84a74ff47357",
+    "name": "Kemptville, Ontario",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "4718247e-ebef-43f3-954a-38b7227c5db4",
+    "name": "LIMITED AVAILABILITY",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "45bb0e1c-01a6-48c4-bb8d-6e0b1deac53f",
+    "name": "New Seaton",
+    "hero_image_url": null,
+    "city": "Pickering",
+    "builders": {
+      "name": "Greenpark Group"
+    }
+  },
+  {
+    "id": "6dc29693-c55d-44df-8d0e-969bb3af232a",
+    "name": "Now Selling",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "a32f9eb2-f26b-4cc3-87c3-d624694e33b1",
+    "name": "NOW SELLING",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "432683c5-cdd3-42d4-ae1f-fc4efe944fe4",
+    "name": "Orleans, Ontario",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "c86747f8-555f-4a09-aaf8-4e55064469b7",
+    "name": "Ottawa, Ontario",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "e11cb3d0-3a4e-46b8-802e-bae013b4a350",
+    "name": "Richmond Meadows",
+    "hero_image_url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80",
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "9e490c71-87b5-4b20-9d65-e5a300850934",
+    "name": "Richmond, Ontario",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "5ec4c384-f539-4ff3-92a7-df4f72284ff3",
+    "name": "Rockcliffe, Ontario",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "349b62ea-f8dc-48e7-8323-750b11498cb3",
+    "name": "Seaton by Mattamy",
+    "hero_image_url": null,
+    "city": "Pickering",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "468c1a98-d35d-429c-9224-c9b46f7af976",
+    "name": "Stittsville, Ontario",
+    "hero_image_url": null,
+    "city": "Ottawa",
+    "builders": {
+      "name": "Mattamy Homes"
+    }
+  },
+  {
+    "id": "10aac097-dd12-4031-8e36-8d23a2fdc81d",
+    "name": "The Rose Hill",
+    "hero_image_url": null,
+    "city": "Brampton",
+    "builders": {
+      "name": "Tribute Communities"
+    }
+  },
+  {
+    "id": "0c57a649-bee2-42e5-b16e-10c8fc9f244e",
+    "name": "Unionvale",
+    "hero_image_url": null,
+    "city": "Markham",
+    "builders": {
+      "name": "Fieldgate Homes"
+    }
+  },
+  {
+    "id": "f839ca9e-ff0e-4dfa-b1c3-c610be7e5aba",
+    "name": "Wesley Tower",
+    "hero_image_url": null,
+    "city": "Mississauga",
+    "builders": {
+      "name": "Daniels Corporation"
+    }
+  }
+]
