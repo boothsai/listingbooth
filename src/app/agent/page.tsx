@@ -20,8 +20,19 @@ export default async function AgentPipelinePage() {
     enrichedShowings = enrichedShowings.map(t => ({ ...t, listing: (listings||[]).find(l => l.listing_key === t.listing_key) }));
   }
 
-  // 3. Extract Concierge Transcripts
-  const { data: messages } = await supabase.from('unity_messages').select('*').order('created_at', { ascending: false }).limit(200);
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // 3. Extract Emails (Global /mail Protocol)
+  let emails: any[] = [];
+  let agentEmail = '';
+  if (user) {
+    const { data: mailbox } = await supabase.schema('mail').from('mailboxes').select('id, email').eq('user_id', user.id).single();
+    if (mailbox) {
+      agentEmail = mailbox.email;
+      const { data } = await supabase.schema('mail').from('emails').select('*').eq('mailbox_id', mailbox.id).order('received_at', { ascending: false });
+      emails = data || [];
+    }
+  }
 
   // Aggregate stats
   const hotLeads = (leads || []).filter(l => l.lead_score === 'Hot').length;
@@ -50,7 +61,7 @@ export default async function AgentPipelinePage() {
         </div>
       </div>
 
-      <TriPaneCRM leads={leads || []} showings={enrichedShowings} messages={messages || []} />
+      <TriPaneCRM leads={leads || []} showings={enrichedShowings} messages={emails} agentEmail={agentEmail} />
     </div>
   );
 }

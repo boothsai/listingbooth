@@ -85,24 +85,53 @@ export async function POST(req: NextRequest) {
         });
     }
 
-    // 4. THE GHOST KILLER: Fire the Telnyx Webhook (The Speed-to-Lead Engine)
-    if (process.env.TELNYX_API_KEY && phone) {
+    // 4. THE GHOST KILLER: Telnyx SMS Auto-Responder
+    if (process.env.TELNYX_API_KEY && process.env.TELNYX_PHONE_NUMBER && phone) {
       try {
-        await fetch('https://api.telnyx.com/v1/campaigns/trigger', {
+        await fetch('https://api.telnyx.com/v2/messages', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.TELNYX_API_KEY}`
+            'Authorization': `Bearer ${process.env.TELNYX_API_KEY}`,
+            'Accept': 'application/json'
           },
           body: JSON.stringify({
-            phone: phone,
-            name: name,
-            lead_source: 'ListingBooth.com / Valuation Form',
-            context: `Address: ${address ?? listing_key}\nLead Type: ${lead_type}`
+            from: process.env.TELNYX_PHONE_NUMBER,
+            to: phone,
+            text: `Hi ${name.split(' ')[0]}, this is the BOOTHS.AI Concierge. We've received your inquiry for ${address ?? listing_key}. An agent is reviewing your request and will reach out shortly!`
           })
         });
       } catch (telnyxErr) {
-        console.error('[leads] telnyx webhook failed:', telnyxErr);
+        console.error('[leads] telnyx SMS failed:', telnyxErr);
+      }
+    }
+
+    // 5. RESEND API: Instantly acknowledge via email
+    if (process.env.RESEND_API_KEY && email) {
+      try {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+          },
+          body: JSON.stringify({
+            from: 'BOOTHS.AI Concierge <concierge@listingbooth.com>',
+            to: [email],
+            subject: `Request Received: ${address ?? listing_key}`,
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #111;">Hi ${name.split(' ')[0]},</h2>
+                <p style="color: #444; font-size: 16px;">Thanks for reaching out! We've successfully received your ${lead_type ?? 'inquiry'} for <strong>${address ?? listing_key}</strong>.</p>
+                <p style="color: #444; font-size: 16px;">Your dedicated real estate professional is currently reviewing the details and will contact you back using this email thread.</p>
+                <br/>
+                <p style="color: #888; font-size: 14px;">Powered by the BOOTHS.AI Network.</p>
+              </div>
+            `
+          })
+        });
+      } catch (resendErr) {
+        console.error('[leads] resend email failed:', resendErr);
       }
     }
 

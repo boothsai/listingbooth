@@ -6,6 +6,7 @@ import Link from 'next/link';
 interface Collection {
   id: string;
   name: string;
+  share_token?: string;
   items: { listing_key: string; notes?: string; photo_url?: string; address?: string; price?: number }[];
   created_at: string;
 }
@@ -133,12 +134,22 @@ export default function CollectionsPage() {
               <div style={{ padding: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                   <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>{c.name}</h3>
-                  <button onClick={() => deleteCollection(c.id)} style={{
-                    background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: '14px',
-                  }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#da291c'}
-                    onMouseLeave={e => e.currentTarget.style.color = '#ccc'}
-                  >✕</button>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <button onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/share/${c.share_token}`);
+                        alert('Share link copied to clipboard!');
+                      }} style={{
+                      background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '13px', fontWeight: 800
+                    }}>
+                      Share
+                    </button>
+                    <button onClick={() => deleteCollection(c.id)} style={{
+                      background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: '14px',
+                    }}
+                      onMouseEnter={e => e.currentTarget.style.color = '#da291c'}
+                      onMouseLeave={e => e.currentTarget.style.color = '#ccc'}
+                    >✕</button>
+                  </div>
                 </div>
                 <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#888', fontWeight: 600 }}>
                   {c.items.length} {c.items.length === 1 ? 'property' : 'properties'}

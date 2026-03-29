@@ -8,6 +8,7 @@ const TABS = [
   { label: 'Saved Searches', href: '/dashboard/saved-searches', icon: '🔍' },
   { label: 'Collections', href: '/dashboard/collections', icon: '📁' },
   { label: 'My Journey', href: '/dashboard/journey', icon: '🗺️' },
+  { label: 'Messages', href: '/dashboard/messages', icon: '💬' },
 ];
 
 export default function DashboardShell({ userEmail, children }: { userEmail: string; children: React.ReactNode }) {

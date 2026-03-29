@@ -4,15 +4,16 @@ import { useState, useMemo } from 'react';
 
 interface Lead { id: string; name: string; email: string; phone?: string; lead_score: string; intent: string; created_at: string; status: string; }
 interface Showing { id: string; user_id: string; listing_key: string; requested_date: string; status: string; created_at: string; listing?: any; }
-interface Message { id: string; session_id: string; channel: string; user_name: string; user_role: string; content: string; avatar: string; created_at: string; }
+interface EmailMessage { id: string; from_email: string; from_name: string; subject: string; body_text: string; snippet: string; received_at: string; }
 
 interface TriPaneProps {
   leads: Lead[];
   showings: Showing[];
-  messages: Message[];
+  messages: EmailMessage[];
+  agentEmail?: string;
 }
 
-export default function TriPaneCRM({ leads, showings, messages }: TriPaneProps) {
+export default function TriPaneCRM({ leads, showings, messages, agentEmail }: TriPaneProps) {
   // Unify contacts based on session_id or email
   // For demonstration, we treat each distinct user interaction session as a "Contact"
   
@@ -57,30 +58,35 @@ export default function TriPaneCRM({ leads, showings, messages }: TriPaneProps) 
       });
     });
 
-    // 3. Attach AI Transcripts
-    // Transcripts are grouped by session_id. 
-    const sessions = new Map<string, any[]>();
-    messages.forEach(m => {
-      const sId = m.session_id || 'Anonymous AI Session';
-      if (!sessions.has(sId)) sessions.set(sId, []);
-      sessions.get(sId)!.push(m);
-    });
+    // 3. Attach Emails from Global Protocol
+    // Emails are grouped by from_email
+    messages.forEach(e => {
+      const email = e.from_email;
+      if (!email) return;
 
-    sessions.forEach((msgs, sId) => {
-      cMap.set(sId, {
-        id: sId,
-        type: 'AI Transcript',
-        name: `Concierge Chat: ${sId.substring(0,8)}`,
-        email: 'Anonymous Lead',
-        phone: 'Uncaptured',
-        timestamp: new Date(msgs[0].created_at).getTime(),
-        lastActive: new Date(msgs[0].created_at).toLocaleDateString(),
-        score: 'Detecting...',
-        intent: 'Browsing',
-        details: null,
-        messages: msgs.sort((a,b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()),
-        showings: []
-      });
+      if (cMap.has(email)) {
+        cMap.get(email).messages.push(e);
+        const eTime = new Date(e.received_at).getTime();
+        if (eTime > cMap.get(email).timestamp) {
+          cMap.get(email).timestamp = eTime;
+          cMap.get(email).lastActive = new Date(e.received_at).toLocaleDateString();
+        }
+      } else {
+        cMap.set(email, {
+          id: `email-${email}`,
+          type: 'Client Inbox',
+          name: e.from_name || email,
+          email: email,
+          phone: 'Uncaptured',
+          timestamp: new Date(e.received_at).getTime(),
+          lastActive: new Date(e.received_at).toLocaleDateString(),
+          score: 'Warm',
+          intent: 'Direct Inquiry',
+          details: null,
+          messages: [e],
+          showings: []
+        });
+      }
     });
 
     return Array.from(cMap.values()).sort((a, b) => b.timestamp - a.timestamp);
@@ -152,15 +158,18 @@ export default function TriPaneCRM({ leads, showings, messages }: TriPaneProps) 
 
         <div style={{ flex: 1, padding: '32px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {activeContact?.messages.length > 0 ? (
-            activeContact.messages.map((m: any) => {
-              const isBot = m.role === 'assistant' || m.user_role === 'system';
+            activeContact.messages.sort((a: any, b: any) => new Date(a.received_at).getTime() - new Date(b.received_at).getTime()).map((m: any) => {
+              const isBot = m.from_email === agentEmail;
               return (
-                <div key={m.id} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexDirection: isBot ? 'row' : 'row-reverse' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0, background: isBot ? '#da291c' : '#eaeaea', color: isBot ? 'white' : '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>
-                    {m.avatar || (isBot ? '🛎️' : '👤')}
+                <div key={m.id} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexDirection: isBot ? 'row-reverse' : 'row' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0, background: isBot ? '#111' : '#da291c', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>
+                    {isBot ? 'ME' : (m.from_name || '👤').substring(0,1).toUpperCase()}
                   </div>
-                  <div style={{ background: isBot ? '#f9f9f9' : '#111', border: '1px solid rgba(0,0,0,0.06)', padding: '16px 20px', borderRadius: isBot ? '4px 16px 16px 16px' : '16px 4px 16px 16px', color: isBot ? '#111' : 'white', fontSize: '15px', lineHeight: 1.6, maxWidth: '85%' }}>
-                    {m.content}
+                  <div style={{ background: isBot ? '#111' : '#f9f9f9', border: '1px solid rgba(0,0,0,0.06)', padding: '16px 20px', borderRadius: isBot ? '16px 4px 16px 16px' : '4px 16px 16px 16px', color: isBot ? 'white' : '#111', fontSize: '14px', lineHeight: 1.6, maxWidth: '85%', whiteSpace: 'pre-wrap' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 800, marginBottom: '6px', opacity: 0.7 }}>
+                      {m.subject}
+                    </div>
+                    {m.body_text || m.snippet}
                   </div>
                 </div>
               );

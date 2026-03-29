@@ -43,3 +43,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+temp_test.json
+livabl_dom.html
+livabl_raw.html
+livabl_vabot.log
+out.log
+git_status.md
+git_status_dump.txt
+vabot_extract/

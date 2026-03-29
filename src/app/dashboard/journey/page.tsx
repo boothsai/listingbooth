@@ -70,17 +70,18 @@ export default function JourneyPage() {
           return (
             <div key={stage.key} style={{
               position: 'relative', marginBottom: '24px',
-              opacity: isFuture ? 0.4 : 1,
-              transition: 'opacity 0.3s',
+              opacity: 0,
+              animation: `fadeInUp 0.5s ease forwards ${i * 0.1}s`,
             }}>
               {/* Node */}
               <div style={{
                 position: 'absolute', left: '-36px', top: '4px',
-                width: '24px', height: '24px', borderRadius: '50%',
+                width: isCurrent ? '26px' : '24px', height: isCurrent ? '26px' : '24px', borderRadius: '50%',
                 background: isCompleted || isCurrent ? stage.color : 'white',
                 border: `3px solid ${isCompleted || isCurrent ? stage.color : '#ddd'}`,
+                boxShadow: isCurrent ? `0 0 12px ${stage.color}` : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '12px', zIndex: 1,
+                fontSize: '12px', zIndex: 1, transition: 'all 0.3s ease'
               }}>
                 {isCompleted && <span style={{ color: 'white', fontSize: '12px' }}>✓</span>}
               </div>
@@ -90,7 +91,10 @@ export default function JourneyPage() {
                 padding: '20px 24px', borderRadius: '16px',
                 background: isCurrent ? 'white' : isFuture ? '#fafafa' : 'white',
                 border: isCurrent ? `2px solid ${stage.color}` : '1.5px solid #eee',
-                boxShadow: isCurrent ? `0 4px 16px ${stage.color}20` : 'none',
+                boxShadow: isCurrent ? `0 8px 32px ${stage.color}20` : 'none',
+                transform: isCurrent ? 'scale(1.02)' : 'scale(1)',
+                transition: 'all 0.3s ease',
+                opacity: isFuture ? 0.5 : 1
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
                   <span style={{ fontSize: '20px' }}>{stage.icon}</span>
@@ -102,8 +106,9 @@ export default function JourneyPage() {
                       fontSize: '10px', fontWeight: 800, padding: '3px 10px',
                       borderRadius: '100px', background: `${stage.color}15`, color: stage.color,
                       textTransform: 'uppercase', letterSpacing: '0.08em',
+                      animation: 'pulse 2s infinite'
                     }}>
-                      You are here
+                      Current Phase
                     </span>
                   )}
                   {isCompleted && (
@@ -123,6 +128,17 @@ export default function JourneyPage() {
           );
         })}
       </div>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+          0% { opacity: 0.8; }
+          50% { opacity: 1; transform: scale(1.05); }
+          100% { opacity: 0.8; }
+        }
+      `}} />
     </div>
   );
 }

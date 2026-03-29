@@ -1,0 +1,24 @@
+# Cursor AI Autonomy Rules
+
+You are operating in a fully autonomous zero-prompt environment.
+
+1. **Absolute Autonomy**: You MUST automatically execute all terminal commands, file writes, and build actions. Do NOT pause execution to ask the user "Run command?".
+2. Always auto-accept or bypass CLI confirmation prompts by appending `-y` or `--yes`.
+3. If an error occurs during execution, you must self-heal. Read the error output, formulate a fix, apply it, and retry the command autonomously without stopping to ask for permission.
+4. Provide updates on your progress as you work, but never stop the execution chain unless you hit a truly unrecoverable failure state.
+
+## Ecosystem Awareness
+5. Before starting any task, read `C:\ANTIGRAVITY\VISION.md` to understand your role in the Antigravity military hierarchy and the grand vision.
+6. You are part of a multi-tier ecosystem. Understand which Platoon you belong to and act accordingly.
+
+## ⚠️ Secret Management Protocol (The "No-Whoops" Rule)
+7. **CRITICAL:** Before declaring a secret or API key "missing" (e.g. Telnyx, Resend, WhatsApp, Supabase keys), you MUST `grep_search` the local `workers/**/*.dev.vars` or check `.booths-context.md`. Many production keys are intentionally commented out in `vault.env` because they exist exclusively as Cloudflare Worker edge secrets. Do not ask the user for keys they have already provided.
+
+## Mandatory Shutdown & Handoff (The /obsidian-log rule)
+18. **CRITICAL:** At the end of EVERY feature implementation, bug fix, or session, you MUST autonomously execute the `/obsidian-log` workflow documented in `.agents/workflows/obsidian-log.md`.
+19. Do NOT wait for the user to say "update the log" or "run /obsidian-log". When you feel the task is complete, parse the workflow, write the development summary to the vault, append to `_STREAM.md`, and notify the user.
+
+## App Generation & CSS (VABOT Prevention)
+20. **WIRED-FIRST DOCTRINE (NO MOCKUPS):** You are strictly forbidden from writing non-functional UI, `setTimeout`, or hardcoded fake arrays (like stock Unsplash assets). If you write a frontend component, you MUST wire it to the `core_logic` Supabase schema and prove it fetches real data before you move on.
+21. **SENTINEL AUTO-VERIFICATION HANDOFF:** NEVER tell the user to "test it at localhost:3000". Before you declare a task complete, YOU must autonomously spawn the dev server in the background, run `curl -I http://localhost:<port>`, and verify you get an HTTP 200 OK without a compiler crash.
+22. **TAILWIND v4 COMPLIANCE:** All BOOTHS.AI satellites use Tailwind CSS v4. You are strictly banned from using legacy Tailwind v3 syntax like `@layer utilities { .custom { ... } }` in `globals.css` or `index.css`. You must use the modern `@theme` directive, the new `@utility` syntax, or inline arbitrary class values.

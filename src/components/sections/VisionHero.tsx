@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function VisionHero() {
   const [query, setQuery] = useState('');
   const [activePlaceholder, setActivePlaceholder] = useState(0);
+  const router = useRouter();
 
   const placeholders = [
     "Mid-Century Modern with a Waterfall Island...",
@@ -21,6 +22,11 @@ export default function VisionHero() {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleSearch = () => {
+    if (!query.trim()) return;
+    router.push(`/search/vision?q=${encodeURIComponent(query)}`);
+  };
 
   return (
     <section style={{ 
@@ -100,6 +106,7 @@ export default function VisionHero() {
               type="text" 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               style={{ 
                 width: '100%', height: '100%', background: 'transparent',
                 border: 'none', color: 'white', fontSize: '20px',
@@ -109,14 +116,17 @@ export default function VisionHero() {
             />
           </div>
 
-          <button style={{ 
-            height: '60px', padding: '0 40px', borderRadius: '16px',
-            background: '#da291c', color: 'white', fontWeight: 800,
-            fontSize: '18px', border: 'none', cursor: 'pointer',
-            transition: 'all 0.2s', letterSpacing: '-0.5px'
-          }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
+          <button 
+            onClick={handleSearch}
+            style={{ 
+              height: '60px', padding: '0 40px', borderRadius: '16px',
+              background: '#da291c', color: 'white', fontWeight: 800,
+              fontSize: '18px', border: 'none', cursor: 'pointer',
+              transition: 'all 0.2s', letterSpacing: '-0.5px'
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+          >
             Search Specs
           </button>
         </div>
