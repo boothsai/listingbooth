@@ -139,7 +139,43 @@ export default function NewConstructionMap({ projects }: NewConstructionMapProps
       </div>
 
       {/* Map Tools Overlay */}
-      <div style={{ position: 'absolute', bottom: '24px', left: '24px', zIndex: 1000, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div style={{ position: 'absolute', bottom: '24px', left: '24px', zIndex: 1000, display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '320px' }}>
+        {/* Heatmap Explainer Card — only visible when heatmap is active */}
+        {showHeatmap && (
+          <div style={{
+            background: 'rgba(17,17,17,0.92)', backdropFilter: 'blur(16px)',
+            borderRadius: '16px', padding: '16px 20px', color: 'white',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          }}>
+            <div style={{ fontSize: '13px', fontWeight: 900, marginBottom: '8px', letterSpacing: '-0.3px' }}>
+              📊 What does this heatmap show?
+            </div>
+            <p style={{ fontSize: '12px', lineHeight: 1.6, color: 'rgba(255,255,255,0.75)', margin: '0 0 12px' }}>
+              The colored zones highlight <strong style={{ color: 'white' }}>estimated rental yield potential</strong> around each new development. 
+              It helps you spot which areas may generate the <strong style={{ color: 'white' }}>best return on investment</strong> if you buy and rent out.
+            </p>
+            <div style={{ display: 'flex', gap: '12px', fontSize: '11px', fontWeight: 700 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', opacity: 0.8 }}></div>
+                <span style={{ color: '#fca5a5' }}>High Yield</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f59e0b', opacity: 0.8 }}></div>
+                <span style={{ color: '#fcd34d' }}>Moderate</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#3b82f6', opacity: 0.8 }}></div>
+                <span style={{ color: '#93c5fd' }}>Premium</span>
+              </div>
+            </div>
+            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', margin: '10px 0 0', lineHeight: 1.5 }}>
+              Red = more affordable entry, higher estimated rent-to-price ratio.
+              Blue = premium pricing, lower yield but stronger appreciation.
+            </p>
+          </div>
+        )}
+
         <button 
           onClick={() => setShowHeatmap(!showHeatmap)}
           style={{ 

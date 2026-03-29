@@ -654,10 +654,14 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
               SECTION 8: Investor Intelligence Dashboard
           ═══════════════════════════════════════════════════════ */}
           <div style={{ marginBottom: '40px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
               <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Investor Intelligence</h2>
             </div>
+            <p style={{ margin: '0 0 16px', fontSize: '14px', color: '#888', lineHeight: 1.6, maxWidth: '700px' }}>
+              Thinking about buying here as an investment? These numbers estimate how much rent you could earn,
+              how the purchase price compares to nearby resale values, and how walkable/connected the neighbourhood is.
+            </p>
 
             {/* Yield + Score Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '12px', marginBottom: '20px' }}>
