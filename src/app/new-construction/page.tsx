@@ -23,7 +23,7 @@ interface Project {
 }
 
 const STATUS_FILTERS = ['All', 'Now Selling', 'Pre-Construction', 'Coming Soon'];
-const CITY_FILTERS = ['All', 'Toronto', 'Ottawa', 'Mississauga', 'Oakville', 'Hamilton', 'Vaughan'];
+const CITY_FILTERS = ['All', 'Toronto', 'Ottawa', 'Mississauga', 'Brampton', 'Hamilton', 'Pickering', 'Markham'];
 
 const FALLBACK: Project[] = [
   { slug: 'the-greenwich', name: 'The Greenwich', builder: 'Tribute Communities', city: 'Toronto', price_from: 599900, property_type: 'Condos & Townhomes', status: 'Now Selling', color: '#2563eb', description: 'A stunning collection of premium condos and townhomes in the heart of Toronto by Tribute Communities.', total_units: 320, completion_year: 2027 },
@@ -220,6 +220,66 @@ export default function NewConstructionListPage() {
           ))}
         </div>
       )}
+
+      {/* ═══════════════════════════════════════════════════════
+          DEVELOPER PORTAL CTA
+      ═══════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: '80px', borderRadius: '24px', overflow: 'hidden', background: '#111', position: 'relative' }}>
+        {/* Gradient mesh accent */}
+        <div style={{ position: 'absolute', top: 0, right: 0, width: '50%', height: '100%', background: 'radial-gradient(ellipse at 80% 30%, rgba(218,41,28,0.15) 0%, transparent 70%)', pointerEvents: 'none' }}></div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40%', height: '60%', background: 'radial-gradient(ellipse at 20% 80%, rgba(16,185,129,0.1) 0%, transparent 70%)', pointerEvents: 'none' }}></div>
+        
+        <div style={{ position: 'relative', padding: '64px 48px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center' }}>
+          {/* Left — Copy */}
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(218,41,28,0.1)', color: '#da291c', padding: '6px 14px', borderRadius: '100px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '20px', border: '1px solid rgba(218,41,28,0.15)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M9 21V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v15"/><path d="M5 21V12a1 1 0 0 1 1-1h2"/><path d="M19 21V12a1 1 0 0 0-1-1h-2"/></svg>
+              Developer Portal
+            </div>
+            <h2 style={{ margin: '0 0 16px', fontSize: '36px', fontWeight: 900, color: 'white', letterSpacing: '-1px', lineHeight: 1.15 }}>
+              List Your Development<br/>on Ontario&apos;s Fastest-Growing Portal
+            </h2>
+            <p style={{ margin: '0 0 24px', fontSize: '16px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, fontWeight: 500 }}>
+              Get your pre-construction and new build communities in front of thousands of qualified buyers and realtors. Our AI-powered platform scores builders, enriches listings, and converts high-intent leads — all on autopilot.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
+              {[
+                { icon: '🎯', text: 'Direct access to 5,000+ active buyers' },
+                { icon: '🤖', text: 'AI Builder Score™ trust verification' },
+                { icon: '📊', text: 'Real-time analytics on views, leads & conversion' },
+                { icon: '🔒', text: 'VIP allocation management tools' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontSize: '18px' }}>{item.icon}</span>
+                  <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+            <Link href="/developer" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'white', color: '#111', padding: '16px 32px', borderRadius: '12px', fontSize: '15px', fontWeight: 900, textDecoration: 'none', transition: 'transform 0.2s', letterSpacing: '-0.3px' }}
+              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.transform = 'scale(1.03)')}
+              onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.transform = 'scale(1)')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Submit Your Project
+            </Link>
+          </div>
+
+          {/* Right — Stats */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            {[
+              { value: '10', label: 'Verified Builders', accent: '#10b981' },
+              { value: '28', label: 'Active Communities', accent: '#3b82f6' },
+              { value: '72', label: 'Unit Models Listed', accent: '#f59e0b' },
+              { value: '8', label: 'Cities Covered', accent: '#da291c' },
+            ].map((stat, i) => (
+              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '24px', textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', fontWeight: 900, color: stat.accent, letterSpacing: '-1px', marginBottom: '4px' }}>{stat.value}</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
