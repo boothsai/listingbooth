@@ -1,0 +1,77 @@
+﻿=== PHASE 19: GTA MARKET EXPANSION ===
+
+1. Inserting GTA builders...
+  Γ£à Tridel (ID: 4a71feba)
+  Γ£à Menkes Developments (ID: b99d6124)
+  Γ£à Daniels Corporation (ID: fc619315)
+  Γ£à Great Gulf (ID: 7cde6c79)
+  Γ£à Greenpark Group (ID: e1eb8482)
+  Γ£à Fieldgate Homes (ID: a5c976d4)
+  Γ£à Tribute Communities (ID: f0653fd2)
+  Γ£à CountryWide Homes (ID: 625db8ec)
+
+2. Inserting communities + products...
+  Γ£à Aqualuna at Bayside (Toronto) ΓÇö Tridel
+    ≡ƒôª Studio A ΓÇö Condo 0bd/1ba 450sf From $499,900
+    ≡ƒôª The Harbourview ΓÇö Condo 1bd/1ba 620sf From $649,000
+    ≡ƒôª The Lakeshore ΓÇö Condo 2bd/2ba 880sf From $899,000
+    ≡ƒôª The Penthouse ΓÇö Condo 3bd/2ba 1250sf From $1,495,000
+  Γ£à HALO Residences (Toronto) ΓÇö Tridel
+    ≡ƒôª The Sky Studio ΓÇö Condo 0bd/1ba 420sf From $459,000
+    ≡ƒôª The Urban One ΓÇö Condo 1bd/1ba 580sf From $599,000
+    ≡ƒôª The Panorama ΓÇö Condo 2bd/2ba 820sf From $849,000
+  Γ£à Festival Condos (Toronto) ΓÇö Menkes Developments
+    ≡ƒôª The Overture ΓÇö Condo 1bd/1ba 550sf From $575,000
+    ≡ƒôª The Crescendo ΓÇö Condo 2bd/2ba 780sf From $799,000
+    ≡ƒôª The Symphony ΓÇö Condo 3bd/2ba 1100sf From $1,250,000
+  Γ£à Harbour Plaza Residences (Toronto) ΓÇö Menkes Developments
+    ≡ƒôª Harbourfront Suite ΓÇö Condo 1bd/1ba 600sf From $625,000
+    ≡ƒôª The Marina ΓÇö Condo 2bd/2ba 850sf From $875,000
+  Γ£à Artworks Tower (Toronto) ΓÇö Daniels Corporation
+    ≡ƒôª The Gallery ΓÇö Condo 1bd/1ba 530sf From $539,000
+    ≡ƒôª The Canvas ΓÇö Condo 2bd/2ba 760sf From $749,000
+    ≡ƒôª The Studio Loft ΓÇö Condo 2bd/2ba 1050sf From $995,000
+  Γ£à Wesley Tower (Mississauga) ΓÇö Daniels Corporation
+    ≡ƒôª The Heritage ΓÇö Condo 1bd/1ba 560sf From $499,000
+    ≡ƒôª The Steeple ΓÇö Condo 2bd/2ba 810sf From $699,000
+  Γ£à 8 Cumberland (Toronto) ΓÇö Great Gulf
+    ≡ƒôª The Yorkville Suite ΓÇö Condo 1bd/1ba 680sf From $895,000
+    ≡ƒôª The Bloor Penthouse ΓÇö Condo 2bd/2ba 1050sf From $1,350,000
+    ≡ƒôª The Cumberland ΓÇö Condo 3bd/3ba 1800sf From $2,800,000
+  Γ£à New Seaton (Pickering) ΓÇö Greenpark Group
+    ≡ƒôª The Aspen ΓÇö Detached 3bd/2.5ba 2200sf From $899,000
+    ≡ƒôª The Birch ΓÇö Detached 4bd/3.5ba 2800sf From $1,099,000
+    ≡ƒôª The Cedar Row ΓÇö Townhome 3bd/2.5ba 1600sf From $749,000
+  Γ£à Emerald Crossing (Brampton) ΓÇö Greenpark Group
+    ≡ƒôª The Topaz ΓÇö Townhome 3bd/2.5ba 1750sf From $799,000
+    ≡ƒôª The Ruby ΓÇö Detached 4bd/3.5ba 2600sf From $1,150,000
+  Γ£à Unionvale (Markham) ΓÇö Fieldgate Homes
+    ≡ƒôª The Trillium ΓÇö Detached 4bd/3ba 2500sf From $1,299,000
+    ≡ƒôª The Blossom ΓÇö Townhome 3bd/2.5ba 1800sf From $949,000
+  Γ£à The Rose Hill (Brampton) ΓÇö Tribute Communities
+    ≡ƒôª The Dahlia ΓÇö Detached 4bd/3.5ba 2700sf From $1,050,000
+    ≡ƒôª The Lily ΓÇö Townhome 3bd/2.5ba 1650sf From $799,000
+    ≡ƒôª The Peony ΓÇö Detached 5bd/4ba 3200sf From $1,350,000
+  Γ£à EdenWylde (Stittsville) ΓÇö Tribute Communities
+    ≡ƒôª The Willow ΓÇö Detached 3bd/2.5ba 2100sf From $649,000
+    ≡ƒôª The Elm ΓÇö Detached 4bd/3ba 2850sf From $879,000
+  Γ£à Elfrida Estates (Hamilton) ΓÇö CountryWide Homes
+    ≡ƒôª The Escarpment ΓÇö Detached 4bd/3ba 2400sf From $799,000
+    ≡ƒôª The Falls ΓÇö Townhome 3bd/2.5ba 1700sf From $599,000
+    ≡ƒôª The Summit ΓÇö Detached 5bd/4ba 3100sf From $1,099,000
+  ΓÅ⌐ Seaton by Mattamy (already exists)
+
+=== EXPANSION COMPLETE ===
+  Builders: 10
+  Communities added: 13
+  Products added: 35
+
+  ≡ƒôè Projects by City:
+    Ottawa: 14 communities
+    Toronto: 6 communities
+    Pickering: 2 communities
+    Brampton: 2 communities
+    Mississauga: 1 communities
+    Markham: 1 communities
+    Stittsville: 1 communities
+    Hamilton: 1 communities

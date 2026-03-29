@@ -68,11 +68,19 @@ export default function NewConstructionMap({ projects }: NewConstructionMapProps
       popupAnchor: [0, -35]
     });
   };
+  // Auto-center map based on projects
+  const projectsWithCoords = projects.filter(p => p.latitude && p.longitude);
+  const mapCenter: [number, number] = projectsWithCoords.length > 0
+    ? [
+        projectsWithCoords.reduce((sum, p) => sum + (p.latitude || 0), 0) / projectsWithCoords.length,
+        projectsWithCoords.reduce((sum, p) => sum + (p.longitude || 0), 0) / projectsWithCoords.length,
+      ]
+    : [43.65, -79.38]; // Default to Toronto
 
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       <MapContainer 
-        center={[45.38, -75.72]} 
+        center={mapCenter} 
         zoom={11} 
         scrollWheelZoom={false} 
         style={{ height: '100%', width: '100%', background: '#f8f8f8' }}
