@@ -1,0 +1,63 @@
+﻿=== BUILDER PRODUCTS AUDIT ===
+Total records: 35
+  [b8a0182a] NOW SELLING | model:The Juniper - NOW SELLING Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [98e632ca] NOW SELLING | model:The Oak - NOW SELLING Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [a18679f5] NOW SELLING | model:The Maple - NOW SELLING Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [101b4c52] Orleans, Ontario | model:The Juniper - Orleans, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [0fb0a5b2] Orleans, Ontario | model:The Oak - Orleans, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [a073e572] Orleans, Ontario | model:The Maple - Orleans, Ontario Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [4303e635] Stittsville, Ontario | model:The Juniper - Stittsville, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [d1efa2f3] Stittsville, Ontario | model:The Oak - Stittsville, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [633b7fb0] Stittsville, Ontario | model:The Maple - Stittsville, Ontario Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [77f60354] LIMITED AVAILABILITY | model:The Juniper - LIMITED AVAILABILITY Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [359bc608] LIMITED AVAILABILITY | model:The Oak - LIMITED AVAILABILITY Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [3e053a71] LIMITED AVAILABILITY | model:The Maple - LIMITED AVAILABILITY Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [e59c7cf7] Ottawa, Ontario | model:The Juniper - Ottawa, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [2274c1db] Ottawa, Ontario | model:The Oak - Ottawa, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [9213adcb] Ottawa, Ontario | model:The Maple - Ottawa, Ontario Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [83d3a9d3] Kemptville, Ontario | model:The Juniper - Kemptville, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [a0e84854] Kemptville, Ontario | model:The Oak - Kemptville, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [4491693b] Kemptville, Ontario | model:The Maple - Kemptville, Ontario Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [f2b0bcfb] Now Selling | model:The Juniper - Now Selling Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [5176b1b9] Now Selling | model:The Oak - Now Selling Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [1668048c] Now Selling | model:The Maple - Now Selling Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [5621313d] Kanata, Ontario | model:The Juniper - Kanata, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [440e7ae0] Kanata, Ontario | model:The Oak - Kanata, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [83962c43] Kanata, Ontario | model:The Maple - Kanata, Ontario Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [40cf9075] Rockcliffe, Ontario | model:The Juniper - Rockcliffe, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [57079309] Rockcliffe, Ontario | model:The Oak - Rockcliffe, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [9724f61c] Rockcliffe, Ontario | model:The Maple - Rockcliffe, Ontario Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [3cbc004a] Richmond, Ontario | model:The Juniper - Richmond, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1500sf | $650000 | builder:Mattamy Homes
+  [ff2df216] Richmond, Ontario | model:The Oak - Richmond, Ontario Edition | type:Γ¥î | 3bd/2.5ba | 1900sf | $775000 | builder:Mattamy Homes
+  [d1e766d2] Richmond, Ontario | model:The Maple - Richmond, Ontario Edition | type:Γ¥î | 4bd/2.5ba | 2300sf | $900000 | builder:Mattamy Homes
+  [eee73405] Half Moon Bay | model:The Fir | type:Γ¥î | 3bd/2.5ba | 1800sf | $650000 | builder:Mattamy Homes
+  [25c58f56] Half Moon Bay | model:The Spruce | type:Γ¥î | 4bd/3.5ba | 2400sf | $899000 | builder:Mattamy Homes
+  [f1f6b7c9] Richmond Meadows | model:The Oak | type:Γ¥î | 4bd/4ba | 3200sf | $1050000 | builder:Mattamy Homes
+  [009fca06] Brookline | model:The Tahoe | type:Γ¥î | 3bd/2.5ba | 1600sf | $599000 | builder:Minto Communities
+  [737c2437] Brookline | model:The Killarney | type:Γ¥î | 4bd/3.5ba | 2450sf | $950000 | builder:Minto Communities
+
+=== GAPS ===
+  model_name: 0/35 missing
+  home_type: 35/35 missing
+  beds: 0/35 missing
+  baths: 0/35 missing
+  sqft: 0/35 missing
+
+=== COMMUNITIES ===
+  NOW SELLING | img:Γ¥î | coords:Γ¥î
+  Orleans, Ontario | img:Γ¥î | coords:Γ¥î
+  Stittsville, Ontario | img:Γ¥î | coords:Γ¥î
+  LIMITED AVAILABILITY | img:Γ¥î | coords:Γ¥î
+  Ottawa, Ontario | img:Γ¥î | coords:Γ¥î
+  Kemptville, Ontario | img:Γ¥î | coords:Γ¥î
+  Now Selling | img:Γ¥î | coords:Γ¥î
+  Kanata, Ontario | img:Γ¥î | coords:Γ¥î
+  Rockcliffe, Ontario | img:Γ¥î | coords:Γ¥î
+  Richmond, Ontario | img:Γ¥î | coords:Γ¥î
+  Half Moon Bay | img:Γ£à | coords:Γ¥î
+  Brookline | img:Γ£à | coords:Γ£à
+  Harmony | img:Γ£à | coords:Γ£à
+  Richmond Meadows | img:Γ£à | coords:Γ£à
+
+  Missing images: 10/14
+  Missing coords: 11/14

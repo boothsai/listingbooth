@@ -1,0 +1,1 @@
+﻿id, community_id, model_name, property_type, sqft, beds, baths, price_from, status, floorplan_image_url, created_at, updated_at

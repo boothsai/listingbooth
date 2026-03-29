@@ -1,0 +1,52 @@
+﻿=== PHASE 18: DATA ENRICHMENT ===
+
+1. Backfilling property_type...
+  Γ£à The Juniper - NOW SELLING Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - NOW SELLING Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - NOW SELLING Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Orleans, Ontario Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Orleans, Ontario Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Orleans, Ontario Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Stittsville, Ontario Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Stittsville, Ontario Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Stittsville, Ontario Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - LIMITED AVAILABILITY Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - LIMITED AVAILABILITY Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - LIMITED AVAILABILITY Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Ottawa, Ontario Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Ottawa, Ontario Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Ottawa, Ontario Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Kemptville, Ontario Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Kemptville, Ontario Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Kemptville, Ontario Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Now Selling Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Now Selling Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Now Selling Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Kanata, Ontario Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Kanata, Ontario Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Kanata, Ontario Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Rockcliffe, Ontario Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Rockcliffe, Ontario Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Rockcliffe, Ontario Edition ΓåÆ type:Detached name:"The Maple"
+  Γ£à The Juniper - Richmond, Ontario Edition ΓåÆ type:Townhome name:"The Juniper"
+  Γ£à The Oak - Richmond, Ontario Edition ΓåÆ type:Townhome name:"The Oak"
+  Γ£à The Maple - Richmond, Ontario Edition ΓåÆ type:Detached name:"The Maple"
+  Updated 30/35 products
+
+2. Geocoding communities...
+  Γ£à NOW SELLING ΓåÆ 45.3488, -75.7585
+  Γ£à Orleans, Ontario ΓåÆ 45.4745, -75.5185
+  Γ£à Stittsville, Ontario ΓåÆ 45.2597, -75.9218
+  Γ£à LIMITED AVAILABILITY ΓåÆ 45.37, -75.71
+  Γ£à Ottawa, Ontario ΓåÆ 45.4215, -75.6972
+  Γ£à Kemptville, Ontario ΓåÆ 45.0143, -75.5064
+  Γ£à Now Selling ΓåÆ 45.39, -75.72
+  Γ£à Kanata, Ontario ΓåÆ 45.3088, -75.8986
+  Γ£à Rockcliffe, Ontario ΓåÆ 45.45, -75.68
+  Γ£à Richmond, Ontario ΓåÆ 45.1913, -75.8391
+  Γ£à Half Moon Bay ΓåÆ 45.3255, -75.8667
+  Geocoded 11 communities
+
+=== ENRICHMENT COMPLETE ===
+  Products updated: 30
+  Communities geocoded: 11

@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
         // Enriched: individual unit models
         products: (c.builder_products || []).map((p: any) => ({
           model_name: p.model_name,
-          home_type: p.home_type,
+          home_type: p.property_type,
           beds: p.beds,
           baths: p.baths,
           sqft: p.sqft,
