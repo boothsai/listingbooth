@@ -16,9 +16,8 @@ Notifications.setNotificationHandler({
 });
 
 // For local testing on a physical device, replace with your machine's IPv4 address.
-// For Android emulator, 10.0.2.2 points to localhost. For iOS simulator, 127.0.0.1 works.
-// In production, this should be https://listingbooth.com
-const DEV_URL = Platform.OS === 'android' ? 'http://10.0.2.2:4200' : 'http://127.0.0.1:4200';
+// Automatically detected IP: 192.168.2.210
+const DEV_URL = __DEV__ ? 'http://192.168.2.210:4200' : 'http://10.0.2.2:4200';
 const TARGET_URL = __DEV__ ? DEV_URL : 'https://listingbooth.com';
 
 export default function App() {
