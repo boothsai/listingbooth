@@ -1,6 +1,47 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
+interface LiveListing {
+  listing_key: string;
+  list_price: number;
+  address_street: string | null;
+  address_city: string | null;
+  photo_urls: string[] | null;
+  bedrooms_total: number | null;
+  property_type: string | null;
+}
+
 export default function WhyListingBooth() {
+  const [listing, setListing] = useState<LiveListing | null>(null);
+  const [totalCount, setTotalCount] = useState<number>(0);
+
+  useEffect(() => {
+    // Wired-First Doctrine: fetch a real listing to power the chat demo
+    fetch('/api/listings?limit=1&sort=newest')
+      .then(r => r.json())
+      .then(d => {
+        const items = d.listings ?? [];
+        if (items.length > 0) setListing(items[0]);
+        if (d.total) setTotalCount(d.total);
+      })
+      .catch(() => {});
+  }, []);
+
+  const demoQuery = listing
+    ? `"Show me ${listing.property_type || 'homes'} in ${listing.address_city || 'Ottawa'} under $${((listing.list_price || 500000) + 200000).toLocaleString()}"`
+    : `"Find me a modernist glass house in Ottawa under $2.5M"`;
+
+  const demoResponse = listing
+    ? `Analyzed ${totalCount.toLocaleString() || '2,400+'} ${listing.address_city || 'Ottawa'} listings. Found matches near ${listing.address_street || 'your criteria'}.`
+    : 'Analyzing listings...';
+
+  const photoUrl1 = listing?.photo_urls?.[0] || null;
+  const photoUrl2 = listing?.photo_urls?.[1] || null;
+  const soldPrice = listing?.list_price
+    ? `$${listing.list_price.toLocaleString()}`
+    : '—';
+
   return (
     <section style={{ padding: '120px 5%', backgroundColor: '#fff', position: 'relative', overflow: 'hidden' }}>
       
@@ -29,7 +70,7 @@ export default function WhyListingBooth() {
         {/* Bento Grid */}
         <div className="bento-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px', gridAutoRows: 'minmax(340px, auto)' }}>
           
-          {/* Card 1: Natural Language AI (Spans 8) */}
+          {/* Card 1: Natural Language AI (Spans 8) — WIRED to real listing */}
           <div style={{ 
             gridColumn: 'span 8', background: '#fafafa', borderRadius: '32px', 
             border: '1px solid #eee', overflow: 'hidden', display: 'flex', flexDirection: 'column'
@@ -46,29 +87,40 @@ export default function WhyListingBooth() {
               </p>
             </div>
             
-            {/* Visual Chat Mockup */}
+            {/* Visual Chat Demo — WIRED to real listing data */}
             <div style={{ background: '#f0f0f0', borderTop: '1px solid #e5e5e5', padding: '32px', flexShrink: 0 }}>
               <div style={{ background: 'white', padding: '20px', borderRadius: '20px 20px 0 20px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', maxWidth: '80%', marginLeft: 'auto', marginBottom: '16px' }}>
                 <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#111', lineHeight: 1.4 }}>
-                  "Find me a modernist glass house in Oakville under $2.5M. It must have a pool and back onto a ravine."
+                  {demoQuery}
                 </p>
               </div>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#111', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✨</div>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#111', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>✨</div>
                 <div style={{ background: '#111', padding: '20px', borderRadius: '0 20px 20px 20px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', flex: 1 }}>
                   <p style={{ margin: '0 0 12px', fontSize: '15px', fontWeight: 600, color: 'white', lineHeight: 1.4 }}>
-                    Analyzed 12,408 Oakville listings. Found 3 perfect matches matching "modernist glass", "ravine lot", and "pool".
+                    {demoResponse}
                   </p>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <div style={{ height: '60px', flex: 1, borderRadius: '8px', background: 'url("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=400") center/cover', border: '1px solid rgba(255,255,255,0.2)' }} />
-                    <div style={{ height: '60px', flex: 1, borderRadius: '8px', background: 'url("https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=400") center/cover', border: '1px solid rgba(255,255,255,0.2)' }} />
+                    {photoUrl1 && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={photoUrl1} alt="Match 1" style={{ height: '60px', flex: 1, borderRadius: '8px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.2)' }} />
+                    )}
+                    {photoUrl2 && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={photoUrl2} alt="Match 2" style={{ height: '60px', flex: 1, borderRadius: '8px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.2)' }} />
+                    )}
+                    {!photoUrl1 && !photoUrl2 && (
+                      <div style={{ height: '60px', flex: 1, borderRadius: '8px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '12px', fontWeight: 600 }}>
+                        Loading live results...
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Card 2: Sold Data (Spans 4) */}
+          {/* Card 2: Live Price Data (Spans 4) — WIRED */}
           <div style={{ 
             gridColumn: 'span 4', background: '#fafafa', borderRadius: '32px', 
             border: '1px solid #eee', padding: '48px', display: 'flex', flexDirection: 'column'
@@ -78,16 +130,20 @@ export default function WhyListingBooth() {
             </div>
             <h3 style={{ fontSize: '24px', fontWeight: 800, color: '#111', margin: '0 0 16px' }}>Absolute Transparency</h3>
             <p style={{ fontSize: '16px', color: '#666', margin: '0 0 32px', lineHeight: 1.6 }}>
-              Unlock the data that other portals hide behind paywalls. We provide full access to historical sold prices, days on market, and property tax records instantly.
+              Unlock the data that other portals hide behind paywalls. We provide full access to real listing prices, days on market, and property details instantly.
             </p>
             <div style={{ marginTop: 'auto', background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #eee', boxShadow: '0 8px 24px rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', color: '#888', fontWeight: 600 }}>Sold Price (Oct 2023)</span>
-                <span style={{ fontSize: '14px', color: '#111', fontWeight: 800 }}>$1,425,000</span>
+                <span style={{ fontSize: '13px', color: '#888', fontWeight: 600 }}>Latest Listing Price</span>
+                <span style={{ fontSize: '14px', color: '#111', fontWeight: 800 }}>{soldPrice}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '13px', color: '#888', fontWeight: 600 }}>Sold Price (May 2019)</span>
-                <span style={{ fontSize: '14px', color: '#111', fontWeight: 800 }}>$950,000</span>
+                <span style={{ fontSize: '13px', color: '#888', fontWeight: 600 }}>Location</span>
+                <span style={{ fontSize: '14px', color: '#111', fontWeight: 800 }}>{listing?.address_city || '—'}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
+                <span style={{ fontSize: '13px', color: '#888', fontWeight: 600 }}>Total Indexed</span>
+                <span style={{ fontSize: '14px', color: '#da291c', fontWeight: 800 }}>{totalCount.toLocaleString()} listings</span>
               </div>
             </div>
           </div>
@@ -114,7 +170,7 @@ export default function WhyListingBooth() {
             
             <div style={{ flex: '1', minWidth: '280px', position: 'relative', zIndex: 10 }}>
               <p style={{ fontSize: '20px', fontWeight: 500, margin: 0, lineHeight: 1.6, color: 'rgba(255,255,255,0.9)' }}>
-                Realtor.ca makes you scroll through thousands of listings blindly. <strong style={{ color: 'white', fontWeight: 900 }}>ListingBooth's Natural Language Engine</strong> lets you simply describe your exact dream home, and our Vision AI instantly cross-references the entire MLS to find it for you—all in real-time, all for free.
+                Realtor.ca makes you scroll through thousands of listings blindly. <strong style={{ color: 'white', fontWeight: 900 }}>ListingBooth&apos;s Natural Language Engine</strong> lets you simply describe your exact dream home, and our Vision AI instantly cross-references the entire MLS to find it for you—all in real-time, all for free.
               </p>
             </div>
           </div>
