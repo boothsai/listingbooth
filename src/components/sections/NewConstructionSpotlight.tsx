@@ -15,15 +15,10 @@ interface Project {
   photo_url?: string | null;
 }
 
-const FALLBACK_PROJECTS: Project[] = [
-  { slug: 'the-greenwich', name: 'The Greenwich', builder: 'Tribute Communities', city: 'Toronto', price_from: 599900, property_type: 'Condos & Townhomes', status: 'Now Selling', color: '#2563eb', photo_url: null },
-  { slug: 'claridge-moon', name: 'Claridge Moon', builder: 'Claridge Homes', city: 'Ottawa', price_from: 349900, property_type: 'Condominiums', status: 'Pre-Construction', color: '#7c3aed', photo_url: null },
-  { slug: 'oro-at-edge-towers', name: 'Oro at Edge Towers', builder: 'Solmar Development', city: 'Mississauga', price_from: 499900, property_type: 'High-Rise Condos', status: 'Now Selling', color: '#059669', photo_url: null },
-  { slug: 'upper-west-side', name: 'Upper West Side', builder: 'Branthaven Homes', city: 'Oakville', price_from: 899900, property_type: 'Detached & Towns', status: 'Coming Soon', color: '#dc2626', photo_url: null },
-];
+// Wired-First Doctrine: No hardcoded fallback arrays. Data comes from core_logic or nothing.
 
 export default function NewConstructionSpotlight() {
-  const [projects, setProjects] = useState<Project[]>(FALLBACK_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -66,7 +61,12 @@ export default function NewConstructionSpotlight() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-          {(loading ? FALLBACK_PROJECTS : projects).slice(0, 4).map(p => (
+          {projects.length === 0 && !loading && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '64px 24px', color: '#888', fontSize: '16px', fontWeight: 600 }}>
+              No pre-construction projects loaded yet. The extraction fleet will populate this section.
+            </div>
+          )}
+          {projects.slice(0, 4).map((p: Project) => (
             <Link key={p.slug} href={`/new-construction/${p.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div style={{
                 borderRadius: '24px', overflow: 'hidden',
