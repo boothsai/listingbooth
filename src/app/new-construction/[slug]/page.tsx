@@ -87,6 +87,10 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
   // Isochrone Layer
   const [showIsochrone, setShowIsochrone] = useState(true);
 
+  // HCRA Live Verification State
+  const [hcraData, setHcraData] = useState<any>(null);
+  const [verifyingHcra, setVerifyingHcra] = useState(false);
+
   useEffect(() => {
     params.then(p => {
       setSlug(p.slug);
@@ -119,6 +123,19 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
         .then(d => {
           if (d.project) {
             setProject(d.project);
+            
+            // Trigger HCRA/Tarion Live Verification
+            if (d.project.builder) {
+              setVerifyingHcra(true);
+              fetch(`/api/builder/verify?name=${encodeURIComponent(d.project.builder)}`)
+                .then(res => res.json())
+                .then(hcra => {
+                  if (hcra.data) setHcraData(hcra.data);
+                })
+                .catch(() => {})
+                .finally(() => setVerifyingHcra(false));
+            }
+
             // Fetch nearby resale listings within ~5km radius
             if (d.project.latitude && d.project.longitude) {
               const R = 0.045; // ~5km in degrees
@@ -394,14 +411,36 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
                     <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Builder Score</span>
                     <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: scoreColor }}>{builderScore}/100</p>
                   </div>
-                  <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tarion Warranty</span>
-                    <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: '#10b981' }}>Active</p>
-                  </div>
-                  <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>HCRA Status</span>
-                    <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: '#10b981' }}>Licensed</p>
-                  </div>
+                  
+                  {verifyingHcra ? (
+                    <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                      <div>
+                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Connecting to Registry...</span>
+                        <p style={{ margin: '2px 0 0', fontSize: '14px', fontWeight: 800, color: '#111' }}>Verifying HCRA/Tarion Data</p>
+                      </div>
+                    </div>
+                  ) : hcraData ? (
+                    <>
+                      <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>HCRA License</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '4px 0 0' }}>
+                          <span style={{ fontSize: '24px', fontWeight: 900, color: hcraData.status === 'Licensed' ? '#10b981' : '#ef4444' }}>{hcraData.status}</span>
+                          <span style={{ fontSize: '11px', background: '#f5f5f5', padding: '2px 6px', borderRadius: '4px', fontWeight: 800, color: '#888' }}>{hcraData.license_number}</span>
+                        </div>
+                      </div>
+                      <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Homes Built</span>
+                        <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: '#111' }}>{hcraData.homes_built.toLocaleString()}</p>
+                      </div>
+                      <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Active Claims</span>
+                        <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: hcraData.chargeable_conciliations === 0 ? '#10b981' : '#f59e0b' }}>
+                          {hcraData.chargeable_conciliations}
+                        </p>
+                      </div>
+                    </>
+                  ) : null}
                 </div>
                 {project.builder_website && (
                   <a href={project.builder_website} target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', fontWeight: 700, color: project.color || '#da291c', textDecoration: 'none' }}>

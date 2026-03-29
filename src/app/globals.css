@@ -124,6 +124,12 @@ button:active, .btn-primary:active {
 .float-1 { animation: floatPremium 8s ease-in-out infinite; }
 .float-2 { animation: floatPremium 10s ease-in-out infinite; animation-delay: -2s; }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin { animation: spin 1s linear infinite; }
+
 /* Image Polish */
 img {
   filter: contrast(1.02) saturate(1.05);
