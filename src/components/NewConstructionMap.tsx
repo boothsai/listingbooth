@@ -24,11 +24,13 @@ interface NewConstructionMapProps {
 }
 
 import { useState } from 'react';
+import { CircleMarker } from 'react-leaflet';
 
 export default function NewConstructionMap({ projects }: NewConstructionMapProps) {
   const [showRadarModal, setShowRadarModal] = useState(false);
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(false);
   // Map real database coordinates
   const getCoordinates = (project: Project): [number, number] => {
     if (project.latitude && project.longitude) {
@@ -90,6 +92,24 @@ export default function NewConstructionMap({ projects }: NewConstructionMapProps
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
 
+        {showHeatmap && projectsWithCoords.map(p => {
+          // Calculate an estimated cap rate / yield based on price to determine heat color
+          // Purely visual logic for demo: lower price = higher yield = greener/hotter
+          const isHot = p.price_from < 600000;
+          const isWarm = p.price_from >= 600000 && p.price_from < 900000;
+          const heatColor = isHot ? '#ef4444' : isWarm ? '#f59e0b' : '#3b82f6';
+          const radius = isHot ? 2500 : isWarm ? 1800 : 1200; // in meters
+          
+          return (
+            <CircleMarker
+              key={`heat-${p.slug}`}
+              center={[p.latitude!, p.longitude!]}
+              radius={35} // pixel radius, but we can also use fixed circle
+              pathOptions={{ fillColor: heatColor, fillOpacity: 0.15, color: heatColor, weight: 1 }}
+            />
+          );
+        })}
+
         {projects.map(p => (
           <Marker 
             key={p.slug} 
@@ -118,8 +138,29 @@ export default function NewConstructionMap({ projects }: NewConstructionMapProps
         <div style={{ position: 'absolute', width: '4px', height: '4px', background: '#10b981', borderRadius: '50%' }}></div>
       </div>
 
+      {/* Map Tools Overlay */}
+      <div style={{ position: 'absolute', bottom: '24px', left: '24px', zIndex: 1000, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <button 
+          onClick={() => setShowHeatmap(!showHeatmap)}
+          style={{ 
+            display: 'flex', alignItems: 'center', gap: '8px',
+            background: showHeatmap ? '#111' : 'white', 
+            color: showHeatmap ? 'white' : '#111', 
+            border: '1px solid rgba(0,0,0,0.1)', 
+            padding: '12px 20px', borderRadius: '12px', 
+            fontSize: '13px', fontWeight: 800, cursor: 'pointer', 
+            boxShadow: '0 4px 16px rgba(0,0,0,0.1)', transition: 'all 0.2s', letterSpacing: '-0.3px'
+          }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={showHeatmap ? '#ef4444' : 'currentColor'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          {showHeatmap ? 'Investor Heatmap Active' : 'Show Investor Heatmap'}
+        </button>
+      </div>
+
       {/* VIP Tracker Button */}
-      <div style={{ position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000 }}>
+      <div style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000 }}>
         <button 
           onClick={() => setShowRadarModal(true)}
           style={{ background: '#10b981', color: 'white', border: 'none', padding: '14px 28px', borderRadius: '100px', fontSize: '15px', fontWeight: 900, cursor: 'pointer', boxShadow: '0 8px 32px rgba(16,185,129,0.4)', transition: 'transform 0.2s', letterSpacing: '-0.5px' }}

@@ -9,6 +9,7 @@ const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContai
 const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then(m => m.Marker), { ssr: false });
 const Popup = dynamic(() => import('react-leaflet').then(m => m.Popup), { ssr: false });
+const Circle = dynamic(() => import('react-leaflet').then(m => m.Circle), { ssr: false });
 
 // Fix: Leaflet tiles don't render when map initializes off-screen
 const MapResizer = dynamic(() => Promise.resolve(function MapResizerInner() {
@@ -82,6 +83,9 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
   // Active Listings Layer
   const [nearbyListings, setNearbyListings] = useState<any[]>([]);
   const [showListings, setShowListings] = useState(true);
+
+  // Isochrone Layer
+  const [showIsochrone, setShowIsochrone] = useState(true);
 
   useEffect(() => {
     params.then(p => {
@@ -437,24 +441,41 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
             <div style={{ marginBottom: '40px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
                 <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Nearby Developments Map</h2>
-                <button
-                  onClick={() => setShowListings(!showListings)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    padding: '8px 16px', borderRadius: '100px',
-                    background: showListings ? '#0d9488' : '#f5f5f5',
-                    color: showListings ? 'white' : '#888',
-                    border: showListings ? 'none' : '1.5px solid #eee',
-                    fontSize: '13px', fontWeight: 700, cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
-                  </svg>
-                  {showListings ? `Active Listings (${nearbyListings.length})` : 'Show Active Listings'}
-                </button>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => setShowIsochrone(!showIsochrone)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '8px 16px', borderRadius: '100px',
+                      background: showIsochrone ? '#3b82f6' : '#f5f5f5',
+                      color: showIsochrone ? 'white' : '#888',
+                      border: showIsochrone ? 'none' : '1.5px solid #eee',
+                      fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                    {showIsochrone ? '15-Min Walk Zone Active' : 'Show 15-Min Walk Zone'}
+                  </button>
+                  <button
+                    onClick={() => setShowListings(!showListings)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '8px 16px', borderRadius: '100px',
+                      background: showListings ? '#0d9488' : '#f5f5f5',
+                      color: showListings ? 'white' : '#888',
+                      border: showListings ? 'none' : '1.5px solid #eee',
+                      fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                      <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    {showListings ? `Active Listings (${nearbyListings.length})` : 'Show Active Listings'}
+                  </button>
+                </div>
               </div>
               <div style={{ height: '420px', borderRadius: '20px', overflow: 'hidden', position: 'relative', boxShadow: '0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)' }}>
                 <MapContainer
@@ -467,6 +488,10 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
                 >
                   <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
                   <MapResizer />
+                  {/* 15-Minute Walk Isochrone (approx 1200m radius) */}
+                  {showIsochrone && (
+                    <Circle center={[project.latitude, project.longitude]} radius={1200} pathOptions={{ color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.08, weight: 2, dashArray: '4 8' }} />
+                  )}
                   {/* Current Project — Red branded pin with building icon */}
                   <Marker position={[project.latitude, project.longitude]}
                     icon={(() => { try { const L = require('leaflet'); return L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;gap:6px;background:#da291c;color:white;padding:8px 14px;border-radius:12px;font-size:13px;font-weight:800;white-space:nowrap;box-shadow:0 4px 20px rgba(218,41,28,0.4);letter-spacing:-0.3px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 21V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v15"/><path d="M5 21V12a1 1 0 0 1 1-1h2"/><path d="M19 21V12a1 1 0 0 0-1-1h-2"/></svg>${project.name}</div>`, iconSize: [0, 0], iconAnchor: [80, 20] }); } catch { return undefined; } })()}
@@ -531,6 +556,12 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
                     <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                       <span style={{ fontWeight: 700, color: '#0d9488' }}>Active Listings ({nearbyListings.length})</span>
+                    </div>
+                  )}
+                  {showIsochrone && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                      <span style={{ fontWeight: 700, color: '#3b82f6' }}>15-Min Walk Zone</span>
                     </div>
                   )}
                 </div>
