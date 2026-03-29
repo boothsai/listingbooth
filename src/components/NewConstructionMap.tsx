@@ -148,7 +148,24 @@ export default function NewConstructionMap({ projects }: NewConstructionMapProps
                 />
                 
                 <button 
-                  onClick={() => setSubmitted(true)}
+                  onClick={async () => {
+                    if (!email) return;
+                    try {
+                      await fetch('/api/leads', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          name: email.split('@')[0],
+                          email,
+                          lead_type: 'VIP Radar — New Construction',
+                          listing_key: 'radar-drop-ottawa',
+                          address: 'Live Radar Zone — Ottawa 5km',
+                          message: 'Opted into VIP Radar Drop notifications for new construction zone alerts.',
+                        }),
+                      });
+                    } catch { /* non-blocking */ }
+                    setSubmitted(true);
+                  }}
                   style={{ width: '100%', background: 'white', color: '#111', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '15px', fontWeight: 900, cursor: 'pointer' }}
                 >
                   Activate Radar Notification

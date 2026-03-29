@@ -241,7 +241,29 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
               </div>
 
               <button 
-                onClick={() => { if (email && name) { setUnlocked(true); setFreebiesLeft(null); localStorage.setItem('vip_unlocked', 'true'); } else { alert("Please enter Name and Email to unlock."); } }}
+                onClick={async () => {
+                  if (!email || !name) { alert("Please enter Name and Email to unlock."); return; }
+                  // Fire lead to CRM pipeline
+                  try {
+                    await fetch('/api/leads', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        name,
+                        email,
+                        phone: phone || null,
+                        lead_type: isRealtor ? 'VIP Realtor — New Construction' : 'VIP Buyer — New Construction',
+                        listing_key: project.slug,
+                        address: `${project.name} by ${project.builder}`,
+                        price: project.price_from || 0,
+                        message: `VIP unlock for ${project.name} in ${project.city}. Realtor: ${isRealtor ? 'Yes' : 'No'}.`,
+                      }),
+                    });
+                  } catch { /* non-blocking */ }
+                  setUnlocked(true);
+                  setFreebiesLeft(null);
+                  localStorage.setItem('vip_unlocked', 'true');
+                }}
                 style={{ width: '100%', background: project.color || '#111', color: 'white', padding: '18px', borderRadius: '12px', fontSize: '15px', fontWeight: 900, border: 'none', cursor: 'pointer', transition: 'transform 0.2s', letterSpacing: '-0.5px' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
