@@ -1,0 +1,20 @@
+﻿ M src/app/api/new-construction/route.ts
+ M src/app/globals.css
+ M src/app/new-construction/[slug]/page.tsx
+ M src/app/new-construction/page.tsx
+ M src/app/robots.ts
+ M src/app/sitemap.ts
+ M src/components/sections/NewConstructionSpotlight.tsx
+?? build_log.md
+?? scripts/add_trust_column.js
+?? scripts/auditBuilderData.js
+?? scripts/audit_out.txt
+?? scripts/backfillCoordinates.js
+?? scripts/gitlog.txt
+?? scripts/uncommitted.txt
+?? scripts/verify_d2b.js
+?? src/app/builder-score/
+?? src/app/new-construction/[slug]/layout.tsx
+?? src/app/new-construction/city/
+?? src/components/MapLoader.tsx
+?? src/components/NewConstructionMap.tsx

@@ -1,0 +1,104 @@
+﻿[
+  {
+    "id": "b615d25a-9b7c-4421-b818-35fff89fc378",
+    "name": "Mattamy Homes",
+    "website_url": "https://mattamyhomes.com",
+    "trust_score": 98,
+    "logo_url": null,
+    "created_at": "2026-03-27T22:52:07.308749+00:00"
+  },
+  {
+    "id": "ceb4887f-019e-45de-b932-0777afbf0e3a",
+    "name": "Minto Communities",
+    "website_url": null,
+    "trust_score": 96,
+    "logo_url": null,
+    "created_at": "2026-03-29T15:28:57.507134+00:00"
+  }
+]
+[
+  {
+    "id": "a32f9eb2-f26b-4cc3-87c3-d624694e33b1",
+    "name": "NOW SELLING",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "432683c5-cdd3-42d4-ae1f-fc4efe944fe4",
+    "name": "Orleans, Ontario",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "468c1a98-d35d-429c-9224-c9b46f7af976",
+    "name": "Stittsville, Ontario",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "4718247e-ebef-43f3-954a-38b7227c5db4",
+    "name": "LIMITED AVAILABILITY",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "c86747f8-555f-4a09-aaf8-4e55064469b7",
+    "name": "Ottawa, Ontario",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "82a3542d-20e6-4f33-b41a-84a74ff47357",
+    "name": "Kemptville, Ontario",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "6dc29693-c55d-44df-8d0e-969bb3af232a",
+    "name": "Now Selling",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "9128038f-c855-4d04-a22d-133814302a87",
+    "name": "Kanata, Ontario",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "5ec4c384-f539-4ff3-92a7-df4f72284ff3",
+    "name": "Rockcliffe, Ontario",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "9e490c71-87b5-4b20-9d65-e5a300850934",
+    "name": "Richmond, Ontario",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "15c0eeb7-3800-4a5e-ac7e-46f76957c63b",
+    "name": "Half Moon Bay",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  },
+  {
+    "id": "83a326b2-20a9-4b60-81af-5f1531f3e8ae",
+    "name": "Brookline",
+    "city": "Ottawa",
+    "builder_id": "ceb4887f-019e-45de-b932-0777afbf0e3a"
+  },
+  {
+    "id": "f024725a-12fd-4dd3-bdde-c3befed19e2c",
+    "name": "Harmony",
+    "city": "Ottawa",
+    "builder_id": "ceb4887f-019e-45de-b932-0777afbf0e3a"
+  },
+  {
+    "id": "e11cb3d0-3a4e-46b8-802e-bae013b4a350",
+    "name": "Richmond Meadows",
+    "city": "Ottawa",
+    "builder_id": "b615d25a-9b7c-4421-b818-35fff89fc378"
+  }
+]

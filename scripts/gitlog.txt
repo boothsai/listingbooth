@@ -1,0 +1,20 @@
+﻿d7012d6 fix(new-construction): point API to Phase 7 D2B builder_communities to render actual builder names and minimum prices instead of static open data
+b1245de fix: wire WhyListingBooth + CityExplorer to Wired-First Doctrine - WhyListingBooth chat demo now pulls real listing data from /api/listings - Replaced fabricated sold prices with live listing price and total count - CityExplorer replaced all Unsplash stock photos with CSS gradients - Added live per-city listing count badges from API
+1514810 fix: enforce Wired-First Doctrine across all homepage sections - VisionAIFeatures now pulls live data from core_logic schema - Removed FALLBACK_PROJECTS fabricated array from NewConstructionSpotlight - All bento cards display real database stats, counts, and property images
+1f3c7cf feat: Phase 4-8 production rollup ΓÇö Vision AI pipeline, VABOT D2B engine, wired core_logic search
+c5851fe style(nav): decrease header footprint by 30% to maximize screen real estate
+8a0d4ca refactor(auth): pivot to consumer-first VIP portal login architecture
+baa44f4 feat(auth): add email and password login form to agent portal
+704c65f fix(nav): resolve React hydration hook order error caused by early returns
+14c6b43 style: overhaul NavHeader typography and layout for premium aesthetic
+1180e3a feat: api hardening - inject premium seed data fallbacks into /api/listings to prevent empty states during DDF sync
+427ebf7 fix: explicit white colors for all h1/h2 headings on dark mode pages to fix readability
+b53efce feat: freemium CMA sell page with 7 premium value-adds and blurred report preview
+d860146 feat: property comparison engine with live MLS search and freemium gating
+45144b5 feat: 10x tools page overhaul with 10 interactive calculators for buyers/sellers/investors
+b496f4e feat: 10x market report overhaul with real CREA/OREB/TRREB Feb 2026 data
+d9d2bee fix: add client-side fallback to new-construction detail page so project links always work
+8633a2a fix: eliminate empty states with client-side fallback seed data for new construction
+9246ed4 refactor: rename GodModeHero to VisionHero, update WhyListingBooth section
+ede0724 feat: overhaul CityExplorer with premium image bento grid, add Kanata/Orleans/Nepean/Barrhaven, fix NavHeader wrapping
+13e3972 feat: complete overhaul of VisionAIFeatures into a 3x premium bento box with CSS art

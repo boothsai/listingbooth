@@ -2,22 +2,57 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
+
+const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false });
+const Marker = dynamic(() => import('react-leaflet').then(m => m.Marker), { ssr: false });
+const Popup = dynamic(() => import('react-leaflet').then(m => m.Popup), { ssr: false });
+
+// Fix: Leaflet tiles don't render when map initializes off-screen
+const MapResizer = dynamic(() => Promise.resolve(function MapResizerInner() {
+  const { useMap } = require('react-leaflet');
+  const { useEffect } = require('react');
+  const map = useMap();
+  useEffect(() => {
+    const t1 = setTimeout(() => map.invalidateSize(), 300);
+    const t2 = setTimeout(() => map.invalidateSize(), 800);
+    const t3 = setTimeout(() => map.invalidateSize(), 2000);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [map]);
+  return null;
+}), { ssr: false });
+
+interface Product {
+  model_name: string;
+  home_type: string;
+  beds: number;
+  baths: number;
+  sqft: number;
+  price_from: number;
+}
 
 interface Project {
   slug: string;
   name: string;
   builder: string;
+  builder_website?: string | null;
   city: string;
-  province: string;
+  province?: string;
   price_from: number;
   property_type: string;
   status: string;
   description: string;
-  features: string[];
+  features?: string[];
   completion_year: number;
   total_units: number;
   color: string;
   photo_url?: string | null;
+  trust_score?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  products?: Product[];
 }
 
 const FALLBACK_PROJECTS: Record<string, Project> = {
@@ -29,12 +64,44 @@ const FALLBACK_PROJECTS: Record<string, Project> = {
 
 export default function NewConstructionDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const [project, setProject] = useState<Project | null>(null);
+  const [similar, setSimilar] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [slug, setSlug] = useState('');
+  const [mapReady, setMapReady] = useState(false);
+  
+  // Paywall State
+  const [unlocked, setUnlocked] = useState(false);
+  const [freebiesLeft, setFreebiesLeft] = useState<number | null>(null);
+  
+  // Lead Capture State
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [isRealtor, setIsRealtor] = useState(false);
 
   useEffect(() => {
     params.then(p => {
       setSlug(p.slug);
+
+      // Metered Paywall Engine (2 Freebies)
+      const isGlobalUnlocked = localStorage.getItem('vip_unlocked') === 'true';
+      if (isGlobalUnlocked) {
+        setUnlocked(true);
+      } else {
+        let viewed = JSON.parse(localStorage.getItem('viewed_projects') || '[]');
+        if (!viewed.includes(p.slug)) {
+          viewed.push(p.slug);
+          localStorage.setItem('viewed_projects', JSON.stringify(viewed));
+        }
+        
+        if (viewed.length <= 2) {
+          setUnlocked(true);
+          setFreebiesLeft(3 - viewed.length);
+        } else {
+          setUnlocked(false);
+          setFreebiesLeft(0);
+        }
+      }
       // Set fallback immediately so the UI renders instantly
       if (FALLBACK_PROJECTS[p.slug]) {
         setProject(FALLBACK_PROJECTS[p.slug]);
@@ -43,9 +110,13 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
         .then(r => r.json())
         .then(d => {
           if (d.project) setProject(d.project);
+          if (d.similar) setSimilar(d.similar);
         })
         .catch(() => {})
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+          setTimeout(() => setMapReady(true), 300);
+        });
     });
   }, [params]);
 
@@ -72,16 +143,32 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
     );
   }
 
+  const builderScore = project.trust_score || 0;
+  const scoreColor = builderScore >= 90 ? '#10b981' : builderScore >= 70 ? '#f59e0b' : '#ef4444';
+
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '120px 24px 80px' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '120px 24px 80px' }}>
       {/* Breadcrumb */}
       <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: '#888' }}>
         <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>Home</Link>
         <span>›</span>
         <Link href="/new-construction" style={{ color: '#888', textDecoration: 'none' }}>New Construction</Link>
         <span>›</span>
+        <Link href={`/new-construction/city/${project.city?.toLowerCase()}`} style={{ color: '#888', textDecoration: 'none' }}>{project.city}</Link>
+        <span>›</span>
         <span style={{ color: '#111' }}>{project.name}</span>
       </div>
+
+      {/* Freebie Meter Notification */}
+      {freebiesLeft !== null && freebiesLeft > 0 && unlocked && (
+        <div style={{ position: 'fixed', top: '100px', right: '24px', zIndex: 1000, background: 'rgba(17,17,17,0.9)', backdropFilter: 'blur(12px)', color: 'white', padding: '12px 20px', borderRadius: '16px', border: '1px solid #10b981', boxShadow: '0 8px 32px rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ background: '#10b981', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, color: '#111' }}>{freebiesLeft}</div>
+          <div>
+            <div style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', color: '#10b981', letterSpacing: '0.05em' }}>VIP Freebie Mode</div>
+            <div style={{ fontSize: '14px', fontWeight: 500, color: '#ccc' }}>Free views remaining before signup.</div>
+          </div>
+        </div>
+      )}
 
       {/* Hero */}
       <div style={{
@@ -105,78 +192,331 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
         <h1 style={{ margin: '0 0 4px', fontSize: '48px', fontWeight: 900, color: 'white', letterSpacing: '-2px' }}>
           {project.name}
         </h1>
-        <p style={{ margin: 0, fontSize: '18px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
-          by {project.builder} · {project.city}, {project.province}
-        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <p style={{ margin: 0, fontSize: '18px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
+            by {project.builder} · {project.city}{project.province ? `, ${project.province}` : ''}
+          </p>
+          {project.trust_score && project.trust_score >= 90 && (
+            <Link href="/builder-score" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '4px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 800, border: '1px solid rgba(16,185,129,0.3)', backdropFilter: 'blur(8px)', textDecoration: 'none' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+              BUILDER SCORE {project.trust_score}
+            </Link>
+          )}
+        </div>
       </div>
 
-      {/* Stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '16px', marginBottom: '40px' }}>
-        {[
-          { label: 'Starting From', value: `$${project.price_from?.toLocaleString()}`, icon: '💰' },
-          { label: 'Property Type', value: project.property_type, icon: '🏠' },
-          { label: 'Est. Completion', value: project.completion_year?.toString(), icon: '📅' },
-          { label: 'Total Units', value: project.total_units?.toString(), icon: '🏢' },
-        ].map(s => (
-          <div key={s.label} style={{
-            padding: '20px', borderRadius: '16px',
-            background: 'white', border: '1.5px solid #eee',
+      {/* 🔐 PAYWALL CONTAINER */}
+      <div style={{ position: 'relative' }}>
+        
+        {/* The Paywall Overlay */}
+        {!unlocked && (
+          <div style={{
+            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+            zIndex: 100, display: 'flex', justifyContent: 'center', paddingTop: '80px',
+            pointerEvents: 'auto'
           }}>
-            <span style={{ fontSize: '24px', marginBottom: '8px', display: 'block' }}>{s.icon}</span>
-            <p style={{ margin: '0 0 4px', fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{s.label}</p>
-            <p style={{ margin: 0, fontSize: '20px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>{s.value}</p>
+            <div style={{
+              background: '#111', width: '100%', maxWidth: '440px', padding: '40px',
+              borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: '0 24px 80px rgba(0,0,0,0.8), 0 0 0 100vw rgba(0,0,0,0.2)', color: 'white', textAlign: 'center',
+              height: 'fit-content'
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔐</div>
+              <h3 style={{ fontSize: '26px', fontWeight: 900, marginBottom: '8px', letterSpacing: '-0.5px' }}>Unlock VIP Access</h3>
+              <p style={{ fontSize: '15px', color: '#aaa', marginBottom: '28px', lineHeight: 1.6 }}>
+                You have exhausted your free project views. Create your free account to instantly reveal structural pricing, exact unit sizes, and exclusive VIP developer incentives.
+              </p>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px', textAlign: 'left' }}>
+                <input type="text" placeholder="Full Name*" value={name} onChange={e => setName(e.target.value)}
+                  style={{ width: '100%', padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', fontSize: '15px', outline: 'none' }} />
+                <input type="email" placeholder="Email Address*" value={email} onChange={e => setEmail(e.target.value)}
+                  style={{ width: '100%', padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', fontSize: '15px', outline: 'none' }} />
+                <input type="tel" placeholder="Phone Number (Optional)" value={phone} onChange={e => setPhone(e.target.value)}
+                  style={{ width: '100%', padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', fontSize: '15px', outline: 'none' }} />
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: '#aaa', marginTop: '8px', padding: '0 8px' }}>
+                  <input type="checkbox" checked={isRealtor} onChange={e => setIsRealtor(e.target.checked)} style={{ width: '18px', height: '18px', accentColor: project.color || '#10b981' }} />
+                  I am a licensed Real Estate Agent
+                </label>
+              </div>
+
+              <button 
+                onClick={() => { if (email && name) { setUnlocked(true); setFreebiesLeft(null); localStorage.setItem('vip_unlocked', 'true'); } else { alert("Please enter Name and Email to unlock."); } }}
+                style={{ width: '100%', background: project.color || '#111', color: 'white', padding: '18px', borderRadius: '12px', fontSize: '15px', fontWeight: 900, border: 'none', cursor: 'pointer', transition: 'transform 0.2s', letterSpacing: '-0.5px' }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                Reveal VIP Project Data
+              </button>
+            </div>
           </div>
-        ))}
-      </div>
+        )}
 
-      {/* Description */}
-      <div style={{ marginBottom: '40px' }}>
-        <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>About {project.name}</h2>
-        <p style={{ margin: 0, fontSize: '16px', color: '#555', lineHeight: 1.8, fontWeight: 500 }}>
-          {project.description}
-        </p>
-      </div>
+        {/* SEO-Safe Blurred Content Container */}
+        <div style={{
+          filter: !unlocked ? 'blur(16px)' : 'none',
+          opacity: !unlocked ? 0.2 : 1,
+          pointerEvents: !unlocked ? 'none' : 'auto',
+          userSelect: !unlocked ? 'none' : 'auto',
+          transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+        }}>
 
-      {/* Features */}
-      {project.features && project.features.length > 0 && (
-        <div style={{ marginBottom: '40px' }}>
-          <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Key Features</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-            {project.features.map((f, i) => (
-              <div key={i} style={{
-                padding: '16px 20px', borderRadius: '12px',
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 1: Key Stats Grid (6 metrics)
+          ═══════════════════════════════════════════════════════ */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginBottom: '40px' }}>
+            {[
+              { label: 'Starting From', value: project.price_from ? `$${project.price_from.toLocaleString()}` : 'TBD', icon: '💰' },
+              { label: 'Property Type', value: project.property_type, icon: '🏠' },
+              { label: 'Est. Completion', value: project.completion_year?.toString(), icon: '📅' },
+              { label: 'Total Models', value: (project.products?.length || project.total_units || 0).toString(), icon: '🏢' },
+              { label: 'Builder Score', value: builderScore ? `${builderScore}/100` : 'N/A', icon: '🛡️' },
+              { label: 'City', value: project.city, icon: '📍' },
+            ].map(s => (
+              <div key={s.label} style={{
+                padding: '20px', borderRadius: '16px',
                 background: 'white', border: '1.5px solid #eee',
-                fontSize: '14px', fontWeight: 700, color: '#333',
-                display: 'flex', alignItems: 'center', gap: '10px',
               }}>
-                <span style={{ color: project.color, fontSize: '16px' }}>✓</span>
-                {f}
+                <span style={{ fontSize: '24px', marginBottom: '8px', display: 'block' }}>{s.icon}</span>
+                <p style={{ margin: '0 0 4px', fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{s.label}</p>
+                <p style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>{s.value}</p>
               </div>
             ))}
           </div>
-        </div>
-      )}
 
-      {/* CTA */}
-      <div style={{
-        padding: '40px', borderRadius: '20px',
-        background: `linear-gradient(135deg, ${project.color} 0%, ${project.color}cc 100%)`,
-        textAlign: 'center',
-      }}>
-        <h2 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 900, color: 'white', letterSpacing: '-1px' }}>
-          Interested in {project.name}?
-        </h2>
-        <p style={{ margin: '0 0 24px', fontSize: '16px', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
-          Get exclusive pricing, floor plans, and VIP access to this development.
-        </p>
-        <Link href="/sell" style={{
-          display: 'inline-block', background: 'white', color: project.color,
-          padding: '14px 32px', borderRadius: '100px',
-          fontSize: '16px', fontWeight: 900, textDecoration: 'none',
-          letterSpacing: '-0.5px',
-        }}>
-          Request Info →
-        </Link>
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 2: About the Community
+          ═══════════════════════════════════════════════════════ */}
+          <div style={{ marginBottom: '40px' }}>
+            <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>About {project.name}</h2>
+            <p style={{ margin: 0, fontSize: '16px', color: '#555', lineHeight: 1.8, fontWeight: 500 }}>
+              {project.description}
+            </p>
+          </div>
+
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 3: Available Unit Types Table
+          ═══════════════════════════════════════════════════════ */}
+          {project.products && project.products.length > 0 && (
+            <div style={{ marginBottom: '40px' }}>
+              <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Available Unit Types</h2>
+              <div style={{ borderRadius: '16px', border: '1.5px solid #eee', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                  <thead>
+                    <tr style={{ background: '#f7f7f7' }}>
+                      <th style={{ padding: '14px 20px', textAlign: 'left', fontWeight: 800, color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Model</th>
+                      <th style={{ padding: '14px 20px', textAlign: 'left', fontWeight: 800, color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Type</th>
+                      <th style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Beds</th>
+                      <th style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Baths</th>
+                      <th style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 800, color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Sq Ft</th>
+                      <th style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 800, color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>From</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {project.products.map((p, i) => (
+                      <tr key={i} style={{ borderTop: '1px solid #eee' }}>
+                        <td style={{ padding: '14px 20px', fontWeight: 700, color: '#111' }}>{p.model_name || '—'}</td>
+                        <td style={{ padding: '14px 20px', color: '#555' }}>{p.home_type || '—'}</td>
+                        <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 700 }}>{p.beds || '—'}</td>
+                        <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 700 }}>{p.baths || '—'}</td>
+                        <td style={{ padding: '14px 20px', textAlign: 'right', color: '#555' }}>{p.sqft ? `${p.sqft.toLocaleString()} sf` : '—'}</td>
+                        <td style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 900, color: '#111' }}>{p.price_from ? `$${p.price_from.toLocaleString()}` : 'TBD'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 4: Builder Profile Card
+          ═══════════════════════════════════════════════════════ */}
+          <div style={{ marginBottom: '40px', padding: '32px', borderRadius: '20px', background: '#fafafa', border: '1.5px solid #eee' }}>
+            <h2 style={{ margin: '0 0 20px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>About the Builder</h2>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', flexWrap: 'wrap' }}>
+              <div style={{ width: '80px', height: '80px', borderRadius: '20px', background: `linear-gradient(135deg, ${project.color} 0%, ${project.color}88 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', color: 'white', fontWeight: 900, flexShrink: 0 }}>
+                {project.builder?.charAt(0)}
+              </div>
+              <div style={{ flex: 1, minWidth: '240px' }}>
+                <h3 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, letterSpacing: '-0.5px' }}>{project.builder}</h3>
+                <p style={{ margin: '0 0 16px', fontSize: '14px', color: '#888', fontWeight: 600 }}>Licensed Ontario Builder · Active in {project.city}</p>
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                  <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Builder Score</span>
+                    <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: scoreColor }}>{builderScore}/100</p>
+                  </div>
+                  <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tarion Warranty</span>
+                    <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: '#10b981' }}>Active</p>
+                  </div>
+                  <div style={{ padding: '8px 16px', borderRadius: '12px', background: 'white', border: '1.5px solid #eee' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>HCRA Status</span>
+                    <p style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 900, color: '#10b981' }}>Licensed</p>
+                  </div>
+                </div>
+                {project.builder_website && (
+                  <a href={project.builder_website} target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', fontWeight: 700, color: project.color || '#da291c', textDecoration: 'none' }}>
+                    Visit Builder Website →
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 5: Features Grid
+          ═══════════════════════════════════════════════════════ */}
+          {project.features && project.features.length > 0 && (
+            <div style={{ marginBottom: '40px' }}>
+              <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Key VIP Features</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
+                {project.features.map((f, i) => (
+                  <div key={i} style={{
+                    padding: '16px 20px', borderRadius: '12px',
+                    background: 'white', border: '1.5px solid #eee',
+                    fontSize: '14px', fontWeight: 700, color: '#333',
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                  }}>
+                    <span style={{ color: project.color, fontSize: '16px' }}>✓</span>
+                    {f}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 6: Nearby Developments Map
+          ═══════════════════════════════════════════════════════ */}
+          {project.latitude && project.longitude && mapReady && (
+            <div style={{ marginBottom: '40px' }}>
+              <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Nearby Developments Map</h2>
+              <div style={{ height: '420px', borderRadius: '20px', overflow: 'hidden', position: 'relative', boxShadow: '0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)' }}>
+                <MapContainer
+                  center={[project.latitude, project.longitude]}
+                  zoom={11}
+                  style={{ height: '100%', width: '100%', background: '#f8f8f8' }}
+                  scrollWheelZoom={false}
+                  attributionControl={false}
+                  zoomControl={false}
+                >
+                  <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+                  <MapResizer />
+                  {/* Current Project — Red branded pin with building icon */}
+                  <Marker position={[project.latitude, project.longitude]}
+                    icon={(() => { try { const L = require('leaflet'); return L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;gap:6px;background:#da291c;color:white;padding:8px 14px;border-radius:12px;font-size:13px;font-weight:800;white-space:nowrap;box-shadow:0 4px 20px rgba(218,41,28,0.4);letter-spacing:-0.3px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 21V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v15"/><path d="M5 21V12a1 1 0 0 1 1-1h2"/><path d="M19 21V12a1 1 0 0 0-1-1h-2"/></svg>${project.name}</div>`, iconSize: [0, 0], iconAnchor: [80, 20] }); } catch { return undefined; } })()}
+                  >
+                    <Popup>
+                      <div style={{ padding: '12px', fontSize: '14px' }}>
+                        <div style={{ fontWeight: 900, marginBottom: '4px' }}>📍 {project.name}</div>
+                        <div style={{ color: '#555', marginBottom: '8px' }}>by {project.builder} · {project.city}</div>
+                        <div style={{ fontWeight: 900, color: '#da291c' }}>{project.price_from ? `From $${project.price_from.toLocaleString()}` : 'Pricing TBD'}</div>
+                      </div>
+                    </Popup>
+                  </Marker>
+                  {/* Nearby Projects — White pins with building icon + name + builder */}
+                  {similar.filter(s => s.latitude && s.longitude).map(s => (
+                    <Marker key={s.slug} position={[s.latitude!, s.longitude!]}
+                      icon={(() => { try { const L = require('leaflet'); return L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;gap:6px;background:white;color:#111;padding:7px 12px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 16px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#da291c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 21V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v15"/><path d="M5 21V12a1 1 0 0 1 1-1h2"/><path d="M19 21V12a1 1 0 0 0-1-1h-2"/></svg><div><div style="font-weight:800;letter-spacing:-0.3px">${s.name}</div><div style="font-size:10px;color:#888;font-weight:600">${s.builder}</div></div></div>`, iconSize: [0, 0], iconAnchor: [60, 20] }); } catch { return undefined; } })()}
+                    >
+                      <Popup>
+                        <div style={{ padding: '12px', fontSize: '14px' }}>
+                          <div style={{ fontWeight: 900, marginBottom: '4px' }}>{s.name}</div>
+                          <div style={{ color: '#555', marginBottom: '4px' }}>by {s.builder}</div>
+                          {s.trust_score && s.trust_score >= 90 && (
+                            <div style={{ color: '#10b981', fontWeight: 800, fontSize: '12px', marginBottom: '4px' }}>Builder Score {s.trust_score}/100</div>
+                          )}
+                          <div style={{ fontWeight: 900 }}>{s.price_from ? `From $${s.price_from.toLocaleString()}` : 'Pricing TBD'}</div>
+                          <a href={`/new-construction/${s.slug}`} style={{ display: 'inline-block', marginTop: '8px', color: '#da291c', fontWeight: 700, fontSize: '13px' }}>View Project →</a>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
+                </MapContainer>
+                {/* Premium vignette edge overlay */}
+                <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 500, borderRadius: '20px', boxShadow: 'inset 0 0 60px rgba(0,0,0,0.06)' }}></div>
+                {/* Map Legend */}
+                <div style={{ position: 'absolute', bottom: '16px', left: '16px', zIndex: 1000, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', padding: '10px 14px', borderRadius: '10px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '6px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', border: '1px solid rgba(0,0,0,0.06)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#da291c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M9 21V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v15"/><path d="M5 21V12a1 1 0 0 1 1-1h2"/><path d="M19 21V12a1 1 0 0 0-1-1h-2"/></svg>
+                    <span style={{ fontWeight: 700, color: '#da291c' }}>This Project</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M9 21V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v15"/><path d="M5 21V12a1 1 0 0 1 1-1h2"/><path d="M19 21V12a1 1 0 0 0-1-1h-2"/></svg>
+                    <span style={{ fontWeight: 700, color: '#333' }}>Nearby Developments</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 7: Similar Projects in this City
+          ═══════════════════════════════════════════════════════ */}
+          {similar.length > 0 && (
+            <div style={{ marginBottom: '40px' }}>
+              <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Similar Projects in {project.city}</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
+                {similar.map(s => (
+                  <Link key={s.slug} href={`/new-construction/${s.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div style={{
+                      borderRadius: '16px', border: '1.5px solid #eee', overflow: 'hidden',
+                      background: 'white', transition: 'transform 0.2s, box-shadow 0.2s',
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.1)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+                    >
+                      <div style={{
+                        height: '140px',
+                        background: s.photo_url
+                          ? `url(${s.photo_url}) center/cover`
+                          : `linear-gradient(135deg, ${s.color} 0%, ${s.color}66 100%)`,
+                        display: 'flex', alignItems: 'flex-end', padding: '12px',
+                      }}>
+                        {s.trust_score && s.trust_score >= 90 && (
+                          <div style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '4px 10px', borderRadius: '100px', fontSize: '11px', fontWeight: 800, border: '1px solid rgba(16,185,129,0.3)', backdropFilter: 'blur(8px)' }}>
+                            BUILDER SCORE {s.trust_score}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ padding: '16px 20px' }}>
+                        <p style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>{s.name}</p>
+                        <p style={{ margin: '0 0 8px', fontSize: '13px', color: '#888', fontWeight: 600 }}>by {s.builder}</p>
+                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: project.color || '#da291c' }}>{s.price_from ? `From $${s.price_from.toLocaleString()}` : 'Pricing TBD'}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════
+              SECTION 8: CTA
+          ═══════════════════════════════════════════════════════ */}
+          <div style={{
+            padding: '40px', borderRadius: '20px',
+            background: `linear-gradient(135deg, ${project.color} 0%, ${project.color}cc 100%)`,
+            textAlign: 'center',
+          }}>
+            <h2 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 900, color: 'white', letterSpacing: '-1px' }}>
+              Interested in {project.name}?
+            </h2>
+            <p style={{ margin: '0 0 24px', fontSize: '16px', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
+              Get exclusive pricing, floor plans, and VIP access to this development.
+            </p>
+            <Link href="/sell" style={{
+              display: 'inline-block', background: 'white', color: project.color,
+              padding: '14px 32px', borderRadius: '100px',
+              fontSize: '16px', fontWeight: 900, textDecoration: 'none',
+              letterSpacing: '-0.5px',
+            }}>
+              Request Priority Access →
+            </Link>
+          </div>
+
+        </div>
       </div>
     </div>
   );

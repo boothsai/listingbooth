@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const NewConstructionMap = dynamic(() => import('@/components/NewConstructionMap'), { ssr: false });
 
 interface Project {
   slug: string;
@@ -16,6 +19,7 @@ interface Project {
   total_units: number;
   completion_year: number;
   photo_url?: string | null;
+  trust_score?: number | null;
 }
 
 const STATUS_FILTERS = ['All', 'Now Selling', 'Pre-Construction', 'Coming Soon'];
@@ -84,22 +88,44 @@ export default function NewConstructionListPage() {
           ))}
         </div>
         <div style={{ display: 'flex', gap: '4px', padding: '4px', background: 'white', borderRadius: '12px', border: '1.5px solid #eee' }}>
-          {CITY_FILTERS.map(c => (
-            <button key={c} onClick={() => setCityFilter(c)} style={{
-              padding: '8px 16px', borderRadius: '8px', border: 'none',
-              background: cityFilter === c ? '#111' : 'transparent',
-              color: cityFilter === c ? 'white' : '#666',
-              fontSize: '13px', fontWeight: 700, cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}>
-              {c}
-            </button>
-          ))}
+          {CITY_FILTERS.map(c => {
+            const isAll = c === 'All';
+            const cityUrl = isAll ? '/new-construction' : `/new-construction/city/${c.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+            
+            return (
+              <Link key={c} href={cityUrl} style={{
+                padding: '8px 16px', borderRadius: '8px', border: 'none', textDecoration: 'none',
+                background: cityFilter === c ? '#111' : 'transparent',
+                color: cityFilter === c ? 'white' : '#666',
+                fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}>
+                {c}
+              </Link>
+            );
+          })}
         </div>
         <span style={{ fontSize: '13px', fontWeight: 700, color: '#888' }}>
           {filtered.length} {filtered.length === 1 ? 'project' : 'projects'}
         </span>
       </div>
+
+      {/* Map Hero */}
+      {!loading && filtered.length > 0 && (
+        <div style={{ height: '600px', width: '100%', borderRadius: '24px', overflow: 'hidden', marginBottom: '40px', border: '1.5px solid #eee', position: 'relative', background: '#111' }}>
+          <NewConstructionMap projects={filtered} />
+          
+          {/* Map Overlay Badge */}
+          <div style={{ position: 'absolute', top: '24px', left: '80px', zIndex: 1000, background: 'rgba(17,17,17,0.85)', backdropFilter: 'blur(12px)', color: 'white', padding: '12px 20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+            <div style={{ fontSize: '11px', fontWeight: 800, color: '#10b981', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '4px' }}>
+              Live Radar Active
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: 900, letterSpacing: '-0.5px' }}>
+              Yield & Trust Mapping
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Grid */}
       {loading ? (
@@ -156,9 +182,17 @@ export default function NewConstructionListPage() {
                     <h3 style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 900, color: 'white', letterSpacing: '-0.5px' }}>
                       {p.name}
                     </h3>
-                    <p style={{ margin: 0, fontSize: '14px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
-                      by {p.builder}
-                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <p style={{ margin: 0, fontSize: '14px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
+                        by {p.builder}
+                      </p>
+                      {p.trust_score && p.trust_score >= 90 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '2px 8px', borderRadius: '100px', fontSize: '10px', fontWeight: 800, border: '1px solid rgba(16,185,129,0.2)' }}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                          TRUST {p.trust_score}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

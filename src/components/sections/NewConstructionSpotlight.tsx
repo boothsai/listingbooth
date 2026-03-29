@@ -13,6 +13,7 @@ interface Project {
   status: string;
   color: string;
   photo_url?: string | null;
+  trust_score?: number | null;
 }
 
 // Wired-First Doctrine: No hardcoded fallback arrays. Data comes from core_logic or nothing.
@@ -100,9 +101,17 @@ export default function NewConstructionSpotlight() {
                     <h3 style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 900, color: 'white', letterSpacing: '-0.5px' }}>
                       {p.name}
                     </h3>
-                    <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
-                      by {p.builder}
-                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
+                        by {p.builder}
+                      </p>
+                      {p.trust_score && p.trust_score >= 90 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '2px 8px', borderRadius: '100px', fontSize: '10px', fontWeight: 800, border: '1px solid rgba(16,185,129,0.2)', backdropFilter: 'blur(4px)' }}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                          BUILDER SCORE {p.trust_score}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     let query: any = supabase
       .schema('core_logic')
       .from('builder_communities')
-      .select('*, builders(name), builder_products(price_from)')
+      .select('*, builders(name, trust_score), builder_products(price_from)')
       .order('created_at', { ascending: false });
 
     if (city) query = query.eq('city', city);
@@ -38,27 +38,45 @@ export async function GET(req: NextRequest) {
         slug: c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
         name: c.name,
         builder: c.builders?.name || 'Unknown Builder',
+        builder_website: c.builders?.website_url || null,
+        trust_score: c.builders?.trust_score || null,
         city: c.city,
         price_from: minPrice,
         property_type: 'Master-Planned Community',
         status: c.status || 'Pre-Construction',
         color: '#111',
         description: `Premium new construction community by ${c.builders?.name || 'Unknown Builder'} located in ${c.city}.`,
-        total_units: prices.length || 0, // Fallback unit count approximation based on extracted product models
+        latitude: c.latitude,
+        longitude: c.longitude,
+        total_units: prices.length || 0,
         completion_year: 2026,
-        photo_url: c.hero_image_url
+        photo_url: c.hero_image_url,
+        // Enriched: individual unit models
+        products: (c.builder_products || []).map((p: any) => ({
+          model_name: p.model_name,
+          home_type: p.home_type,
+          beds: p.beds,
+          baths: p.baths,
+          sqft: p.sqft,
+          price_from: p.price_from,
+        })),
       };
     };
 
     if (slug) {
-      // Find matching slug conceptually since we generate it dynamically above
       const { data, error } = await query;
       if (error) return NextResponse.json({ project: null, error: error.message }, { status: 404 });
       
       const matched = data.find((c: any) => formatProject(c).slug === slug);
       if (!matched) return NextResponse.json({ project: null, error: 'Not found' }, { status: 404 });
       
-      return NextResponse.json({ project: formatProject(matched) });
+      // Build similar projects (same city, excluding current)
+      const similar = data
+        .filter((c: any) => c.city === matched.city && c.id !== matched.id)
+        .slice(0, 4)
+        .map(formatProject);
+
+      return NextResponse.json({ project: formatProject(matched), similar });
     }
 
     const { data, error } = await query;
