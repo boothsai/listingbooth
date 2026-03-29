@@ -79,6 +79,10 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
   const [phone, setPhone] = useState('');
   const [isRealtor, setIsRealtor] = useState(false);
 
+  // Active Listings Layer
+  const [nearbyListings, setNearbyListings] = useState<any[]>([]);
+  const [showListings, setShowListings] = useState(true);
+
   useEffect(() => {
     params.then(p => {
       setSlug(p.slug);
@@ -109,7 +113,25 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
       fetch(`/api/new-construction?slug=${p.slug}`)
         .then(r => r.json())
         .then(d => {
-          if (d.project) setProject(d.project);
+          if (d.project) {
+            setProject(d.project);
+            // Fetch nearby resale listings within ~5km radius
+            if (d.project.latitude && d.project.longitude) {
+              const R = 0.045; // ~5km in degrees
+              fetch('/api/listings/bounds', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  minLat: d.project.latitude - R,
+                  maxLat: d.project.latitude + R,
+                  minLng: d.project.longitude - R,
+                  maxLng: d.project.longitude + R,
+                }),
+              }).then(r => r.json()).then(r => {
+                if (r.results) setNearbyListings(r.results.slice(0, 50));
+              }).catch(() => {});
+            }
+          }
           if (d.similar) setSimilar(d.similar);
         })
         .catch(() => {})
@@ -413,7 +435,27 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
           ═══════════════════════════════════════════════════════ */}
           {project.latitude && project.longitude && mapReady && (
             <div style={{ marginBottom: '40px' }}>
-              <h2 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Nearby Developments Map</h2>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+                <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Nearby Developments Map</h2>
+                <button
+                  onClick={() => setShowListings(!showListings)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    padding: '8px 16px', borderRadius: '100px',
+                    background: showListings ? '#0d9488' : '#f5f5f5',
+                    color: showListings ? 'white' : '#888',
+                    border: showListings ? 'none' : '1.5px solid #eee',
+                    fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                  {showListings ? `Active Listings (${nearbyListings.length})` : 'Show Active Listings'}
+                </button>
+              </div>
               <div style={{ height: '420px', borderRadius: '20px', overflow: 'hidden', position: 'relative', boxShadow: '0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)' }}>
                 <MapContainer
                   center={[project.latitude, project.longitude]}
@@ -455,6 +497,23 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
                       </Popup>
                     </Marker>
                   ))}
+                  {/* Active Resale Listings — teal house markers */}
+                  {showListings && nearbyListings.map((l, i) => (
+                    l.latitude && l.longitude && (
+                      <Marker key={`resale-${i}`} position={[l.latitude, l.longitude]}
+                        icon={(() => { try { const L = require('leaflet'); const price = l.list_price >= 1000000 ? `$${(l.list_price/1000000).toFixed(1)}M` : `$${Math.round(l.list_price/1000)}k`; return L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;gap:4px;background:#0d9488;color:white;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 2px 10px rgba(13,148,136,0.3);letter-spacing:-0.3px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>${price}</div>`, iconSize: [0, 0], iconAnchor: [40, 12] }); } catch { return undefined; } })()}
+                      >
+                        <Popup>
+                          <div style={{ padding: '12px', fontSize: '14px' }}>
+                            <div style={{ fontWeight: 900, marginBottom: '4px' }}>{l.address_street}</div>
+                            <div style={{ color: '#555', marginBottom: '4px' }}>{l.property_type} · {l.bedrooms_total}bd/{l.bathrooms_total}ba</div>
+                            <div style={{ fontWeight: 900, color: '#0d9488' }}>${l.list_price?.toLocaleString()}</div>
+                            <a href={`/listing/${l.listing_key}`} style={{ display: 'inline-block', marginTop: '8px', color: '#0d9488', fontWeight: 700, fontSize: '13px' }}>View Listing →</a>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    )
+                  ))}
                 </MapContainer>
                 {/* Premium vignette edge overlay */}
                 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 500, borderRadius: '20px', boxShadow: 'inset 0 0 60px rgba(0,0,0,0.06)' }}></div>
@@ -468,6 +527,12 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M9 21V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v15"/><path d="M5 21V12a1 1 0 0 1 1-1h2"/><path d="M19 21V12a1 1 0 0 0-1-1h-2"/></svg>
                     <span style={{ fontWeight: 700, color: '#333' }}>Nearby Developments</span>
                   </div>
+                  {showListings && nearbyListings.length > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                      <span style={{ fontWeight: 700, color: '#0d9488' }}>Active Listings ({nearbyListings.length})</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
