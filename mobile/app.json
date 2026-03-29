@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "ListingBooth",
+    "slug": "listingbooth",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fafafa"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.boothsai.listingbooth",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "ListingBooth uses your location to show nearby real estate developments on the map."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.boothsai.listingbooth",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#da291c"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "listingbooth-mobile"
+      }
+    }
+  }
+}
