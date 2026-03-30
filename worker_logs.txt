@@ -1,0 +1,37 @@
+﻿
+ Γ¢à∩╕Å wrangler 4.77.0
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+Successfully created tail, expires at 2026-03-30T07:06:34Z
+Connected to listingbooth, waiting for logs...
+GET https://listingbooth.com/listing/price-between-13110112-13929494 - Ok @ 3/29/2026, 9:08:20 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/listing-detail/1115657691/REDACTED(400_West)-ON - Ok @ 3/29/2026, 9:08:22 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/sold-listing/ON/Carlow-mayo - Ok @ 3/29/2026, 9:08:29 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/NS/Abbecombec-Ocean-Village - Ok @ 3/29/2026, 9:09:26 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/barrhavenottawa - Ok @ 3/29/2026, 9:13:24 PM
+  (error) Γ¿» ChunkLoadError: Failed to load chunk server/chunks/ssr/[root-of-the-server]__04l86jb._.js from runtime for chunk server/app/_not-found/page.js
+GET https://listingbooth.com/barrhavenottawa - Ok @ 3/29/2026, 9:13:25 PM
+  (error) Γ¿» ChunkLoadError: Failed to load chunk server/chunks/ssr/[root-of-the-server]__04l86jb._.js from runtime for chunk server/app/_not-found/page.js
+GET https://listingbooth.com/listing-detail/1178409534/REDACTED - Ok @ 3/29/2026, 9:13:26 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/barrhavenottawa - Ok @ 3/29/2026, 9:13:28 PM
+  (error) Γ¿» ChunkLoadError: Failed to load chunk server/chunks/ssr/[root-of-the-server]__04l86jb._.js from runtime for chunk server/app/_not-found/page.js
+GET https://listingbooth.com/ON/Anten-Mills - Ok @ 3/29/2026, 9:14:23 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/ - Ok @ 3/29/2026, 9:14:49 PM
+  (error) Γ¿» ChunkLoadError: Failed to load chunk server/chunks/ssr/[root-of-the-server]__0ux13n9._.js from runtime for chunk server/app/page.js
+GET https://listingbooth.com/listing-detail/1125442411/REDACTED._Marie-ON - Ok @ 3/29/2026, 9:15:53 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/listing-detail/1178278577/REDACTED - Ok @ 3/29/2026, 9:16:04 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/ON/Loretto,Adjala-tosorontio-loretto- - Ok @ 3/29/2026, 9:17:09 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/listing-detail/1178643760/REDACTED - Ok @ 3/29/2026, 9:17:48 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')
+GET https://listingbooth.com/ - Ok @ 3/29/2026, 9:17:57 PM
+  (error) Γ¿» TypeError: components.ComponentMod.handler is not a function
+GET https://listingbooth.com/sold-listing/ON/REDACTED,Blackburn-Hamlet - Ok @ 3/29/2026, 9:18:16 PM
+  (error) Γ¿» TypeError: Cannot read properties of undefined (reading 'default')

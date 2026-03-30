@@ -1,0 +1,185 @@
+﻿
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé OpenNext ΓÇö Cloudflare build Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+npx : WARN OpenNext is not 
+fully compatible with 
+Windows.
+At line:1 char:1
++ npx 
+opennextjs-cloudflare 
+build 2>&1 | Out-String | 
+Set-Content -Path ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (WAR  
+  N OpenNext i...e with    
+ Windows.:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+WARN For optimal 
+performance, it is 
+recommended to use Windows 
+Subsystem for Linux (WSL).
+WARN While OpenNext may 
+function on Windows, it 
+could encounter 
+unpredictable failures 
+during runtime.
+App directory: C:\ANTIGRAVITY\LISTINGBOOTH
+Next.js version : 16.2.1
+@opennextjs/cloudflare version: 1.18.0
+@opennextjs/aws version: 3.9.16
+
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé OpenNext ΓÇö Building Next.js app Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+
+> listingbooth-fresh@0.1.0 build
+> next build
+
+ΓÜá `eslint` configuration 
+in next.config.mjs is no 
+longer supported. See more 
+info here: https://nextjs.o
+rg/docs/app/api-reference/c
+li/next#next-lint-options
+ΓÜá Invalid 
+next.config.mjs options 
+detected: 
+ΓÜá     Unrecognized 
+key(s) in object: 'eslint'
+ΓÜá See more info here: htt
+ps://nextjs.org/docs/messag
+es/invalid-next-config
+Γû▓ Next.js 16.2.1 (Turbopack)
+- Environments: .env.local
+
+ΓÜá The "middleware" file 
+convention is deprecated. 
+Please use "proxy" 
+instead. Learn more: https:
+//nextjs.org/docs/messages/
+middleware-to-proxy
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 8.3s
+  Skipping validation of types
+  Finished TypeScript config validation in 16ms ...
+  Collecting page data using 11 workers ...
+ΓÜá Using edge runtime on 
+a page currently disables 
+static generation for that 
+page
+  Generating static pages using 11 workers (0/17) ...
+  Generating static pages using 11 workers (4/17) 
+  Generating static pages using 11 workers (8/17) 
+  Generating static pages using 11 workers (12/17) 
+Γ£ô Generating static pages using 11 workers (17/17) in 837ms
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ ╞Æ /[city]/[...slug]
+Γö£ ╞Æ /admin
+Γö£ ╞Æ /admin/analytics
+Γö£ ╞Æ /agent
+Γö£ ╞Æ /agent/billing
+Γö£ ╞Æ /agent/intelligence
+Γö£ ╞Æ /agent/login
+Γö£ ╞Æ /agent/settings
+Γö£ ╞Æ /agent/tours
+Γö£ ╞Æ /api/admin/invite
+Γö£ ╞Æ /api/agent/settings
+Γö£ ╞Æ /api/builder/verify
+Γö£ ╞Æ /api/chat
+Γö£ ╞Æ /api/collections
+Γö£ ╞Æ /api/deals/stage
+Γö£ ╞Æ /api/email/drip
+Γö£ ╞Æ /api/email/unsubscribe
+Γö£ ╞Æ /api/email/welcome-drip
+Γö£ ╞Æ /api/favorites
+Γö£ ╞Æ /api/ghost-alert
+Γö£ ╞Æ /api/lead/event
+Γö£ ╞Æ /api/leads
+Γö£ ╞Æ /api/leads/score
+Γö£ ╞Æ /api/listings
+Γö£ ╞Æ /api/listings/[id]
+Γö£ ╞Æ /api/listings/bounds
+Γö£ ╞Æ /api/listings/featured
+Γö£ ╞Æ /api/market/stats
+Γö£ ╞Æ /api/new-construction
+Γö£ ╞Æ /api/recommendations/[listing_key]
+Γö£ ╞Æ /api/saved-searches
+Γö£ ╞Æ /api/share
+Γö£ ╞Æ /api/stripe/checkout
+Γö£ ╞Æ /api/stripe/webhook
+Γö£ ╞Æ /auth/callback
+Γö£ Γùï /builder-score
+Γö£ Γùï /buy
+Γö£ ╞Æ /dashboard
+Γö£ ╞Æ /dashboard/collections
+Γö£ ╞Æ /dashboard/journey
+Γö£ ╞Æ /dashboard/messages
+Γö£ ╞Æ /dashboard/saved-searches
+Γö£ Γùï /developer
+Γö£ ╞Æ /favorites
+Γö£ ╞Æ /homes-for-sale/[...slug]
+Γö£ Γùï /icon.png
+Γö£ ╞Æ /legal/[slug]
+Γö£ ╞Æ /listing/[id]
+Γö£ Γùï /login
+Γö£ Γùï /map-search
+Γö£ Γùï /market-report
+Γö£ Γùï /new-construction
+Γö£ ╞Æ /new-construction/[slug]
+Γö£ ╞Æ /new-construction/city/[city]
+Γö£ ╞Æ /ottawa/[...slug]
+Γö£ Γùï /platform
+Γö£ Γùï /robots.txt
+Γö£ ╞Æ /search/vision
+Γö£ Γùï /sell
+Γö£ ╞Æ /share/[token]
+Γö£ ╞Æ /sitemap.xml
+Γö£ Γùï /tools
+Γö£ Γùï /tools/compare
+Γöö ╞Æ /unsubscribe
+
+
+╞Æ Proxy (Middleware)
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+
+
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé OpenNext ΓÇö Generating bundle Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+(node:38488) 
+ExperimentalWarning: 
+Importing JSON modules is 
+an experimental feature 
+and might change at any 
+time
+(Use `node 
+--trace-warnings ...` to 
+show where the warning was 
+created)
+Bundling middleware function...
+Bundling static assets...
+Bundling cache assets...
+Building server function: default...
+Applying code patches: 4.376s
+# copyPackageTemplateFiles
+[35mΓÜÖ∩╕Å Bundling the OpenNext server...
+[0m
+[35mWorker saved in `.open-next\worker.js` ≡ƒÜÇ
+[0m
+OpenNext build complete.
+

@@ -1,0 +1,90 @@
+
+┌─────────────────────────────┐
+│ OpenNext — Cloudflare build │
+└─────────────────────────────┘
+
+App directory: c:\ANTIGRAVITY\LISTINGBOOTH
+Next.js version : 16.2.1
+@opennextjs/cloudflare version: 1.18.0
+@opennextjs/aws version: 3.9.16
+
+┌─────────────────────────────────┐
+│ OpenNext — Building Next.js app │
+└─────────────────────────────────┘
+
+
+> listingbooth-fresh@0.1.0 build
+> next build
+
+▲ Next.js 16.2.1 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+
+
+Source path: ./src/app/globals.css
+Setting up new context...
+Finding changed files: 30.955ms
+Reading changed files: 638.491ms
+Sorting candidates: 12.303ms
+Generate rules: 123.278ms
+Build stylesheet: 2.181ms
+Potential classes:  8924
+Active contexts:  1
+JIT TOTAL: 1.073s
+
+
+Source path: ./node_modules/leaflet/dist/leaflet.css
+JIT TOTAL: 201.317ms
+
+
+✓ Compiled successfully in 11.9s
+  Skipping validation of types
+  Finished TypeScript config validation in 14ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/17) ...
+  Generating static pages using 11 workers (4/17) 
+  Generating static pages using 11 workers (8/17) 
+  Generating static pages using 11 workers (12/17) 
+✓ Generating static pages using 11 workers (17/17) in 2.1s
+  Finalizing page optimization ...
+
+---STDERR---
+WARN OpenNext is not fully compatible with Windows.
+WARN For optimal performance, it is recommended to use Windows Subsystem for Linux (WSL).
+WARN While OpenNext may function on Windows, it could encounter unpredictable failures during runtime.
+⚠ `eslint` configuration in next.config.mjs is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+⚠ Invalid next.config.mjs options detected: 
+⚠     Unrecognized key(s) in object: 'eslint'
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+⚠ Using edge runtime on a page currently disables static generation for that page
+unhandledRejection Error: EBUSY: resource busy or locked, copyfile 'c:\ANTIGRAVITY\LISTINGBOOTH\.next\server\interception-route-rewrite-manifest.js' -> 'c:\ANTIGRAVITY\LISTINGBOOTH\.next\standalone\.next\server\interception-route-rewrite-manifest.js'
+    at ignore-listed frames {
+  errno: -4082,
+  code: 'EBUSY',
+  syscall: 'copyfile',
+  path: 'c:\\ANTIGRAVITY\\LISTINGBOOTH\\.next\\server\\interception-route-rewrite-manifest.js',
+  dest: 'c:\\ANTIGRAVITY\\LISTINGBOOTH\\.next\\standalone\\.next\\server\\interception-route-rewrite-manifest.js'
+}
+node:internal/errors:984
+  const err = new Error(message);
+              ^
+
+Error: Command failed: npm run build
+    at genericNodeError (node:internal/errors:984:15)
+    at wrappedFn (node:internal/errors:538:14)
+    at checkExecSyncError (node:child_process:891:11)
+    at Object.execSync (node:child_process:963:15)
+    at buildNextjsApp (file:///c:/ANTIGRAVITY/LISTINGBOOTH/node_modules/@opennextjs/aws/dist/build/buildNextApp.js:15:8)
+    at build (file:///c:/ANTIGRAVITY/LISTINGBOOTH/node_modules/@opennextjs/cloudflare/dist/cli/build/build.js:50:9)
+    at async buildCommand (file:///c:/ANTIGRAVITY/LISTINGBOOTH/node_modules/@opennextjs/cloudflare/dist/cli/commands/build.js:33:5) {
+  status: 1,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 38416,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v20.18.2
