@@ -100,6 +100,7 @@ function getTypeBadgeStyle(type: string) {
 export default function MapExplorer() {
   const [city, setCity] = useState<CityConfig>(CITIES[0]);
   const [listings, setListings] = useState<ListingMarker[]>([]);
+  const [mapListings, setMapListings] = useState<ListingMarker[]>([]);
   const [count, setCount] = useState(0);
   const [avgPrice, setAvgPrice] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -156,8 +157,14 @@ export default function MapExplorer() {
       if (data.results) {
         if (append) {
           setListings(prev => [...prev, ...data.results]);
+          // keep mapListings as is
         } else {
           setListings(data.results);
+          if (data.mapPoints) {
+            setMapListings(data.mapPoints);
+          } else {
+            setMapListings(data.results);
+          }
         }
         // Only update totals from page 0 (subsequent pages don't compute them)
         if (data.totalEstimate && data.totalEstimate > 0) {
@@ -495,7 +502,7 @@ export default function MapExplorer() {
         <ExplorerMap
           center={city.center}
           zoom={city.zoom}
-          listings={listings}
+          listings={mapListings}
           selectedKey={selectedKey}
           onMarkerClick={handleMarkerClick}
           onBoundsChange={handleBoundsChange}

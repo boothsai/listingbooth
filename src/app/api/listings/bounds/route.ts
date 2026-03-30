@@ -89,6 +89,8 @@ export async function POST(req: NextRequest) {
     let totalEstimate = rows.length;
     let hasMore = rows.length === safePageSize;
 
+    let originalRows = [...rows]; // Keep copy for map points
+
     // Apply Center-Outwards programmatic sort if recommended
     if (isRecommended && rows.length > 0) {
       const centerLat = (minLat + maxLat) / 2;
@@ -98,6 +100,7 @@ export async function POST(req: NextRequest) {
         l._dist = Math.pow(l.latitude - centerLat, 2) + Math.pow(l.longitude - centerLng, 2);
       });
       rows.sort((a: any, b: any) => a._dist - b._dist);
+      originalRows = [...rows]; // update original rows to the sorted version
       
       // Save total estimate BEFORE we slice it
       totalEstimate = rows.length;
@@ -138,6 +141,20 @@ export async function POST(req: NextRequest) {
       return l;
     });
 
+    let mapPoints = undefined;
+    if (safePage === 0) {
+      // Provide lightweight coordinates for the full set so the map is fully populated immediately
+      mapPoints = originalRows.map((r: any) => ({
+        listing_key: r.listing_key,
+        latitude: r.latitude,
+        longitude: r.longitude,
+        list_price: r.list_price,
+        property_type: r.property_type,
+        listing_contract_date: r.listing_contract_date,
+        listing_status: r.listing_status
+      }));
+    }
+
     return NextResponse.json({ 
       page: safePage,
       pageSize: safePageSize,
@@ -145,6 +162,7 @@ export async function POST(req: NextRequest) {
       totalEstimate,
       hasMore,
       results: sanitizedListings,
+      mapPoints,
       stats: { avgPrice, totalEstimate }
     });
   } catch (err: any) {
