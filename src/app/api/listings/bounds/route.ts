@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     else if (sort === 'price_desc') query = query.order('list_price', { ascending: false });
     else query = query.order('listing_contract_date', { ascending: false });
 
-    query = query.limit(500);
+    query = query.limit(200);
 
     const { data: listings, error } = await query;
 
@@ -79,6 +79,11 @@ export async function POST(req: NextRequest) {
     const avgPrice = prices.length > 0 ? Math.round(prices.reduce((a: number, b: number) => a + b, 0) / prices.length) : 0;
 
     const sanitizedListings = (listings || []).map((l: any) => {
+      // PREVENT ERROR 1102: Strip the photo array to just the first photo.
+      // 500 listings * 40 photos is ~2MB JSON, which crashes CF Workers.
+      const firstPhoto = l.photo_urls?.[0];
+      l.photo_urls = firstPhoto ? [firstPhoto] : [];
+
       if (l.listing_status === 'Sold' && !l.sold_price) {
          l.sold_price = l.list_price;
       }

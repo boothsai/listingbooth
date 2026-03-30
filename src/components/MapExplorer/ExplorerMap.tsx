@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import { useEffect, useRef, useCallback, useState } from 'react';
+import { MapContainer, TileLayer, Marker, CircleMarker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { ListingMarker, Filters } from './MapExplorer';
@@ -102,7 +102,18 @@ function BoundsWatcher({ onBoundsChange, filters }: { onBoundsChange: ExplorerMa
   return null;
 }
 
+function ZoomTracker({ onZoom }: { onZoom: (z: number) => void }) {
+  const map = useMapEvents({
+    zoomend() { onZoom(map.getZoom()); },
+  });
+  // Initialize on mount
+  useEffect(() => { onZoom(map.getZoom()); }, [map, onZoom]);
+  return null;
+}
+
 export default function ExplorerMap({ center, zoom, listings, selectedKey, onMarkerClick, onBoundsChange, filters }: ExplorerMapProps) {
+  const [currentZoom, setCurrentZoom] = useState(zoom);
+
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       <MapContainer
@@ -121,18 +132,54 @@ export default function ExplorerMap({ center, zoom, listings, selectedKey, onMar
 
         <MapSync center={center} zoom={zoom} />
         <BoundsWatcher onBoundsChange={onBoundsChange} filters={filters} />
+        <ZoomTracker onZoom={setCurrentZoom} />
 
-        {/* Listing markers */}
-        {listings.map(l => (
-          <Marker
-            key={l.listing_key}
-            position={[l.latitude, l.longitude]}
-            icon={createPricePill(l.list_price, l.property_type, l.listing_key === selectedKey, l._vow_locked)}
-            eventHandlers={{
-              click: () => onMarkerClick(l.listing_key),
-            }}
-          />
-        ))}
+        {/* Listing markers conditionally rendered based on zoom */}
+        {listings.map(l => {
+          const isSelected = l.listing_key === selectedKey;
+          
+          // Heatmap Mode (< 13): Compounding overlapping red zones
+          if (currentZoom < 13 && !isSelected) {
+            return (
+              <CircleMarker
+                key={l.listing_key}
+                center={[l.latitude, l.longitude]}
+                radius={8}
+                fillColor="#da291c"
+                color="transparent"
+                fillOpacity={0.35}
+                eventHandlers={{ click: () => onMarkerClick(l.listing_key) }}
+              />
+            );
+          }
+          
+          // Dot Mode (< 15): Color-coded by property type
+          if (currentZoom < 15 && !isSelected) {
+            return (
+              <CircleMarker
+                key={l.listing_key}
+                center={[l.latitude, l.longitude]}
+                radius={6}
+                fillColor={getTypeColor(l.property_type)}
+                color="white"
+                weight={1.5}
+                fillOpacity={0.9}
+                eventHandlers={{ click: () => onMarkerClick(l.listing_key) }}
+              />
+            );
+          }
+
+          // Price Pill Mode (>= 15 or selected)
+          return (
+            <Marker
+              key={l.listing_key}
+              position={[l.latitude, l.longitude]}
+              icon={createPricePill(l.list_price, l.property_type, isSelected)}
+              eventHandlers={{ click: () => onMarkerClick(l.listing_key) }}
+              zIndexOffset={isSelected ? 1000 : 0}
+            />
+          );
+        })}
       </MapContainer>
 
       {/* Zoom controls — custom positioned */}
