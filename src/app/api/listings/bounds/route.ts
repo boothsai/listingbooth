@@ -16,7 +16,11 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { minLat, maxLat, minLng, maxLng, cityFilter, minPrice, maxPrice, beds, baths, propertyType, sort } = body;
+    const { minLat, maxLat, minLng, maxLng, cityFilter, minPrice, maxPrice, beds, baths, propertyType, sort, page = 0, pageSize = 50 } = body;
+    const safePage = Math.max(0, parseInt(page));
+    const safePageSize = Math.min(100, Math.max(10, parseInt(pageSize)));
+    const from = safePage * safePageSize;
+    const to = from + safePageSize - 1;
 
     if (!minLat || !maxLat || !minLng || !maxLng) {
       return NextResponse.json({ error: 'Missing bounding coordinates' }, { status: 400 });
@@ -65,7 +69,8 @@ export async function POST(req: NextRequest) {
     else if (sort === 'price_desc') query = query.order('list_price', { ascending: false });
     else query = query.order('listing_contract_date', { ascending: false });
 
-    query = query.limit(200);
+    // Pagination via Supabase .range(from, to)
+    query = query.range(from, to);
 
     const { data: listings, error } = await query;
 
@@ -74,13 +79,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Compute aggregate stats
-    const prices = (listings || []).map((l: any) => l.list_price).filter(Boolean);
-    const avgPrice = prices.length > 0 ? Math.round(prices.reduce((a: number, b: number) => a + b, 0) / prices.length) : 0;
+    const rows = listings || [];
+    const hasMore = rows.length === safePageSize; // If we got a full page, there's probably more
 
-    const sanitizedListings = (listings || []).map((l: any) => {
-      // PREVENT ERROR 1102: Strip the photo array to just the first photo.
-      // 500 listings * 40 photos is ~2MB JSON, which crashes CF Workers.
+    // Only compute aggregate stats on the first page to save CPU
+    let avgPrice = 0;
+    let totalEstimate = rows.length;
+    if (safePage === 0) {
+      // Quick count query — lightweight, no payload
+      const { count: totalCount } = await supabase
+        .from('listings')
+        .select('listing_key', { count: 'estimated', head: true })
+        .gte('latitude', minLat).lte('latitude', maxLat)
+        .gte('longitude', minLng).lte('longitude', maxLng)
+        .eq('is_active', true);
+      totalEstimate = totalCount || rows.length;
+
+      const prices = rows.map((l: any) => l.list_price).filter(Boolean);
+      avgPrice = prices.length > 0 ? Math.round(prices.reduce((a: number, b: number) => a + b, 0) / prices.length) : 0;
+    }
+
+    const sanitizedListings = rows.map((l: any) => {
+      // PREVENT ERROR 1102: Strip photo array to first photo only.
       const firstPhoto = l.photo_urls?.[0];
       l.photo_urls = firstPhoto ? [firstPhoto] : [];
 
@@ -95,9 +115,13 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ 
+      page: safePage,
+      pageSize: safePageSize,
       count: sanitizedListings.length, 
+      totalEstimate,
+      hasMore,
       results: sanitizedListings,
-      stats: { avgPrice, count: sanitizedListings.length }
+      stats: { avgPrice, totalEstimate }
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

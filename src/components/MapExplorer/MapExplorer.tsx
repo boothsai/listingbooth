@@ -103,13 +103,18 @@ export default function MapExplorer() {
   const [count, setCount] = useState(0);
   const [avgPrice, setAvgPrice] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [mobileShowList, setMobileShowList] = useState(false);
   const [favourites, setFavourites] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<Filters>({ minPrice: null, maxPrice: null, beds: 'Any', baths: 'Any', propertyType: 'All', sort: 'newest' });
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [totalEstimate, setTotalEstimate] = useState(0);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const panelRef = useRef<HTMLDivElement>(null);
+  const lastBoundsRef = useRef<{ minLat: number; maxLat: number; minLng: number; maxLng: number } | null>(null);
 
   // Load favourites from localStorage
   useEffect(() => {
@@ -128,8 +133,8 @@ export default function MapExplorer() {
     });
   }, []);
 
-  const handleBoundsChange = useCallback(async (bounds: { minLat: number; maxLat: number; minLng: number; maxLng: number }) => {
-    setLoading(true);
+  const fetchListings = useCallback(async (bounds: { minLat: number; maxLat: number; minLng: number; maxLng: number }, page: number, append: boolean) => {
+    if (page === 0) setLoading(true); else setLoadingMore(true);
     try {
       const res = await fetch('/api/listings/bounds', {
         method: 'POST',
@@ -143,20 +148,45 @@ export default function MapExplorer() {
           baths: filters.baths,
           propertyType: filters.propertyType,
           sort: filters.sort,
+          page,
+          pageSize: 50,
         })
       });
       const data = await res.json();
       if (data.results) {
-        setListings(data.results);
-        setCount(data.count);
-        setAvgPrice(data.stats?.avgPrice || 0);
+        if (append) {
+          setListings(prev => [...prev, ...data.results]);
+        } else {
+          setListings(data.results);
+        }
+        // Only update totals from page 0 (subsequent pages don't compute them)
+        if (data.totalEstimate && data.totalEstimate > 0) {
+          setCount(data.totalEstimate);
+          setTotalEstimate(data.totalEstimate);
+        }
+        if (data.stats?.avgPrice && data.stats.avgPrice > 0) {
+          setAvgPrice(data.stats.avgPrice);
+        }
+        setHasMore(data.hasMore);
+        setCurrentPage(page);
       }
     } catch (err) {
       console.error('Failed to fetch listings:', err);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
-  }, [city.name, filters]);
+  }, [city.name, filters, avgPrice]);
+
+  const handleBoundsChange = useCallback(async (bounds: { minLat: number; maxLat: number; minLng: number; maxLng: number }) => {
+    lastBoundsRef.current = bounds;
+    fetchListings(bounds, 0, false);
+  }, [fetchListings]);
+
+  const handleLoadMore = useCallback(() => {
+    if (!lastBoundsRef.current || loadingMore || !hasMore) return;
+    fetchListings(lastBoundsRef.current, currentPage + 1, true);
+  }, [fetchListings, currentPage, loadingMore, hasMore]);
 
   const handleMarkerClick = useCallback((key: string) => {
     setSelectedKey(key);
@@ -210,7 +240,7 @@ export default function MapExplorer() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>
-                {loading ? '...' : count.toLocaleString()} Listings
+                {loading ? '...' : totalEstimate > 0 ? totalEstimate.toLocaleString() : count.toLocaleString()} Listings
               </h2>
               {avgPrice > 0 && <p style={{ margin: '2px 0 0', fontSize: 12, color: '#999' }}>Avg. {formatPrice(avgPrice)}</p>}
             </div>
@@ -417,6 +447,40 @@ export default function MapExplorer() {
               </div>
             </div>
           ))}
+
+          {/* Load More Button */}
+          {hasMore && (
+            <button
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              style={{
+                width: '100%', padding: '14px 0', marginTop: 8, marginBottom: 12,
+                borderRadius: 10, border: '1.5px solid #e5e5e5', background: 'white',
+                color: '#111', fontSize: 14, fontWeight: 800, cursor: loadingMore ? 'wait' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.background = '#f8f7f5'; (e.target as HTMLElement).style.borderColor = '#111'; }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.background = 'white'; (e.target as HTMLElement).style.borderColor = '#e5e5e5'; }}
+            >
+              {loadingMore ? (
+                <>
+                  <div style={{ width: 16, height: 16, border: '2px solid #e5e5e5', borderTopColor: '#111', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  Load More · {listings.length} of {totalEstimate > 0 ? `~${totalEstimate.toLocaleString()}` : '...'}
+                </>
+              )}
+            </button>
+          )}
+
+          {!hasMore && listings.length > 0 && (
+            <p style={{ textAlign: 'center', fontSize: 12, color: '#ccc', fontWeight: 600, padding: '12px 0' }}>
+              Showing all {listings.length.toLocaleString()} listings
+            </p>
+          )}
         </div>
 
         {/* Footer Attribution */}
