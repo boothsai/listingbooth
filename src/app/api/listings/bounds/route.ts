@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { minLat, maxLat, minLng, maxLng, cityFilter, minPrice, maxPrice, beds, baths, propertyType, sort, page = 0, pageSize = 50 } = body;
+    const { minLat, maxLat, minLng, maxLng, cityFilter, minPrice, maxPrice, beds, baths, propertyType, sort = 'recommended', page = 0, pageSize = 50 } = body;
     const safePage = Math.max(0, parseInt(page));
     const safePageSize = Math.min(100, Math.max(10, parseInt(pageSize)));
     const from = safePage * safePageSize;
@@ -65,12 +65,18 @@ export async function POST(req: NextRequest) {
     if (propertyType && propertyType !== 'All') query = query.ilike('property_type', `%${propertyType}%`);
 
     // Sort
+    const isRecommended = sort === 'recommended' || !sort;
     if (sort === 'price_asc') query = query.order('list_price', { ascending: true });
     else if (sort === 'price_desc') query = query.order('list_price', { ascending: false });
-    else query = query.order('listing_contract_date', { ascending: false });
+    else if (sort === 'newest') query = query.order('listing_contract_date', { ascending: false });
 
-    // Pagination via Supabase .range(from, to)
-    query = query.range(from, to);
+    // Pagination via Supabase .range(from, to) ONLY for non-recommended sorts.
+    // Recommended sort pulls a mass batch and does distance sorting in JS to achieve center-outwards effect without an RPC.
+    if (!isRecommended) {
+      query = query.range(from, to);
+    } else {
+      query = query.limit(1000); // mass fetch for internal distance sorting
+    }
 
     const { data: listings, error } = await query;
 
@@ -79,12 +85,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const rows = listings || [];
-    const hasMore = rows.length === safePageSize; // If we got a full page, there's probably more
+    let rows = listings || [];
+    let totalEstimate = rows.length;
+    let hasMore = rows.length === safePageSize;
+
+    // Apply Center-Outwards programmatic sort if recommended
+    if (isRecommended && rows.length > 0) {
+      const centerLat = (minLat + maxLat) / 2;
+      const centerLng = (minLng + maxLng) / 2;
+      
+      rows.forEach((l: any) => {
+        l._dist = Math.pow(l.latitude - centerLat, 2) + Math.pow(l.longitude - centerLng, 2);
+      });
+      rows.sort((a: any, b: any) => a._dist - b._dist);
+      
+      // Save total estimate BEFORE we slice it
+      totalEstimate = rows.length;
+      
+      // Slice memory array by requested page offsets
+      rows = rows.slice(from, to + 1);
+      hasMore = (to + 1) < totalEstimate;
+    }
 
     // Only compute aggregate stats on the first page to save CPU
     let avgPrice = 0;
-    let totalEstimate = rows.length;
     if (safePage === 0) {
       // Quick count query — lightweight, no payload
       const { count: totalCount } = await supabase

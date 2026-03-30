@@ -107,7 +107,7 @@ export default function MapExplorer() {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [mobileShowList, setMobileShowList] = useState(false);
   const [favourites, setFavourites] = useState<Set<string>>(new Set());
-  const [filters, setFilters] = useState<Filters>({ minPrice: null, maxPrice: null, beds: 'Any', baths: 'Any', propertyType: 'All', sort: 'newest' });
+  const [filters, setFilters] = useState<Filters>({ minPrice: null, maxPrice: null, beds: 'Any', baths: 'Any', propertyType: 'All', sort: 'recommended' });
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -264,7 +264,7 @@ export default function MapExplorer() {
                 <span key={f} style={{ background: '#f0f0f0', padding: '4px 10px', borderRadius: 100, fontSize: 11, fontWeight: 600, color: '#555' }}>{f}</span>
               ))}
               <button
-                onClick={() => setFilters({ minPrice: null, maxPrice: null, beds: 'Any', baths: 'Any', propertyType: 'All', sort: 'newest' })}
+                onClick={() => setFilters({ minPrice: null, maxPrice: null, beds: 'Any', baths: 'Any', propertyType: 'All', sort: 'recommended' })}
                 style={{ background: 'none', border: 'none', color: '#da291c', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
               >Clear All</button>
             </div>
@@ -344,6 +344,7 @@ export default function MapExplorer() {
         <div style={{ padding: '8px 20px', borderBottom: '1px solid #f0ede8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 4, fontSize: 12 }}>
             {[
+              { key: 'recommended', label: 'Recommended' },
               { key: 'newest', label: 'Newest' },
               { key: 'price_asc', label: 'Price ↑' },
               { key: 'price_desc', label: 'Price ↓' },
