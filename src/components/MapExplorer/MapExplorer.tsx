@@ -201,6 +201,9 @@ export default function MapExplorer() {
     const el = cardRefs.current[key];
     if (el && panelRef.current) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      // If the marker represents a property not currently loaded in the paginated sidebar cards, open it directly
+      window.open(`/listing/${key}`, '_blank');
     }
   }, []);
 
@@ -381,7 +384,9 @@ export default function MapExplorer() {
             <div
               key={l.listing_key}
               ref={el => { cardRefs.current[l.listing_key] = el; }}
-              onClick={() => { setSelectedKey(l.listing_key); }}
+              onClick={() => { window.open(`/listing/${l.listing_key}`, '_blank'); }}
+              onMouseEnter={() => setSelectedKey(l.listing_key)}
+              onMouseLeave={() => setSelectedKey(null)}
               style={{
                 marginBottom: 12, borderRadius: 12, overflow: 'hidden', cursor: 'pointer',
                 border: selectedKey === l.listing_key ? '2px solid #111' : '1.5px solid #eee',
