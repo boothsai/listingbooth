@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 const ExplorerMap = dynamic(() => import('@/components/MapExplorer/ExplorerMap'), {
@@ -116,6 +117,7 @@ export default function MapExplorer() {
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const panelRef = useRef<HTMLDivElement>(null);
   const lastBoundsRef = useRef<{ minLat: number; maxLat: number; minLng: number; maxLng: number } | null>(null);
+  const router = useRouter();
 
   // Load favourites from localStorage
   useEffect(() => {
@@ -203,9 +205,9 @@ export default function MapExplorer() {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       // If the marker represents a property not currently loaded in the paginated sidebar cards, open it directly
-      window.open(`/listing/${key}`, '_blank');
+      router.push(`/listing/${key}`);
     }
-  }, []);
+  }, [router]);
 
   const activeFilters = [
     filters.minPrice || filters.maxPrice ? PRICE_RANGES.find(p => p.min === filters.minPrice && p.max === filters.maxPrice)?.label || 'Custom Price' : null,
@@ -384,7 +386,7 @@ export default function MapExplorer() {
             <div
               key={l.listing_key}
               ref={el => { cardRefs.current[l.listing_key] = el; }}
-              onClick={() => { window.open(`/listing/${l.listing_key}`, '_blank'); }}
+              onClick={() => { router.push(`/listing/${l.listing_key}`); }}
               onMouseEnter={() => setSelectedKey(l.listing_key)}
               onMouseLeave={() => setSelectedKey(null)}
               style={{
