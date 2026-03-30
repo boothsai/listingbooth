@@ -79,12 +79,11 @@ export default function ListingCTA({ listingKey, address, price, agentName, brok
           {copied ? '✅ Link Copied!' : sharing ? 'Generating...' : '🔗 Generate Client Link'}
         </button>
 
-        {/* Agent info */}
-        {agentName && (
+        {/* Brokerage info */}
+        {brokerage && (
           <div style={{ borderTop: '1px solid #f5f5f5', paddingTop: '20px' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '11px', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Listing Agent</p>
-            <p style={{ margin: '0 0 2px', fontSize: '16px', fontWeight: 700, color: '#111' }}>{agentName}</p>
-            {brokerage && <p style={{ margin: 0, fontSize: '13px', color: '#888' }}>{brokerage}</p>}
+            <p style={{ margin: '0 0 4px', fontSize: '11px', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Listing Brokerage</p>
+            <p style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 700, color: '#111' }}>{brokerage}</p>
           </div>
         )}
 
