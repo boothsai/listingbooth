@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 // Server-side API route for spatial listing queries
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';

@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { Metadata } from 'next';
 import { createServerClient } from '@supabase/ssr';
 import { ReactNode } from 'react';
