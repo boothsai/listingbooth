@@ -4,9 +4,6 @@ import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!;
-
 /**
  * POST /api/ghost-alert
  * 
@@ -55,7 +52,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the alert to Supabase
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
+    );
     await supabase.schema('core_logic' as any).from('lead_activity').insert({
       lead_id: null, // Will be linked when we match phone to lead
       activity_type: 'Ghost Agent SMS Sent',

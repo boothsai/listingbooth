@@ -8,12 +8,11 @@ function formatPrice(n: number) {
   return `$${n.toLocaleString()}`;
 }
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-);
-
 export default async function SharedCollectionPage({ params }: { params: { token: string } }) {
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY!
+  );
   const token = (params).token;
 
   // 1. Fetch collection by secure token (Bypassing RLS since it's a public share)
