@@ -1,6 +1,6 @@
 export const runtime = 'edge';
 import { NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 
 // Edge-compatible Stripe webhook signature verification using Web Crypto API
 async function verifyStripeSignature(body: string, signature: string, secret: string): Promise<boolean> {
@@ -52,10 +52,9 @@ export async function POST(req: Request) {
 
     const event = JSON.parse(body);
 
-    const supabase = createServerClient(
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
-      { cookies: { getAll() { return []; }, setAll() {} } }
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
     );
 
     switch (event.type) {

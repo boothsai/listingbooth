@@ -1,5 +1,5 @@
 export const runtime = 'edge'
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import InviteAgentButton from '@/components/InviteAgentButton';
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   const cookieStore = cookies();
-  const supabase = createServerClient(
+  const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     { cookies: { getAll() { return cookieStore.getAll(); } } }
@@ -24,7 +24,7 @@ export default async function AdminDashboard() {
 
   // Use Service Role to fetch all registered users
   // (Standard Next.js Server Components run securely on the server)
-  const adminSupabase = createServerClient(
+  const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
     { cookies: { getAll() { return []; } } }

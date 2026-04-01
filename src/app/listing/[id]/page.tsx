@@ -4,7 +4,7 @@ export const runtime = 'edge';
 
 import { notFound } from 'next/navigation';
 import { getListingById } from '@/lib/supabase/ddf';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import ListingCTA from '@/components/ListingCTA';
@@ -47,7 +47,7 @@ export default async function ListingDetailPage({ params }: Props) {
   // VOW Gateway Protection (Server-Side)
   // Verifying if the user has a valid Supabase Google SSO session before exposing restricted TRREB fields
   const cookieStore = cookies();
-  const supabase = createServerClient(
+  const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     { cookies: { getAll() { return cookieStore.getAll(); } } }

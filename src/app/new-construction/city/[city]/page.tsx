@@ -1,16 +1,13 @@
 export const runtime = 'edge';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import MapLoader from '@/components/MapLoader';
 
 export const revalidate = 3600; // Cache and regenerate hourly for optimal speed
 
 function getSupabase() {
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
-    { cookies: { getAll() { return []; }, setAll() {} } }
-  );
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!);
 }
 
 function formatCityName(slug: string) {

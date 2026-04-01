@@ -1,6 +1,6 @@
 export const runtime = 'edge';
 import { NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
@@ -9,11 +9,10 @@ export async function GET(request: Request, { params }: { params: { listing_key:
   const { listing_key } = params;
   if (!listing_key) return NextResponse.json({ error: 'listing_key required' }, { status: 400 });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
-    { cookies: { getAll() { return []; }, setAll() {} } }
-  );
+  const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
+    );
 
   // 1. Fetch Target Listing
   const { data: targetListing } = await supabase.from('listings').select('*').eq('listing_key', listing_key).single();

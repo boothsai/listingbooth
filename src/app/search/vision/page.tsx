@@ -1,5 +1,5 @@
 export const runtime = 'edge';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 function getSupabase() {
   const cookieStore = cookies();
-  return createServerClient(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
     { cookies: { getAll() { return cookieStore.getAll(); }, setAll() {} } }

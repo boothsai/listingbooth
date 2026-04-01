@@ -4,7 +4,7 @@ export const revalidate = 3600;
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 
 interface PageProps {
@@ -33,11 +33,8 @@ export default async function ProgrammaticSEOPage(props: PageProps) {
   const params = await props.params;
   const [city, neighborhood, type] = params.slug || [];
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll() { return []; }, setAll() {} } }
-  );
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
   const { data: properties, error } = await supabase
     .schema('res_ddf' as any)

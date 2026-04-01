@@ -1,15 +1,12 @@
 export const runtime = 'edge';
 import { Metadata } from 'next';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { ReactNode } from 'react';
 
 // Connect to DB directly for SSR metadata extraction
 function getSupabase() {
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
-    { cookies: { getAll() { return []; }, setAll() {} } }
-  );
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!);
 }
 
 // Dynamically generate SEO attributes (Meta Tags, JSON-LD)

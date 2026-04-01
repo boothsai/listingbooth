@@ -1,7 +1,7 @@
 export const runtime = 'edge';
 // src/app/api/lead/event/route.ts
 import { NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,10 +11,9 @@ export async function POST(req: Request) {
     if (!token || !event_type) {
       return NextResponse.json({ error: 'token and event_type required' }, { status: 400 });
     }
-    const supabase = createServerClient(
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
-      { cookies: { getAll() { return []; }, setAll() {} } }
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
     );
     const { error } = await supabase
       .schema('core_logic' as any)

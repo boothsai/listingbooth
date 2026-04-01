@@ -1,7 +1,7 @@
 export const runtime = 'edge';
 // Server-side API route for spatial listing queries
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     let isVowAuthenticated = false;
     try {
       const cookieStore = cookies();
-      const supabaseSession = createServerClient(
+      const supabaseSession = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         { cookies: { getAll() { return cookieStore.getAll(); }, setAll() {} } }
