@@ -2,7 +2,6 @@ export const runtime = 'edge';
 // Server-side API route for spatial listing queries
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';

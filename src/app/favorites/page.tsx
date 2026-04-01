@@ -3,7 +3,6 @@ export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';
 import { createClient } from '@supabase/supabase-js';
-import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
