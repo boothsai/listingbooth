@@ -6,7 +6,7 @@ import SubscriptionButton from './SubscriptionButton';
 export const metadata = { title: 'Billing | ListingBooth CRM' };
 export const dynamic = 'force-dynamic';
 
-export default async function BillingPage({ searchParams }: { searchParams: Promise<{ success?: string, canceled?: string }> }) {
+export default async function BillingPage({ searchParams }: { searchParams: { success?: string, canceled?: string } }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -14,7 +14,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
     redirect('/');
   }
 
-  const { success, canceled } = await searchParams;
+  const { success, canceled } = searchParams;
   const isPremium = user.user_metadata?.subscription_status === 'active';
 
   return (

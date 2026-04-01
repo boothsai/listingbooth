@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 export default async function UnsubscribePage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: { email?: string };
 }) {
-  const { email } = await searchParams;
+  const { email } = searchParams;
 
   return (
     <main style={{ minHeight: '100vh', backgroundColor: '#fafafa', paddingTop: '110px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

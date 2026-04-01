@@ -12,7 +12,7 @@ export const runtime = 'edge';
 export const revalidate = 3600; // revalidate every hour
 
 interface PageProps {
-  params: Promise<{ slug: string[] }>;
+  params: { slug: string[] };
 }
 
 /**
@@ -43,7 +43,7 @@ function parseSemanticSlug(slugs: string[]) {
 
 // 1. DYNAMIC METADATA GENERATOR (FOR GOOGLE)
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
   const { community, feature, beds } = parseSemanticSlug(slug);
 
   let title = 'Homes for Sale in Ottawa';
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 // 2. THE SERVER COMPONENT (UX & DATA)
 export default async function PseoLandingPage({ params }: PageProps) {
-  const { slug } = await params;
+  const { slug } = params;
   const { community, feature, beds } = parseSemanticSlug(slug);
 
   // Parse SQL Modifiers based on the semantic URL search

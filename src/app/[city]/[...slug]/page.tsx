@@ -11,7 +11,7 @@ export const runtime = 'edge';
 export const revalidate = 3600; 
 
 interface PageProps {
-  params: Promise<{ city: string; slug: string[] }>;
+  params: { city: string; slug: string[] };
 }
 
 /**
@@ -45,7 +45,7 @@ function parseSemanticSlug(slugs: string[]) {
 
 // 1. DYNAMIC METADATA GENERATOR (FOR GOOGLE RICH SNIPPETS)
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { city, slug } = await params;
+  const { city, slug } = params;
   const decodedCity = decodeURIComponent(city).charAt(0).toUpperCase() + decodeURIComponent(city).slice(1);
   const { community, feature, beds } = parseSemanticSlug(slug);
 
@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 // 2. THE SERVER COMPONENT (UX & DATA)
 export default async function PseoLandingPage({ params }: PageProps) {
-  const { city, slug } = await params;
+  const { city, slug } = params;
   const decodedCity = decodeURIComponent(city).charAt(0).toUpperCase() + decodeURIComponent(city).slice(1);
   const { community, feature, beds } = parseSemanticSlug(slug);
 

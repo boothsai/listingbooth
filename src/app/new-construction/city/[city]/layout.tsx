@@ -6,8 +6,8 @@ function formatCityName(slug: string) {
   return slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
-  const resolvedParams = await params;
+export async function generateMetadata({ params }: { params: { city: string } }): Promise<Metadata> {
+  const resolvedParams = params;
   const cityName = formatCityName(resolvedParams.city);
   
   return {

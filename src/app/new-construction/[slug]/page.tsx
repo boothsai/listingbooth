@@ -63,7 +63,7 @@ const FALLBACK_PROJECTS: Record<string, Project> = {
   'upper-west-side': { slug: 'upper-west-side', name: 'Upper West Side', builder: 'Branthaven Homes', city: 'Oakville', province: 'ON', price_from: 899900, property_type: 'Detached & Towns', status: 'Coming Soon', description: 'An exclusive collection of detached homes and townhomes in prestigious Oakville by Branthaven Homes. Premium finishes, oversized lots, and a family-friendly neighbourhood close to top-rated schools and lakefront trails.', features: ['Heritage-inspired architecture', '2-car garages', 'Premium lot sizes', 'Near top schools', 'Trail access'], completion_year: 2026, total_units: 85, color: '#dc2626', photo_url: null },
 };
 
-export default function NewConstructionDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function NewConstructionDetailPage({ params }: { params: { slug: string } }) {
   const [project, setProject] = useState<Project | null>(null);
   const [similar, setSimilar] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,7 +92,7 @@ export default function NewConstructionDetailPage({ params }: { params: Promise<
   const [verifyingHcra, setVerifyingHcra] = useState(false);
 
   useEffect(() => {
-    params.then(p => {
+    Promise.resolve(params).then(p => {
       setSlug(p.slug);
 
       // Metered Paywall Engine (2 Freebies)

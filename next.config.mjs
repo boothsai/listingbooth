@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -10,7 +9,9 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  serverExternalPackages: ['pg', 'telnyx', 'resend', 'stripe'],
+  experimental: {
+    serverComponentsExternalPackages: ['pg', 'telnyx', 'resend', 'stripe'],
+  },
   reactStrictMode: false,
 };
 

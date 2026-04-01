@@ -2,7 +2,7 @@ export const runtime = 'edge';
 import Link from 'next/link';
 
 interface LegalPageProps {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 const LEGAL_CONTENT: Record<string, { title: string; content: string }> = {
@@ -29,7 +29,7 @@ const LEGAL_CONTENT: Record<string, { title: string; content: string }> = {
 };
 
 export default async function LegalPage({ params }: LegalPageProps) {
-  const { slug } = await params;
+  const { slug } = params;
   const page = LEGAL_CONTENT[slug];
 
   if (!page) {

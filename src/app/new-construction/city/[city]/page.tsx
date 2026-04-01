@@ -16,8 +16,8 @@ function formatCityName(slug: string) {
   return slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-export default async function CitySiloPage({ params }: { params: Promise<{ city: string }> }) {
-  const resolvedParams = await params;
+export default async function CitySiloPage({ params }: { params: { city: string } }) {
+  const resolvedParams = params;
   const cityName = formatCityName(resolvedParams.city);
   const supabase = getSupabase();
 

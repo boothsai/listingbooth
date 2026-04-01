@@ -8,7 +8,7 @@ export const metadata = { title: 'Admin Command Center | ListingBooth' };
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

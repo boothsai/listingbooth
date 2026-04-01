@@ -12,8 +12,8 @@ function getSupabase() {
 }
 
 // Dynamically generate SEO attributes (Meta Tags, JSON-LD)
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const resolvedParams = await params;
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const resolvedParams = params;
   const slug = resolvedParams.slug;
   const supabase = getSupabase();
   
@@ -89,9 +89,9 @@ export default async function NewConstructionSlugLayout({
   params 
 }: { 
   children: ReactNode, 
-  params: Promise<{ slug: string }> 
+  params: { slug: string } 
 }) {
-  const resolvedParams = await params;
+  const resolvedParams = params;
   const schema = await generateJsonLd(resolvedParams.slug);
 
   return (

@@ -5,8 +5,8 @@ import { createServerClient } from '@supabase/ssr';
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
-export async function GET(request: Request, { params }: { params: Promise<{ listing_key: string }> }) {
-  const { listing_key } = await params;
+export async function GET(request: Request, { params }: { params: { listing_key: string } }) {
+  const { listing_key } = params;
   if (!listing_key) return NextResponse.json({ error: 'listing_key required' }, { status: 400 });
 
   const supabase = createServerClient(

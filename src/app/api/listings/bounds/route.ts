@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
     let isVowAuthenticated = false;
     try {
-      const cookieStore = await cookies();
+      const cookieStore = cookies();
       const supabaseSession = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

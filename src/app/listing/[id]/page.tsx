@@ -13,9 +13,10 @@ import TrueCostCalculator from '@/components/TrueCostCalculator';
 import BeforeYouOfferChecklist from '@/components/BeforeYouOfferChecklist';
 import PhotoLightbox from '@/components/PhotoLightbox';
 import NeighborhoodVibeCard from '@/components/NeighborhoodVibeCard';
+import NeighbourhoodIntelligence from '@/components/NeighbourhoodIntelligence';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 function formatPrice(n: number) {
@@ -24,7 +25,7 @@ function formatPrice(n: number) {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { id } = await params;
+  const { id } = params;
   const listing = await getListingById(id);
   if (!listing) return { title: 'Listing Not Found — ListingBooth' };
   const city = listing.address_city ?? 'Canada';
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function ListingDetailPage({ params }: Props) {
-  const { id } = await params;
+  const { id } = params;
   const l = await getListingById(id);
   if (!l) notFound();
 
@@ -45,7 +46,7 @@ export default async function ListingDetailPage({ params }: Props) {
 
   // VOW Gateway Protection (Server-Side)
   // Verifying if the user has a valid Supabase Google SSO session before exposing restricted TRREB fields
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -86,11 +87,11 @@ export default async function ListingDetailPage({ params }: Props) {
         longitude: l.longitude,
       },
     } : {}),
-    numberOfRooms: l.bedrooms_total || undefined,
-    numberOfBathroomsTotal: l.bathrooms_total || undefined,
-    floorSize: l.living_area ? {
+    numberOfRooms: l.bedrooms || undefined,
+    numberOfBathroomsTotal: l.bathrooms || undefined,
+    floorSize: l.sqft ? {
       '@type': 'QuantitativeValue',
-      value: Math.round(l.living_area),
+      value: Math.round(l.sqft),
       unitCode: 'FTK',
     } : undefined,
   };
@@ -153,7 +154,7 @@ export default async function ListingDetailPage({ params }: Props) {
                 {formatPrice(l.list_price)}
               </h1>
               <p style={{ margin: '0 0 16px', fontSize: '18px', color: '#555', fontWeight: 500 }}>
-                {l.address_street}{l.address_unit ? `, Unit ${l.address_unit}` : ''}, {l.address_city}, {l.address_province} {l.address_postal_code}
+                {l.address_street}{l.unit_number ? `, Unit ${l.unit_number}` : ''}, {l.address_city}, {l.address_province} {l.address_postal_code}
               </p>
               
               {/* Gemini Vision Semantic Tags */}
@@ -174,9 +175,9 @@ export default async function ListingDetailPage({ params }: Props) {
             {/* Key stats bar */}
             <div style={{ display: 'flex', gap: '0', marginBottom: '40px', background: 'white', border: '1.5px solid #eee', borderRadius: '14px', overflow: 'hidden' }}>
               {[
-                { label: 'Bedrooms', value: l.bedrooms_total ?? '—' },
-                { label: 'Bathrooms', value: l.bathrooms_total ?? '—' },
-                { label: 'Sq Ft', value: l.living_area ? Math.round(l.living_area).toLocaleString() : '—' },
+                { label: 'Bedrooms', value: l.bedrooms ?? '—' },
+                { label: 'Bathrooms', value: l.bathrooms ?? '—' },
+                { label: 'Sq Ft', value: l.sqft ? Math.round(l.sqft).toLocaleString() : '—' },
                 { label: 'Days on Market', value: l.days_on_market ?? '—' },
               ].map((s, i, arr) => (
                 <div key={s.label} style={{ flex: 1, padding: '20px 16px', textAlign: 'center', borderRight: i < arr.length - 1 ? '1px solid #eee' : 'none' }}>
@@ -238,6 +239,11 @@ export default async function ListingDetailPage({ params }: Props) {
               </div>
             </div>
 
+            {/* ── Neighbourhood Intelligence Panel ── */}
+            {l.latitude && l.longitude && (
+              <NeighbourhoodIntelligence lat={l.latitude} lng={l.longitude} city={l.address_city || undefined} />
+            )}
+
             {/* Property details grid */}
             <div style={{ marginBottom: '40px' }}>
               <h2 style={{ margin: '0 0 20px', fontSize: '22px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>Property Details</h2>
@@ -246,16 +252,16 @@ export default async function ListingDetailPage({ params }: Props) {
                   { label: 'Listing Key', value: l.listing_key },
                   { label: 'MLS® Number', value: l.mls_number ?? '—' },
                   { label: 'Property Type', value: l.property_type ?? '—' },
-                  { label: 'Property Sub-Type', value: l.property_sub_type ?? '—' },
+                  { label: 'Property Sub-Type', value: l.property_type ?? '—' },
                   { label: 'Address', value: l.address_street ?? '—' },
                   { label: 'City', value: l.address_city ?? '—' },
                   { label: 'Province', value: l.address_province ?? '—' },
                   { label: 'Postal Code', value: l.address_postal_code ?? '—' },
-                  { label: 'Bedrooms', value: l.bedrooms_total?.toString() ?? '—' },
-                  { label: 'Bathrooms', value: l.bathrooms_total?.toString() ?? '—' },
-                  { label: 'Living Area', value: l.living_area ? `${Math.round(l.living_area).toLocaleString()} sqft` : '—' },
-                  { label: 'Lot Size', value: l.lot_size_area ? `${l.lot_size_area.toLocaleString()} sqft` : '—' },
-                  { label: 'Data Source', value: l.data_source ?? 'CREA DDF®' },
+                  { label: 'Bedrooms', value: l.bedrooms?.toString() ?? '—' },
+                  { label: 'Bathrooms', value: l.bathrooms?.toString() ?? '—' },
+                  { label: 'Living Area', value: l.sqft ? `${Math.round(l.sqft).toLocaleString()} sqft` : '—' },
+                  { label: 'Lot Size', value: l.lot_size ? `${l.lot_size.toLocaleString()} sqft` : '—' },
+                  { label: 'Data Source', value: l.board ?? 'CREA DDF®' },
                   { label: 'Last Updated', value: new Date(l.updated_at).toLocaleDateString('en-CA') },
                 ].map((row, i) => (
                   <div key={row.label} style={{ padding: '14px 20px', borderBottom: '1px solid #f5f5f5', borderRight: i % 2 === 0 ? '1px solid #f5f5f5' : 'none', backgroundColor: i % 4 < 2 ? 'white' : '#fafafa' }}>
@@ -286,7 +292,7 @@ export default async function ListingDetailPage({ params }: Props) {
               price={formatPrice(l.list_price)}
               agentName={l.listing_agent_name}
               brokerage={l.listing_brokerage}
-              virtualTourUrl={l.virtual_tour_url}
+              virtualTourUrl={undefined}
             />
 
             {/* Map */}
@@ -301,7 +307,7 @@ export default async function ListingDetailPage({ params }: Props) {
             )}
 
             {/* Neighborhood Vibe Card — COMPETITIVE MOAT */}
-            <NeighborhoodVibeCard city={l.address_city} community={l.community_name} />
+            <NeighborhoodVibeCard city={l.address_city} community={l.neighbourhood} />
 
             {/* True Cost of Ownership Calculator — COMPETITIVE MOAT */}
             <TrueCostCalculator listPrice={l.list_price} />

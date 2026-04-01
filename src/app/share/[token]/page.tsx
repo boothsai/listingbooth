@@ -13,8 +13,8 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-export default async function SharedCollectionPage({ params }: { params: Promise<{ token: string }> }) {
-  const token = (await params).token;
+export default async function SharedCollectionPage({ params }: { params: { token: string } }) {
+  const token = (params).token;
 
   // 1. Fetch collection by secure token (Bypassing RLS since it's a public share)
   const { data: collection, error: colError } = await supabaseAdmin

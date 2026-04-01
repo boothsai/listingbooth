@@ -19,3 +19,15 @@ $h = @{ "apikey" = $key; "Authorization" = "Bearer $key" }
 Invoke-RestMethod -Uri "https://qmsbvvnffaojddysvqmd.supabase.co/rest/v1/TABLE?select=*&limit=10" -Headers $h
 ```
 <!-- END:booths-vault-mandate -->
+
+<!-- BEGIN:sql-clickable-links-mandate -->
+## 📁 MANDATORY: Clickable File Links for User Action
+
+**Whenever providing an SQL script, terminal command, or file that the USER must manually action or review**, you **MUST** provide a clickable Markdown absolute file link so the user can easily open it.
+
+**Format Example:**
+`[filename](file:///absolute/path/to/file.ext)`
+
+**Example:**
+[geo_intel_rpc.sql](file:///c:/ANTIGRAVITY/LISTINGBOOTH/scripts/geo_intel_rpc.sql)
+<!-- END:sql-clickable-links-mandate -->

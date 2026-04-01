@@ -18,7 +18,7 @@ function getSupabase() {
 
 export async function POST(req: Request) {
   try {
-    const formData = await req.formData();
+    const formData = await req.formData() as any;
     const email = formData.get('email')?.toString();
 
     if (!email) {

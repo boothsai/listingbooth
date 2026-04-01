@@ -8,9 +8,9 @@ import { createServerClient } from '@supabase/ssr';
 import Link from 'next/link';
 
 interface PageProps {
-  params: Promise<{
+  params: {
     slug: string[];
-  }>;
+  };
 }
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {

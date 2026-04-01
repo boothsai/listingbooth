@@ -9,6 +9,8 @@
  * Runs daily at 6 AM ET (10:00 UTC).
  */
 
+/// <reference types="@cloudflare/workers-types" />
+
 interface Env {
   SUPABASE_URL: string;
   SUPABASE_SERVICE_KEY: string;

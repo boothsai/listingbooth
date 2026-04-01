@@ -73,7 +73,7 @@ function BoundsWatcher({ onBoundsChange, filters }: { onBoundsChange: ExplorerMa
     zoomend() { emitBounds(); },
   });
 
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<any>(null);
 
   const emitBounds = useCallback(() => {
     // Debounce to prevent rapid-fire API calls during pan

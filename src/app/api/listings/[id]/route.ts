@@ -8,10 +8,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const listing = await getListingById(id);
   
   if (!listing) {
@@ -20,7 +20,7 @@ export async function GET(
 
   // VOW Gateway Protection
   // Establish secure server-side connection to verify if user explicitly logged in
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
