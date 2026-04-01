@@ -11,12 +11,18 @@
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qmsbvvnffaojddysvqmd.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || '';
+const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// Separate client for geo_intel schema
-const geoDb = createClient(SUPABASE_URL, SERVICE_KEY, {
-  db: { schema: 'geo_intel' },
-});
+// Lazy-initialized client to avoid build-time crashes when env vars are absent
+let _geoDb: ReturnType<typeof createClient> | null = null;
+function getGeoDb() {
+  if (!_geoDb) {
+    _geoDb = createClient(SUPABASE_URL, ANON_KEY, {
+      db: { schema: 'geo_intel' },
+    });
+  }
+  return _geoDb;
+}
 
 // ────────────────────────────────────────────────────────────
 // Types
@@ -144,7 +150,7 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): nu
 // ────────────────────────────────────────────────────────────
 
 export async function getZoning(lat: number, lng: number): Promise<ZoningResult | null> {
-  const { data: zones } = await geoDb.rpc('get_boundaries_intersecting', {
+  const { data: zones } = await getGeoDb().rpc('get_boundaries_intersecting', {
     search_lng: lng,
     search_lat: lat,
     layer_type: 'zoning'
@@ -170,7 +176,7 @@ export async function getZoning(lat: number, lng: number): Promise<ZoningResult 
 // ────────────────────────────────────────────────────────────
 
 export async function getFloodRisk(lat: number, lng: number): Promise<FloodRiskResult> {
-  const { data: floods } = await geoDb.rpc('get_boundaries_intersecting', {
+  const { data: floods } = await getGeoDb().rpc('get_boundaries_intersecting', {
     search_lng: lng,
     search_lat: lat,
     layer_type: 'flood_plain'
@@ -191,7 +197,7 @@ export async function getFloodRisk(lat: number, lng: number): Promise<FloodRiskR
 // ────────────────────────────────────────────────────────────
 
 export async function getNearbySchools(lat: number, lng: number, radiusKm = 3): Promise<SchoolResult[]> {
-  const { data: schools } = await geoDb.rpc('get_boundaries_within', {
+  const { data: schools } = await getGeoDb().rpc('get_boundaries_within', {
     search_lng: lng,
     search_lat: lat,
     radius_meters: radiusKm * 1000,
@@ -218,8 +224,8 @@ export async function getNearbySchools(lat: number, lng: number, radiusKm = 3): 
 
 export async function getDemographics(lat: number, lng: number): Promise<DemographicResult | null> {
   // Get intersecting neighbourhood and ward via PostGIS
-  const { data: hoods } = await geoDb.rpc('get_boundaries_intersecting', { search_lng: lng, search_lat: lat, layer_type: 'neighbourhood' });
-  const { data: wards } = await geoDb.rpc('get_boundaries_intersecting', { search_lng: lng, search_lat: lat, layer_type: 'ward' });
+  const { data: hoods } = await getGeoDb().rpc('get_boundaries_intersecting', { search_lng: lng, search_lat: lat, layer_type: 'neighbourhood' });
+  const { data: wards } = await getGeoDb().rpc('get_boundaries_intersecting', { search_lng: lng, search_lat: lat, layer_type: 'ward' });
 
   const hood = hoods && hoods.length > 0 ? hoods[0] : null;
   const ward = wards && wards.length > 0 ? wards[0] : null;
@@ -242,7 +248,7 @@ export async function getDemographics(lat: number, lng: number): Promise<Demogra
 export async function getNearbyTransit(lat: number, lng: number, radiusKm = 3): Promise<TransitResult[]> {
   const transitLayers = ['transit_station', 'otrain_station', 'lrt_station', 'lrt_stage2'];
   
-  const { data: stations } = await geoDb.rpc('get_boundaries_within', {
+  const { data: stations } = await getGeoDb().rpc('get_boundaries_within', {
     search_lng: lng,
     search_lat: lat,
     radius_meters: radiusKm * 1000,
@@ -288,7 +294,7 @@ export async function getNearbyAmenities(lat: number, lng: number, radiusKm = 2)
     'outdoor_rink', 'skatepark', 'pickleball_court', 'community_garden'
   ];
 
-  const { data: items } = await geoDb.rpc('get_boundaries_within', {
+  const { data: items } = await getGeoDb().rpc('get_boundaries_within', {
     search_lng: lng,
     search_lat: lat,
     radius_meters: radiusKm * 1000,
@@ -333,7 +339,7 @@ export async function getNearbyAmenities(lat: number, lng: number, radiusKm = 2)
 // ────────────────────────────────────────────────────────────
 
 export async function getNearbyDevApps(lat: number, lng: number, radiusKm = 1.5): Promise<DevAppResult[]> {
-  const { data: apps } = await geoDb.rpc('get_boundaries_within', {
+  const { data: apps } = await getGeoDb().rpc('get_boundaries_within', {
     search_lng: lng,
     search_lat: lat,
     radius_meters: radiusKm * 1000,
@@ -360,7 +366,7 @@ export async function getNearbyDevApps(lat: number, lng: number, radiusKm = 1.5)
 // ────────────────────────────────────────────────────────────
 
 export async function getNearbyCrimes(lat: number, lng: number, radiusKm = 1.5): Promise<CrimeResult[]> {
-  const { data: crimes } = await geoDb.rpc('get_boundaries_within', {
+  const { data: crimes } = await getGeoDb().rpc('get_boundaries_within', {
     search_lng: lng,
     search_lat: lat,
     radius_meters: radiusKm * 1000,
@@ -386,7 +392,7 @@ export async function getNearbyCrimes(lat: number, lng: number, radiusKm = 1.5):
 // ────────────────────────────────────────────────────────────
 
 export async function getNearbyPermits(lat: number, lng: number, radiusKm = 2): Promise<PermitResult[]> {
-  const { data: permits } = await geoDb.rpc('get_boundaries_within', {
+  const { data: permits } = await getGeoDb().rpc('get_boundaries_within', {
     search_lng: lng,
     search_lat: lat,
     radius_meters: radiusKm * 1000,
