@@ -158,16 +158,17 @@ export async function getZoning(lat: number, lng: number): Promise<ZoningResult 
 
   if (!zones || zones.length === 0) return null;
 
-  const zone = zones[0]; 
+  const zone = zones[0];
+  const city = detectCity(lat, lng);
 
   return {
     zone_code: zone.code || 'Unknown',
-    zone_description: zone.name || '',
+    zone_description: zone.name || zone.attributes?.zone_category || '',
     permitted_uses: parsePermittedUses(zone.code || ''),
     max_height: zone.attributes?.HEIGHT ? `${zone.attributes.HEIGHT}m` : null,
     heritage_overlay: !!zone.attributes?.HIST || !!zone.attributes?.HISTATUS,
     nearby_dev_apps: 0,
-    source: 'City of Ottawa Open Data (open.ottawa.ca)',
+    source: city === 'toronto' ? 'City of Toronto Open Data (open.toronto.ca)' : 'City of Ottawa Open Data (open.ottawa.ca)',
   };
 }
 
@@ -176,19 +177,34 @@ export async function getZoning(lat: number, lng: number): Promise<ZoningResult 
 // ────────────────────────────────────────────────────────────
 
 export async function getFloodRisk(lat: number, lng: number): Promise<FloodRiskResult> {
+  // Try both layer types for compatibility with Ottawa (flood_plain) and Toronto (flood) data
   const { data: floods } = await getGeoDb().rpc('get_boundaries_intersecting', {
     search_lng: lng,
     search_lat: lat,
-    layer_type: 'flood_plain'
+    layer_type: 'flood'
   });
 
-  const inFloodPlain = floods && floods.length > 0;
+  // Fallback: also check flood_plain (Ottawa legacy)
+  let floodData = floods;
+  if (!floodData || floodData.length === 0) {
+    const { data: fp } = await getGeoDb().rpc('get_boundaries_intersecting', {
+      search_lng: lng,
+      search_lat: lat,
+      layer_type: 'flood_plain'
+    });
+    floodData = fp;
+  }
+
+  const inFloodPlain = floodData && floodData.length > 0;
+  const city = detectCity(lat, lng);
 
   return {
     in_flood_plain: inFloodPlain,
-    flood_zone_type: inFloodPlain ? (floods[0].name || 'Regulatory Flood Plain') : null,
+    flood_zone_type: inFloodPlain ? (floodData[0].name || 'Regulatory Flood Plain') : null,
     risk_level: inFloodPlain ? 'high' : 'none',
-    source: 'City of Ottawa Open Data — Flood Plain Overlay (Section 58)',
+    source: city === 'toronto'
+      ? 'TRCA — Toronto Region Conservation Authority Floodplain Mapping'
+      : 'City of Ottawa Open Data — Flood Plain Overlay (Section 58)',
   };
 }
 
@@ -231,7 +247,7 @@ export async function getDemographics(lat: number, lng: number): Promise<Demogra
   const ward = wards && wards.length > 0 ? wards[0] : null;
 
   return {
-    neighbourhood: hood?.name || 'Ottawa',
+    neighbourhood: hood?.name || (detectCity(lat, lng) === 'toronto' ? 'Toronto' : 'Ottawa'),
     ward: ward?.name || '',
     population: null,
     median_age: null,

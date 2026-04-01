@@ -223,8 +223,9 @@ export default function NeighbourhoodIntelligence({ lat, lng, city }: Props) {
         background: '#fafafa',
       }}>
         <p style={{ margin: 0, fontSize: '10px', color: '#aaa', lineHeight: 1.5 }}>
-          Source: City of Ottawa Open Data (open.ottawa.ca) · Statistics Canada, 2021 Census ·
-          Data refreshed monthly. For official zoning decisions, consult the City of Ottawa.
+          {lat >= 43.0 && lat <= 44.2 && lng >= -80.2 && lng <= -78.5
+            ? 'Source: City of Toronto Open Data (open.toronto.ca) · TRCA · Statistics Canada, 2021 Census · Data refreshed monthly. For official zoning decisions, consult the City of Toronto.'
+            : 'Source: City of Ottawa Open Data (open.ottawa.ca) · Statistics Canada, 2021 Census · Data refreshed monthly. For official zoning decisions, consult the City of Ottawa.'}
         </p>
       </div>
     </div>

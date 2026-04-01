@@ -84,20 +84,22 @@ export async function GET(req: NextRequest) {
     }
 
     let data: unknown;
+    const isGTA = lat >= 43.0 && lat <= 44.2 && lng >= -80.2 && lng <= -78.5;
+    const cityLabel = isGTA ? 'City of Toronto' : 'City of Ottawa';
     let source = 'GeoIntelligence Engine — ListingBooth.com';
 
     switch (type) {
       case 'zoning':
         data = await getZoning(lat, lng);
-        source = 'City of Ottawa Open Data';
+        source = isGTA ? 'City of Toronto Open Data' : 'City of Ottawa Open Data';
         break;
       case 'flood-risk':
         data = await getFloodRisk(lat, lng);
-        source = 'City of Ottawa — Flood Plain Overlay';
+        source = isGTA ? 'TRCA — Floodplain Mapping' : 'City of Ottawa — Flood Plain Overlay';
         break;
       case 'schools':
         data = await getNearbySchools(lat, lng, parseFloat(s.get('radius') || '3'));
-        source = 'City of Ottawa — Schools MapServer';
+        source = isGTA ? 'Toronto District School Board' : 'City of Ottawa — Schools MapServer';
         break;
       case 'demographics':
         data = await getDemographics(lat, lng);
@@ -105,27 +107,27 @@ export async function GET(req: NextRequest) {
         break;
       case 'amenities':
         data = await getNearbyAmenities(lat, lng, parseFloat(s.get('radius') || '2'));
-        source = 'City of Ottawa — Parks & Recreation';
+        source = `${cityLabel} — Parks & Recreation`;
         break;
       case 'transit':
         data = await getNearbyTransit(lat, lng, parseFloat(s.get('radius') || '3'));
-        source = 'City of Ottawa — OC Transpo / LRT';
+        source = isGTA ? 'TTC / Metrolinx / GO Transit' : 'City of Ottawa — OC Transpo / LRT';
         break;
       case 'dev-apps':
         data = await getNearbyDevApps(lat, lng, parseFloat(s.get('radius') || '1.5'));
-        source = 'City of Ottawa — Development Applications';
+        source = `${cityLabel} — Development Applications`;
         break;
       case 'crime':
         data = await getNearbyCrimes(lat, lng, parseFloat(s.get('radius') || '1.5'));
-        source = 'Ottawa Police Service — Crime Locations';
+        source = isGTA ? 'Toronto Police Service — Crime Locations' : 'Ottawa Police Service — Crime Locations';
         break;
       case 'building-permits':
         data = await getNearbyPermits(lat, lng, parseFloat(s.get('radius') || '2'));
-        source = 'City of Ottawa — Construction Forecast';
+        source = `${cityLabel} — Construction Forecast`;
         break;
       case 'full':
         data = await getFullSpatialContext(lat, lng);
-        source = 'GeoIntelligence Engine (Open Ottawa + Census)';
+        source = isGTA ? 'GeoIntelligence Engine (Open Toronto + Census)' : 'GeoIntelligence Engine (Open Ottawa + Census)';
         break;
       default:
         return NextResponse.json(

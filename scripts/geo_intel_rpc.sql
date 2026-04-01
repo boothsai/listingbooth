@@ -1,7 +1,8 @@
 -- ============================================================
--- GeoIntelligence Engine — PostGIS RPC Functions (Phase P5)
+-- GeoIntelligence Engine — PostGIS RPC Functions (Phase P5.1)
 -- Dynamic Geographic Cross-Routing (Ottawa vs. Toronto)
--- Run this in Supabase SQL Editor to enable Spatial Queries
+-- FIX: Use city column for routing instead of prefixing boundary_type
+-- Run this in Supabase SQL Editor
 -- ============================================================
 
 -- Function 1: Find boundaries that contain/intersect a coordinate point
@@ -13,29 +14,23 @@ CREATE OR REPLACE FUNCTION geo_intel.get_boundaries_intersecting(
 )
 RETURNS SETOF geo_intel.boundaries AS $$
 DECLARE
-  resolved_layer_type TEXT;
+  resolved_city TEXT;
 BEGIN
   -- Dynamic Geographic Cross-Routing (Phase P5)
-  -- If querying generic layers, dynamically resolve to the correct municipal dataset
-  IF layer_type IN ('zoning', 'flood', 'school', 'ward', 'neighbourhood') THEN
-    -- GTA Bounding Box (Roughly Niagara to Oshawa)
-    IF search_lat BETWEEN 43.0 AND 44.2 AND search_lng BETWEEN -80.2 AND -78.5 THEN
-      resolved_layer_type := 'toronto_' || layer_type;
-    -- NCR Bounding Box (Ottawa)
-    ELSIF search_lat BETWEEN 44.9 AND 45.6 AND search_lng BETWEEN -76.5 AND -75.0 THEN
-      resolved_layer_type := 'ottawa_' || layer_type;
-    ELSE
-      -- Fallback or direct explicit layer call
-      resolved_layer_type := layer_type; 
-    END IF;
+  -- Determine the city based on coordinate bounding boxes
+  IF search_lat BETWEEN 43.0 AND 44.2 AND search_lng BETWEEN -80.2 AND -78.5 THEN
+    resolved_city := 'toronto';
+  ELSIF search_lat BETWEEN 44.9 AND 45.6 AND search_lng BETWEEN -76.5 AND -75.0 THEN
+    resolved_city := 'ottawa';
   ELSE
-    resolved_layer_type := layer_type;
+    resolved_city := NULL;  -- No city filter, search all
   END IF;
 
   RETURN QUERY
   SELECT *
   FROM geo_intel.boundaries
-  WHERE boundary_type = resolved_layer_type
+  WHERE boundary_type = layer_type
+    AND (resolved_city IS NULL OR city = resolved_city)
     AND ST_Intersects(
       geom, 
       ST_SetSRID(ST_MakePoint(search_lng, search_lat), 4326)
@@ -63,24 +58,16 @@ RETURNS TABLE (
   distance_meters NUMERIC
 ) AS $$
 DECLARE
-  resolved_layer_types TEXT[];
-  city_prefix TEXT;
+  resolved_city TEXT;
 BEGIN
   -- Dynamic Geographic Cross-Routing (Phase P5)
   IF search_lat BETWEEN 43.0 AND 44.2 AND search_lng BETWEEN -80.2 AND -78.5 THEN
-    city_prefix := 'toronto_';
+    resolved_city := 'toronto';
   ELSIF search_lat BETWEEN 44.9 AND 45.6 AND search_lng BETWEEN -76.5 AND -75.0 THEN
-    city_prefix := 'ottawa_';
+    resolved_city := 'ottawa';
   ELSE
-    city_prefix := '';
+    resolved_city := NULL;
   END IF;
-
-  SELECT array_agg(
-    CASE 
-      WHEN l IN ('transit', 'school', 'park', 'amenity') AND city_prefix != '' THEN city_prefix || l
-      ELSE l
-    END
-  ) INTO resolved_layer_types FROM unnest(layer_types) AS l;
 
   RETURN QUERY
   SELECT 
@@ -91,13 +78,13 @@ BEGIN
     b.code,
     b.attributes,
     b.ingested_at,
-    -- Calculate precise distance in meters using geography cast
     ST_Distance(
       b.geom::geography, 
       ST_SetSRID(ST_MakePoint(search_lng, search_lat), 4326)::geography
     )::NUMERIC AS distance_meters
   FROM geo_intel.boundaries b
-  WHERE b.boundary_type = ANY(resolved_layer_types)
+  WHERE b.boundary_type = ANY(layer_types)
+    AND (resolved_city IS NULL OR b.city = resolved_city)
     AND ST_DWithin(
       b.geom::geography, 
       ST_SetSRID(ST_MakePoint(search_lng, search_lat), 4326)::geography, 
@@ -107,6 +94,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Grant permissions to anon/authenticated roles to call these functions
+-- Grant permissions
 GRANT EXECUTE ON FUNCTION geo_intel.get_boundaries_intersecting TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION geo_intel.get_boundaries_within TO anon, authenticated;
