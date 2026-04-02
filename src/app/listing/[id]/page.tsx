@@ -117,7 +117,7 @@ export default async function ListingDetailPage({ params }: Props) {
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 40px 80px', position: 'relative', zIndex: 1 }}>
 
         {/* ── Photo gallery ── */}
-        <div style={{ borderRadius: '32px', overflow: 'hidden', marginBottom: '48px', background: '#0a0a0a', height: '560px', position: 'relative', boxShadow: '0 24px 64px rgba(0,0,0,0.12)' }}>
+        <div style={{ borderRadius: '32px', overflow: 'hidden', marginBottom: '48px', background: '#f5f5f5', height: '560px', position: 'relative', boxShadow: '0 24px 64px rgba(0,0,0,0.06)' }}>
           {mainPhoto ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={mainPhoto} alt={l.address_street ?? 'Property'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
