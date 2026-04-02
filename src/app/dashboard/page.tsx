@@ -44,7 +44,18 @@ export default function DashboardHomePage() {
   }, []);
 
   return (
-    <div>
+    <main style={{ minHeight: '100vh', backgroundColor: '#fdfdfc', position: 'relative', overflow: 'hidden' }}>
+      
+      {/* Luxury Bright Mesh Background */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '800px', background: 'linear-gradient(180deg, rgba(240,244,255,0.6) 0%, rgba(253,253,252,0) 100%)', zIndex: 0, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: -100, right: -100, width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(218,41,28,0.04) 0%, rgba(255,255,255,0) 70%)', filter: 'blur(60px)', zIndex: 0, pointerEvents: 'none' }} />
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '64px 40px', position: 'relative', zIndex: 10 }}>
+        
+        <div style={{ marginBottom: '40px' }}>
+          <h1 style={{ margin: '0 0 8px', fontSize: '36px', fontWeight: 900, color: '#111', letterSpacing: '-1px' }}>Welcome Back, VIP</h1>
+          <p style={{ margin: 0, fontSize: '15px', color: '#666', fontWeight: 500 }}>Your personalized intelligence portal.</p>
+        </div>
       {/* Quick Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '40px' }}>
         {[
@@ -54,8 +65,9 @@ export default function DashboardHomePage() {
           { label: 'Your Journey', value: 'Active', icon: '🗺️', color: '#059669' },
         ].map(s => (
           <div key={s.label} style={{
-            padding: '24px', borderRadius: '16px',
-            background: 'white', border: '1.5px solid #eee',
+            padding: '24px', borderRadius: '24px',
+            background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(24px)', border: '1px solid rgba(0,0,0,0.04)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.02)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <span style={{ fontSize: '28px' }}>{s.icon}</span>
@@ -115,11 +127,11 @@ export default function DashboardHomePage() {
             {recommended.map((l: any) => (
               <Link key={l.listing_key} href={`/listing/${l.listing_key}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div style={{
-                  borderRadius: '16px', overflow: 'hidden',
-                  background: 'white', border: '1.5px solid #eee',
+                  borderRadius: '24px', overflow: 'hidden',
+                  background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(0,0,0,0.04)', backdropFilter: 'blur(24px)',
                   transition: 'all 0.3s', cursor: 'pointer',
                 }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.08)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                 >
                   <div style={{ height: '160px', background: '#f5f5f5', overflow: 'hidden' }}>
@@ -153,6 +165,7 @@ export default function DashboardHomePage() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </main>
   );
 }
