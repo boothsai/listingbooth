@@ -7,7 +7,7 @@ import { getListingById } from '@/lib/supabase/ddf';
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import ListingCTA from '@/components/ListingCTA';
+import LeadCaptureCard from '@/components/LeadCaptureCard';
 import SaveListingButton from '@/components/SaveListingButton';
 import TrueCostCalculator from '@/components/TrueCostCalculator';
 import BeforeYouOfferChecklist from '@/components/BeforeYouOfferChecklist';
@@ -286,13 +286,12 @@ export default async function ListingDetailPage({ params }: Props) {
 
           {/* Right: interactive CTA card (client component) */}
           <div style={{ position: 'sticky', top: '100px' }}>
-            <ListingCTA
+            <LeadCaptureCard
               listingKey={l.listing_key}
               address={`${l.address_street ?? ''}${l.address_city ? `, ${l.address_city}` : ''}`}
               price={formatPrice(l.list_price)}
               agentName={l.listing_agent_name}
               brokerage={l.listing_brokerage}
-              virtualTourUrl={undefined}
             />
 
             {/* Map */}
