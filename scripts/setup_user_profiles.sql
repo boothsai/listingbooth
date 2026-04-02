@@ -13,16 +13,19 @@ CREATE TABLE IF NOT EXISTS core_logic.user_profiles (
 ALTER TABLE core_logic.user_profiles ENABLE ROW LEVEL SECURITY;
 
 -- Allow users to read their own profile
+DROP POLICY IF EXISTS "Users can view own profile" ON core_logic.user_profiles;
 CREATE POLICY "Users can view own profile" 
 ON core_logic.user_profiles FOR SELECT 
 USING (auth.uid() = id);
 
 -- Allow users to update their own profile (e.g. accepting VOW terms)
+DROP POLICY IF EXISTS "Users can update own profile" ON core_logic.user_profiles;
 CREATE POLICY "Users can update own profile" 
 ON core_logic.user_profiles FOR UPDATE 
 USING (auth.uid() = id);
 
 -- Allow the backend service role to bypass RLS (auto-inserted by Trigger)
+DROP POLICY IF EXISTS "Service Role can bypass RLS" ON core_logic.user_profiles;
 CREATE POLICY "Service Role can bypass RLS"
 ON core_logic.user_profiles FOR ALL
 USING (current_setting('request.jwt.claims', true)::json->>'role' = 'service_role');
