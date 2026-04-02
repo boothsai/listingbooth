@@ -1,13 +1,16 @@
--- 1. Create User Profiles Table
+-- 1. Create OR Alter User Profiles Table
 CREATE TABLE IF NOT EXISTS core_logic.user_profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email TEXT NOT NULL,
-  first_name TEXT,
-  last_name TEXT,
-  vow_terms_accepted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Safely append ListingBooth-specific fields to the preexisting CRM table
+ALTER TABLE core_logic.user_profiles 
+  ADD COLUMN IF NOT EXISTS first_name TEXT,
+  ADD COLUMN IF NOT EXISTS last_name TEXT,
+  ADD COLUMN IF NOT EXISTS vow_terms_accepted_at TIMESTAMPTZ;
 
 -- 2. Configure RLS (Row Level Security)
 ALTER TABLE core_logic.user_profiles ENABLE ROW LEVEL SECURITY;

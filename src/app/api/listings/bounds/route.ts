@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     let query = supabase
       .from('ddf_listings')
-      .select('listing_key, latitude, longitude, list_price, close_price, property_type, bedrooms_total, bathrooms_total, photo_urls, address_street, address_city, listing_status, listing_contract_date, living_area, days_on_market')
+      .select('listing_key, latitude, longitude, list_price, close_price, property_type, property_sub_type, bedrooms_total, bathrooms_total, photo_urls, address_street, address_city, listing_status, listing_contract_date, living_area, days_on_market, description, maintenance_fee')
       .gte('latitude', minLat)
       .lte('latitude', maxLat)
       .gte('longitude', minLng)
