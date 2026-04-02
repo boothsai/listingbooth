@@ -1,5 +1,5 @@
 // This encapsulates demographic data for Ottawa neighborhoods.
-// In the future, this will be dynamically synchronized with the res_ddf.neighborhoods Supabase table.
+// In the future, this will be dynamically synchronized with the public.neighborhoods Supabase table.
 
 export interface DemographicProfile {
   name: string;

@@ -43,11 +43,10 @@ export default async function FavoritesPage() {
   if (listingKeys.length > 0) {
     const ddf = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
-      { db: { schema: 'res_ddf' } }
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
     );
     const { data } = await ddf
-      .from('listings')
+      .from('ddf_listings')
       .select('listing_key, address_street, address_city, list_price, property_type, bedrooms_total, bathrooms_total, photo_urls, is_active')
       .in('listing_key', listingKeys);
     listings = data || [];

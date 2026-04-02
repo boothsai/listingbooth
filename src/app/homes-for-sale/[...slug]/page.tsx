@@ -37,11 +37,10 @@ export default async function ProgrammaticSEOPage(props: PageProps) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
   const { data: properties, error } = await supabase
-    .schema('res_ddf' as any)
-    .from('listings')
+    .from('ddf_listings')
     .select('listing_key, address_street, address_city, list_price, bedrooms_total, bathrooms_total, photo_urls, mls_number')
     .ilike('address_city', `%${city || 'Ottawa'}%`)
-    .eq('listing_status', 'Active')
+    .eq('is_active', true)
     .limit(25);
 
   if (error || !properties || properties.length === 0) {

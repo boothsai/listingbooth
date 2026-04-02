@@ -40,12 +40,11 @@ export async function POST(req: NextRequest) {
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!,
-      { db: { schema: 'res_ddf' } }
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
     );
 
     let query = supabase
-      .from('listings')
+      .from('ddf_listings')
       .select('listing_key, latitude, longitude, list_price, close_price, property_type, bedrooms_total, bathrooms_total, photo_urls, address_street, address_city, listing_status, listing_contract_date, living_area, days_on_market')
       .gte('latitude', minLat)
       .lte('latitude', maxLat)
@@ -115,7 +114,7 @@ export async function POST(req: NextRequest) {
     if (safePage === 0) {
       // Quick count query — lightweight, no payload
       const { count: totalCount } = await supabase
-        .from('listings')
+        .from('ddf_listings')
         .select('listing_key', { count: 'estimated', head: true })
         .gte('latitude', minLat).lte('latitude', maxLat)
         .gte('longitude', minLng).lte('longitude', maxLng)
