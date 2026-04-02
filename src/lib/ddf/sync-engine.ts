@@ -39,7 +39,8 @@ export interface SyncResult {
 
 export class DdfSyncEngine {
   private reso: ResoClient;
-  private db: SupabaseClient;
+  private db: SupabaseClient;      // public schema (for sync_meta)
+  private ddfDb: SupabaseClient;   // res_ddf schema (for properties table)
   private config: SyncConfig;
 
   constructor(config: SyncConfig) {
@@ -47,6 +48,10 @@ export class DdfSyncEngine {
     this.reso = new ResoClient(config.reso);
     this.db = createClient(config.supabaseUrl, config.supabaseServiceKey, {
       auth: { persistSession: false },
+    });
+    this.ddfDb = createClient(config.supabaseUrl, config.supabaseServiceKey, {
+      auth: { persistSession: false },
+      db: { schema: 'res_ddf' },
     });
   }
 
@@ -88,8 +93,8 @@ export class DdfSyncEngine {
   private async upsertBatch(rows: ListingRow[]): Promise<{ inserted: number; updated: number; errors: number }> {
     if (rows.length === 0) return { inserted: 0, updated: 0, errors: 0 };
 
-    const { data, error } = await this.db
-      .from('listings')
+    const { data, error } = await this.ddfDb
+      .from('properties')
       .upsert(rows, {
         onConflict: 'mls_number',
         ignoreDuplicates: false,
@@ -120,8 +125,8 @@ export class DdfSyncEngine {
     console.log(`[DDF-SYNC] Last sync: ${lastSync}`);
 
     // 2. Count existing listings (to calculate inserts later)
-    const { count: beforeCount } = await this.db
-      .from('listings')
+    const { count: beforeCount } = await this.ddfDb
+      .from('properties')
       .select('*', { count: 'exact', head: true });
 
     // 3. Delta fetch from RESO API
@@ -168,8 +173,8 @@ export class DdfSyncEngine {
     }
 
     // 6. Calculate inserts vs updates
-    const { count: afterCount } = await this.db
-      .from('listings')
+    const { count: afterCount } = await this.ddfDb
+      .from('properties')
       .select('*', { count: 'exact', head: true });
 
     const netNew = (afterCount ?? 0) - (beforeCount ?? 0);
