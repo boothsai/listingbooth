@@ -97,11 +97,15 @@ export default async function ListingDetailPage({ params }: Props) {
   };
 
   return (
-    <main style={{ minHeight: '100vh', backgroundColor: '#fafafa' }}>
+    <main style={{ minHeight: '100vh', backgroundColor: '#fdfdfc', position: 'relative' }}>
+      {/* Luxury Bright Mesh Background */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '800px', background: 'linear-gradient(180deg, rgba(240,244,255,0.6) 0%, rgba(253,253,252,0) 100%)', zIndex: 0, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: -100, right: -100, width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(218,41,28,0.04) 0%, rgba(255,255,255,0) 70%)', filter: 'blur(60px)', zIndex: 0, pointerEvents: 'none' }} />
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* ── Breadcrumb nav ── */}
-      <div style={{ borderBottom: '1px solid #eee', backgroundColor: 'white', padding: '14px 40px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#888', fontWeight: 500 }}>
+      <div style={{ borderBottom: '1px solid rgba(0,0,0,0.04)', backgroundColor: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)', padding: '14px 40px', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#666', fontWeight: 600 }}>
           <Link href="/" style={{ color: '#da291c', textDecoration: 'none', fontWeight: 700 }}>ListingBooth</Link>
           <span>›</span>
           <Link href="/#buy" style={{ color: '#888', textDecoration: 'none' }}>{l.address_city ?? 'Listings'}</Link>
@@ -110,10 +114,10 @@ export default async function ListingDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 40px 80px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 40px 80px', position: 'relative', zIndex: 1 }}>
 
         {/* ── Photo gallery ── */}
-        <div style={{ borderRadius: '20px', overflow: 'hidden', marginBottom: '40px', background: '#111', height: '480px', position: 'relative' }}>
+        <div style={{ borderRadius: '32px', overflow: 'hidden', marginBottom: '48px', background: '#0a0a0a', height: '560px', position: 'relative', boxShadow: '0 24px 64px rgba(0,0,0,0.12)' }}>
           {mainPhoto ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={mainPhoto} alt={l.address_street ?? 'Property'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -173,11 +177,11 @@ export default async function ListingDetailPage({ params }: Props) {
             </div>
 
             {/* Key stats bar */}
-            <div style={{ display: 'flex', gap: '0', marginBottom: '40px', background: 'white', border: '1.5px solid #eee', borderRadius: '14px', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', gap: '0', marginBottom: '48px', background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.03)' }}>
               {[
-                { label: 'Bedrooms', value: l.bedrooms ?? '—' },
-                { label: 'Bathrooms', value: l.bathrooms ?? '—' },
-                { label: 'Sq Ft', value: l.sqft ? Math.round(l.sqft).toLocaleString() : '—' },
+                { label: 'Bedrooms', value: l.bedrooms_total ?? l.bedrooms ?? '—' },
+                { label: 'Bathrooms', value: l.bathrooms_total ?? l.bathrooms ?? '—' },
+                { label: 'Sq Ft', value: l.living_area || l.sqft ? Math.round((l.living_area || l.sqft) as number).toLocaleString() : '—' },
                 { label: 'Days on Market', value: l.days_on_market ?? '—' },
               ].map((s, i, arr) => (
                 <div key={s.label} style={{ flex: 1, padding: '20px 16px', textAlign: 'center', borderRight: i < arr.length - 1 ? '1px solid #eee' : 'none' }}>

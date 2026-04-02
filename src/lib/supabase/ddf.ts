@@ -77,22 +77,22 @@ export interface DdfListing {
 function mapListing(row: any): DdfListing {
   return {
     ...row,
-    listing_key: row.mls_number || row.id,
-    address_street: row.street_number && row.street_name
+    listing_key: row.listing_key || row.mls_number || row.id,
+    address_street: row.address_street || (row.street_number && row.street_name
       ? `${row.street_number} ${row.street_name}`
-      : row.street_name || row.address || '',
-    address_city: row.city,
-    address_province: row.province,
-    address_postal_code: row.postal_code,
-    photo_urls: row.photos,
-    listing_agent_name: row.agent_name,
-    listing_brokerage: row.office_name,
-    listing_status: row.status,
-    bedrooms_total: row.bedrooms,
-    bathrooms_total: row.bathrooms,
-    living_area: row.sqft,
-    public_remarks: row.description,
-    is_active: row.status === 'active',
+      : row.street_name || row.address || ''),
+    address_city: row.address_city || row.city,
+    address_province: row.address_province || row.province,
+    address_postal_code: row.address_postal_code || row.postal_code,
+    photo_urls: row.photo_urls || row.photos,
+    listing_agent_name: row.listing_agent_name || row.agent_name,
+    listing_brokerage: row.listing_brokerage || row.office_name,
+    listing_status: row.listing_status || row.status,
+    bedrooms_total: row.bedrooms_total || row.bedrooms,
+    bathrooms_total: row.bathrooms_total || row.bathrooms,
+    living_area: row.living_area || row.sqft,
+    public_remarks: row.public_remarks || row.description,
+    is_active: row.is_active ?? (row.status === 'active'),
   };
 }
 
