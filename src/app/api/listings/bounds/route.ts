@@ -35,12 +35,14 @@ export async function POST(req: NextRequest) {
         { cookies: { getAll() { return cookieStore.getAll(); }, setAll() {} } }
       );
       const { data: authData } = await supabaseSession.auth.getUser();
-      if (authData?.user) {
+      
+      // HARD VERIFICATION: Enforce email verification AND VOW terms acceptance
+      if (authData?.user && authData.user.email_confirmed_at != null) {
         const adminDb = createClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL!,
           process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
         );
-        const { data: profile } = await adminDb.from('user_profiles').select('vow_terms_accepted_at').eq('id', authData.user.id).single();
+        const { data: profile } = await adminDb.schema('core_logic').from('user_profiles').select('vow_terms_accepted_at').eq('id', authData.user.id).single();
         isVowAuthenticated = !!profile?.vow_terms_accepted_at;
       }
     } catch {}

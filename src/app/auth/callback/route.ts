@@ -44,39 +44,13 @@ export async function GET(request: NextRequest) {
           process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
         );
         // Fire and forget update
-        adminDb.from('user_profiles')
+        adminDb.schema('core_logic').from('user_profiles')
           .update({ vow_terms_accepted_at: new Date().toISOString() })
           .eq('id', data.user.id)
           .then();
       }
 
-      // Fire off webhook / email drip if we have a token
-      const t = searchParams.get('t');
-      if (t) {
-        try {
-          // Look up agent
-          const { data: linkInfo } = await supabase.schema('core_logic' as any)
-            .from('shared_links')
-            .select('agent_id')
-            .eq('share_token', t)
-            .single();
-            
-          if (linkInfo && linkInfo.agent_id) {
-            await fetch(`${origin}/api/email/welcome-drip`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                email: data.user.email,
-                firstName: data.user.user_metadata?.full_name?.split(' ')[0] || '',
-                agentId: linkInfo.agent_id,
-                token: t
-              })
-            });
-          }
-        } catch (e) {
-          console.error('Failed to trigger background drip campaign:', e);
-        }
-      }
+
 
       return NextResponse.redirect(`${origin}${next}`);
     }

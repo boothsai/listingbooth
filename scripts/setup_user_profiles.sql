@@ -1,5 +1,5 @@
 -- 1. Create User Profiles Table
-CREATE TABLE IF NOT EXISTS public.user_profiles (
+CREATE TABLE IF NOT EXISTS core_logic.user_profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email TEXT NOT NULL,
   first_name TEXT,
@@ -10,28 +10,28 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
 );
 
 -- 2. Configure RLS (Row Level Security)
-ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE core_logic.user_profiles ENABLE ROW LEVEL SECURITY;
 
 -- Allow users to read their own profile
 CREATE POLICY "Users can view own profile" 
-ON public.user_profiles FOR SELECT 
+ON core_logic.user_profiles FOR SELECT 
 USING (auth.uid() = id);
 
 -- Allow users to update their own profile (e.g. accepting VOW terms)
 CREATE POLICY "Users can update own profile" 
-ON public.user_profiles FOR UPDATE 
+ON core_logic.user_profiles FOR UPDATE 
 USING (auth.uid() = id);
 
 -- Allow the backend service role to bypass RLS (auto-inserted by Trigger)
 CREATE POLICY "Service Role can bypass RLS"
-ON public.user_profiles FOR ALL
+ON core_logic.user_profiles FOR ALL
 USING (current_setting('request.jwt.claims', true)::json->>'role' = 'service_role');
 
 -- 3. Create Trigger Function
 CREATE OR REPLACE FUNCTION public.handle_new_user() 
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.user_profiles (id, email, first_name, last_name)
+  INSERT INTO core_logic.user_profiles (id, email, first_name, last_name)
   VALUES (
     new.id,
     new.email,
