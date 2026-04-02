@@ -33,6 +33,8 @@ export interface ListingMarker {
   listing_contract_date: string;
   living_area: number | null;
   days_on_market: number | null;
+  description?: string | null;
+  maintenance_fee?: number | null;
   _vow_locked?: boolean;
 }
 
@@ -454,11 +456,19 @@ export default function MapExplorer() {
                 </div>
                 <p style={{ margin: '4px 0 0', fontSize: 13, color: '#666', fontWeight: 500 }}>{l.address_street}</p>
                 <p style={{ margin: '2px 0 0', fontSize: 12, color: '#aaa' }}>{l.address_city || city.name}, ON</p>
-                <div style={{ display: 'flex', gap: 12, marginTop: 8, fontSize: 12, color: '#888', fontWeight: 600 }}>
+                <div style={{ display: 'flex', gap: 12, marginTop: 8, fontSize: 12, color: '#888', fontWeight: 600, flexWrap: 'wrap' }}>
                   <span>{l.bedrooms_total} Bed</span>
                   <span>{l.bathrooms_total} Bath</span>
-                  {l.living_area && <span>{l.living_area.toLocaleString()} sqft</span>}
+                  {l.living_area != null && <span>{l.living_area.toLocaleString()} sqft</span>}
+                  {l.maintenance_fee != null && l.maintenance_fee > 0 && (
+                    <span style={{ color: '#da291c' }}>Maint: ${Math.round(l.maintenance_fee).toLocaleString()}</span>
+                  )}
                 </div>
+                {l.description && (
+                  <p style={{ margin: '8px 0 0', fontSize: 12, color: '#999', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {l.description}
+                  </p>
+                )}
               </div>
             </div>
           ))}
