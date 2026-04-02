@@ -136,7 +136,7 @@ export async function searchListings(params: ListingSearchParams): Promise<Listi
   const showActive = params.status !== 'sold';
 
   let query = db()
-    .from('listings')
+    .from('ddf_listings')
     .select('*', { count: 'exact' })
     .range(offset, offset + limit - 1)
     .order('updated_at', { ascending: false });
@@ -175,14 +175,14 @@ export async function searchListings(params: ListingSearchParams): Promise<Listi
 export async function getListingById(id: string): Promise<DdfListing | null> {
   // Try mls_number first, then id
   let { data, error } = await db()
-    .from('listings')
+    .from('ddf_listings')
     .select('*')
     .eq('mls_number', id)
     .single();
 
   if (error || !data) {
     ({ data, error } = await db()
-      .from('listings')
+      .from('ddf_listings')
       .select('*')
       .eq('id', id)
       .single());
@@ -194,7 +194,7 @@ export async function getListingById(id: string): Promise<DdfListing | null> {
 
 export async function getFeaturedListings(limit = 6): Promise<DdfListing[]> {
   const { data, error } = await db()
-    .from('listings')
+    .from('ddf_listings')
     .select('*')
     .eq('status', 'active')
     .order('list_price', { ascending: false })
@@ -207,7 +207,7 @@ export async function getFeaturedListings(limit = 6): Promise<DdfListing[]> {
 
 export async function getMarketStats(city = 'Ottawa'): Promise<MarketStats> {
   const { data, error } = await db()
-    .from('listings')
+    .from('ddf_listings')
     .select('list_price, days_on_market, updated_at')
     .eq('status', 'active')
     .ilike('city', `%${city}%`);
