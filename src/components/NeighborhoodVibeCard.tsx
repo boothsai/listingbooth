@@ -5,15 +5,17 @@ export default function NeighborhoodVibeCard({ city, community }: { city?: strin
   const data = getDemographics(slug);
   const displayName = data?.name || (slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'This Area');
 
-  // Use real scores if available, otherwise show a placeholder state
-  const vibes = data ? [
+  if (!data) return null;
+
+  // Use real scores if available
+  const vibes = [
     { emoji: '🏪', label: 'Walkability',    score: data.walkScore },
     { emoji: '🎓', label: 'School Quality', score: data.schoolScore },
     { emoji: '🌳', label: 'Green Space',    score: data.greenScore },
     { emoji: '🚇', label: 'Transit Access', score: data.transitScore },
     { emoji: '🔇', label: 'Quiet Level',    score: data.quietScore },
     { emoji: '👨‍👩‍👧‍👦', label: 'Family Friendly', score: data.familyScore },
-  ] : null;
+  ];
 
   return (
     <div style={{ background: 'white', border: '1.5px solid #eee', borderRadius: '16px', overflow: 'hidden' }}>
@@ -28,33 +30,26 @@ export default function NeighborhoodVibeCard({ city, community }: { city?: strin
       </div>
 
       <div style={{ padding: '16px 24px 24px' }}>
-        {vibes ? (
-          <>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              {vibes.map(v => (
-                <div key={v.label} style={{ padding: '12px', background: '#f9f9f9', borderRadius: '10px', border: '1px solid #f0f0f0' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#555' }}>{v.emoji} {v.label}</span>
-                    <span style={{ fontSize: '13px', fontWeight: 900, color: v.score >= 80 ? '#22c55e' : v.score >= 60 ? '#f59e0b' : '#ef4444' }}>{v.score}</span>
-                  </div>
-                  <div style={{ width: '100%', height: '4px', background: '#e5e5e5', borderRadius: '100px', overflow: 'hidden' }}>
-                    <div style={{ width: `${v.score}%`, height: '100%', background: v.score >= 80 ? '#22c55e' : v.score >= 60 ? '#f59e0b' : '#ef4444', borderRadius: '100px', transition: 'width 0.6s ease-out' }} />
-                  </div>
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            {vibes.map(v => (
+              <div key={v.label} style={{ padding: '12px', background: '#f9f9f9', borderRadius: '10px', border: '1px solid #f0f0f0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#555' }}>{v.emoji} {v.label}</span>
+                  <span style={{ fontSize: '13px', fontWeight: 900, color: v.score >= 80 ? '#22c55e' : v.score >= 60 ? '#f59e0b' : '#ef4444' }}>{v.score}</span>
                 </div>
-              ))}
-            </div>
-            {data?.vibe && (
-              <p style={{ margin: '16px 0 0', fontSize: '12px', color: '#888', lineHeight: 1.6, fontStyle: 'italic' }}>
-                {data.vibe}
-              </p>
-            )}
-          </>
-        ) : (
-          <div style={{ textAlign: 'center', padding: '16px 0', color: '#aaa' }}>
-            <p style={{ fontSize: '24px', margin: '0 0 8px' }}>🗺️</p>
-            <p style={{ fontSize: '13px', fontWeight: 600, margin: 0 }}>Neighborhood data coming soon for {displayName || 'this area'}.</p>
+                <div style={{ width: '100%', height: '4px', background: '#e5e5e5', borderRadius: '100px', overflow: 'hidden' }}>
+                  <div style={{ width: `${v.score}%`, height: '100%', background: v.score >= 80 ? '#22c55e' : v.score >= 60 ? '#f59e0b' : '#ef4444', borderRadius: '100px', transition: 'width 0.6s ease-out' }} />
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+          {data?.vibe && (
+            <p style={{ margin: '16px 0 0', fontSize: '12px', color: '#888', lineHeight: 1.6, fontStyle: 'italic' }}>
+              {data.vibe}
+            </p>
+          )}
+        </>
       </div>
     </div>
   );
