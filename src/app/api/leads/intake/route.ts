@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     // Proxy the request to the Central BOOTHS.AI clearinghouse endpoint
     const clearinghouseUrl = process.env.BOOTHS_CRM_CLEARINGHOUSE_URL 
-      || 'https://booths-omni-gateway.ali-373.workers.dev/api/leads/intake';
+      || 'https://omni-gateway.ali-373.workers.dev/api/leads/intake';
     
     const clearinghouseAuth = process.env.BOOTHS_CRM_API_KEY || '';
 
