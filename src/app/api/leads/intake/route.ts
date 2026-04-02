@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const payload = await req.json();
 
     // Validations
-    if (!payload.firstName || !payload.email) {
+    if (!payload.name || !payload.email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
