@@ -30,20 +30,14 @@ export default function LeadCaptureCard({ listingKey, address, price, agentName,
     try {
       // The payload shape commonly expected by Follow Up Boss via clearinghouse
       const payload = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
         email: formData.email,
         phone: formData.phone,
         message: activeTab === 'tour' 
-          ? `Showing Request on ${formData.preferredDate || 'Flexible'}${formData.message ? ` - ${formData.message}` : ''}`
+          ? `[Tour Request: ${formData.preferredDate || 'Flexible'}] ${formData.message}`.trim()
           : formData.message,
-        source: 'ListingBooth',
-        property: {
-          listingId: listingKey,
-          address: address,
-          price: price,
-        },
-        type: activeTab === 'tour' ? 'Showing Request' : 'General Inquiry'
+        property_id: listingKey,
+        source: 'ListingBooth'
       };
 
       const res = await fetch('/api/leads/intake', {
@@ -67,15 +61,17 @@ export default function LeadCaptureCard({ listingKey, address, price, agentName,
 
   if (status === 'success') {
     return (
-      <div style={{ background: 'white', border: '1.5px solid #eee', borderRadius: '20px', padding: '40px 32px', textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.06)' }}>
+      <div style={{ background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.8)', borderRadius: '24px', padding: '40px 32px', textAlign: 'center', boxShadow: '0 12px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)' }}>
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
-        <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 900, color: '#111' }}>Request Confirmed!</h3>
+        <h3 style={{ margin: '0 0 8px', fontSize: '22px', fontWeight: 900, color: '#111' }}>Request Confirmed!</h3>
         <p style={{ margin: '0 0 24px', fontSize: '14px', color: '#555', lineHeight: 1.6 }}>
           Thanks {formData.firstName}. We have routed your request to the listing team. You'll hear back shortly to confirm the details.
         </p>
         <button 
           onClick={() => { setStatus('idle'); setFormData({...formData, message: ''}); }}
-          style={{ padding: '12px 24px', background: '#f5f5f5', color: '#111', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
+          style={{ padding: '14px 28px', background: 'rgba(0,0,0,0.05)', color: '#111', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: 700, cursor: 'pointer', transition: 'background 0.2s' }}
+          onMouseOver={e => e.currentTarget.style.background = 'rgba(0,0,0,0.08)'}
+          onMouseOut={e => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
         >
           Send another message
         </button>
@@ -84,24 +80,24 @@ export default function LeadCaptureCard({ listingKey, address, price, agentName,
   }
 
   return (
-    <div style={{ background: 'white', border: '1.5px solid #eee', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.06)' }}>
+    <div style={{ background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 16px 40px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9)' }}>
       {/* Header Info */}
-      <div style={{ padding: '32px 32px 20px', borderBottom: '1px solid #f5f5f5' }}>
+      <div style={{ padding: '32px 32px 20px', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
         <p style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 900, color: '#111', letterSpacing: '-0.5px' }}>{price}</p>
         <p style={{ margin: 0, fontSize: '13px', color: '#888', fontWeight: 500 }}>{address}</p>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', borderBottom: '1.5px solid #eee' }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <button 
           onClick={() => setActiveTab('tour')}
-          style={{ flex: 1, padding: '16px', background: activeTab === 'tour' ? 'white' : '#fafafa', border: 'none', borderBottom: activeTab === 'tour' ? '3px solid #da291c' : '3px solid transparent', color: activeTab === 'tour' ? '#111' : '#888', fontSize: '14px', fontWeight: activeTab === 'tour' ? 800 : 600, cursor: 'pointer', transition: 'all 0.2s' }}
+          style={{ flex: 1, padding: '16px', background: activeTab === 'tour' ? 'rgba(255,255,255,0.5)' : 'transparent', border: 'none', borderBottom: activeTab === 'tour' ? '3px solid #da291c' : '3px solid transparent', color: activeTab === 'tour' ? '#111' : '#888', fontSize: '14px', fontWeight: activeTab === 'tour' ? 800 : 600, cursor: 'pointer', transition: 'all 0.2s' }}
         >
           Tour this Home
         </button>
         <button 
           onClick={() => setActiveTab('question')}
-          style={{ flex: 1, padding: '16px', background: activeTab === 'question' ? 'white' : '#fafafa', border: 'none', borderBottom: activeTab === 'question' ? '3px solid #111' : '3px solid transparent', color: activeTab === 'question' ? '#111' : '#888', fontSize: '14px', fontWeight: activeTab === 'question' ? 800 : 600, cursor: 'pointer', transition: 'all 0.2s' }}
+          style={{ flex: 1, padding: '16px', background: activeTab === 'question' ? 'rgba(255,255,255,0.5)' : 'transparent', border: 'none', borderBottom: activeTab === 'question' ? '3px solid #111' : '3px solid transparent', color: activeTab === 'question' ? '#111' : '#888', fontSize: '14px', fontWeight: activeTab === 'question' ? 800 : 600, cursor: 'pointer', transition: 'all 0.2s' }}
         >
           Ask a Question
         </button>
@@ -165,7 +161,7 @@ export default function LeadCaptureCard({ listingKey, address, price, agentName,
         <button 
           type="submit" 
           disabled={status === 'loading'}
-          style={{ width: '100%', padding: '16px', background: activeTab === 'tour' ? '#da291c' : '#111', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: 800, cursor: status === 'loading' ? 'wait' : 'pointer', opacity: status === 'loading' ? 0.8 : 1, transition: 'all 0.2s', letterSpacing: '0.02em' }}
+          style={{ width: '100%', padding: '16px', background: activeTab === 'tour' ? 'linear-gradient(135deg, #da291c 0%, #a41b12 100%)' : 'linear-gradient(135deg, #111 0%, #333 100%)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 800, cursor: status === 'loading' ? 'wait' : 'pointer', opacity: status === 'loading' ? 0.8 : 1, transition: 'all 0.2s', letterSpacing: '0.02em', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}
         >
           {status === 'loading' ? 'Sending...' : activeTab === 'tour' ? 'Request Tour →' : 'Send Message →'}
         </button>

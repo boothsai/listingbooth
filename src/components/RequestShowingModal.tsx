@@ -26,13 +26,14 @@ export default function RequestShowingModal({ isOpen, onClose, listingKey, addre
     if (!name || !email) return;
     setStatus('loading');
     try {
-      const endpoint = type === 'ai' ? '/api/voice-bridge/call' : '/api/leads';
+      const endpoint = type === 'ai' ? '/api/voice-bridge/call' : '/api/leads/intake';
       const payload = type === 'ai' 
         ? { phone, listing_key: listingKey, address }
         : {
-            name, email, phone, message, preferred_date: preferredDate,
-            listing_key: listingKey, address, price,
-            lead_type: type === 'showing' ? 'Book Showing' : 'Request Info',
+            name, email, phone, 
+            message: type === 'showing' ? `[Tour Request: ${preferredDate || 'Flexible'}] ${message}`.trim() : message,
+            property_id: listingKey || address,
+            source: 'ListingBooth'
           };
           
       const res = await fetch(endpoint, {
