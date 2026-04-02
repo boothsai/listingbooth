@@ -34,6 +34,22 @@ export async function GET(request: NextRequest) {
 
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
     if (!error && data.user) {
+      
+      // If the link included the VOW acceptance flag, stamp the profile
+      const isVowAccepted = searchParams.get('vow') === '1';
+      if (isVowAccepted) {
+        // We use the service_role client for the DB update because the current session cookies aren't attached to standard API fetches yet
+        const adminDb = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY!
+        );
+        // Fire and forget update
+        adminDb.from('user_profiles')
+          .update({ vow_terms_accepted_at: new Date().toISOString() })
+          .eq('id', data.user.id)
+          .then();
+      }
+
       // Fire off webhook / email drip if we have a token
       const t = searchParams.get('t');
       if (t) {
